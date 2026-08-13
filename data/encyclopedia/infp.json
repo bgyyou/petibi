@@ -1,0 +1,282 @@
+{
+  "personality": "INFP",
+  "animal": "蝴蝶",
+  "family": "diplomat",
+  "entries": [
+    {
+      "id": "INFP-trait-01",
+      "category": "trait",
+      "title": "内心世界极丰富",
+      "content": "外表常常安静甚至羞涩，脑内却有一个完整的、自洽的内在宇宙。作家气质的天然候选，常被误认为没想法其实藏得很深。外冷内热，认定了会非常稳定。在符合价值观的工作里能爆发。",
+      "tags": [
+        "内省",
+        "丰富"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-trait-02",
+      "category": "trait",
+      "title": "价值驱动型",
+      "content": "做的所有事都在问『这符合我的价值观吗』。不符合的薪水再高也不会长期做，是少见的『能忍穷不能忍没意义』的人。在符合价值观的工作里能爆发。独处是 INFP 充电的必需品。",
+      "tags": [
+        "价值观",
+        "意义"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-trait-03",
+      "category": "trait",
+      "title": "对美敏感",
+      "content": "对文字、画面、声音的细微差异有高感知度，常被说『矫情』其实是真的有差。能感受到别人感受不到的细节。独处是 INFP 充电的必需品。人际上慢热但深厚。外冷内热，认定了会非常稳定。",
+      "tags": [
+        "美感",
+        "敏感"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-trait-04",
+      "category": "trait",
+      "title": "理想化倾向",
+      "content": "容易把人/事/关系在脑里美化为应然的样子，落地时会有落差，伴随失望感。需要不断校准『想象的』和『真实的』。人际上慢热但深厚。外冷内热，认定了会非常稳定。在符合价值观的工作里能爆发。",
+      "tags": [
+        "理想化",
+        "落差"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-cognitive-01",
+      "category": "cognitive",
+      "title": "主导 Fi · 内倾情感",
+      "content": "情感判断以内心价值系统为绝对准绳，不因外界压力轻易改变。能说出『我知道这不合理但我就是过不去』。",
+      "tags": [
+        "Fi",
+        "价值"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-cognitive-02",
+      "category": "cognitive",
+      "title": "辅助 Ne · 外倾直觉",
+      "content": "把内在价值投射到未来可能性上：这个世界可以怎样、这段关系可以走向哪。",
+      "tags": [
+        "Ne",
+        "可能性"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-strength-01",
+      "category": "strength",
+      "title": "真诚与共情",
+      "content": "很难伪装情绪，对方能感到『他是真的在听』。在情感支持类关系里有天然的感染力。",
+      "tags": [
+        "真诚",
+        "共情"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-strength-02",
+      "category": "strength",
+      "title": "创造力",
+      "content": "对文字、音乐、视觉的创造力常带强烈的个人印记，不模仿大众，是稀缺的原创型创作者。",
+      "tags": [
+        "创造",
+        "独特"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-strength-03",
+      "category": "strength",
+      "title": "价值坚守",
+      "content": "在群体压力下仍能坚持自己认为对的事，是稀缺的品质，也是被误解最多的部分。",
+      "tags": [
+        "坚守",
+        "勇气"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-weakness-01",
+      "category": "weakness",
+      "title": "情绪化决策",
+      "content": "被强烈情绪裹挟时会做出事后后悔的决定，要识别『我现在在情绪里』的信号，重大决策不在这时候做。",
+      "tags": [
+        "情绪",
+        "冲动"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-weakness-02",
+      "category": "weakness",
+      "title": "回避冲突",
+      "content": "为了不破坏关系会把不满咽回去，长期变成隐性怨恨，学会健康表达负面情绪是核心成长。",
+      "tags": [
+        "回避",
+        "压抑"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-weakness-03",
+      "category": "weakness",
+      "title": "完美主义 + 拖延",
+      "content": "对创作的完美标准过高，怕做出来不够好而迟迟不动手。",
+      "tags": [
+        "完美",
+        "拖延"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-career-01",
+      "category": "career",
+      "title": "创意 / 表达类岗位",
+      "content": "如自由撰稿人、独立设计师、诗人；需要把内在世界外化且不被打磨成大众口味。",
+      "tags": [
+        "创意",
+        "表达"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-career-02",
+      "category": "career",
+      "title": "心理 / 教育类岗位",
+      "content": "如心理辅导、社工、教师；适合一对一深度陪伴与支持。",
+      "tags": [
+        "心理",
+        "教育"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-relationship-01",
+      "category": "relationship",
+      "title": "灵魂伴侣型深度陪伴",
+      "content": "INFP 不需要高频社交，但需要少数能进入内心宇宙的关系。一旦遇到认定的灵魂伴侣，会全情投入。",
+      "tags": [
+        "深度",
+        "灵魂"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFP-faq-public-speaking",
+      "category": "faq",
+      "title": "当众演讲/发言",
+      "content": "作为 INFP，会把当众被否定的瞬间反复回放，符号化为『我不被这个世界接受』。要承认：一次演讲的负面反馈不能定义你的价值，把它当一次经验数据而不是身份评价。长期看，把感受转化为文字或创作是 INFP 的核心解法。——INFP 第一反应是看是否符合内心，承认这一本能是自我保护的前提。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "public-speaking"
+    },
+    {
+      "id": "INFP-faq-conflict",
+      "category": "faq",
+      "title": "人际冲突处理",
+      "content": "作为 INFP，会在冲突当下沉默，过两天才写出当时想说的话。重要冲突前把核心想说的写下来带身上，能极大缓解『说不出口』的焦虑——写下来的也算数。——INFP 第一反应是看是否符合内心，承认这一本能是自我保护的前提。短期内会迷茫，长期看是 INFP 最值钱的判断。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "conflict"
+    },
+    {
+      "id": "INFP-faq-deadline",
+      "category": "faq",
+      "title": "截止日期赶工",
+      "content": "作为 INFP，会在压力到来时突然陷入『这工作真的符合我吗』的存在危机。先承认情绪的合理，再问：如果现在不干，明天会更糟吗？通常会。短期内会迷茫，长期看是 INFP 最值钱的判断。——INFP 的本能是先感受再行动，给自己 24 小时缓冲能少后悔。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "deadline"
+    },
+    {
+      "id": "INFP-faq-breakup",
+      "category": "faq",
+      "title": "分手后的调整",
+      "content": "作为 INFP，分手会触发『我是否真的值得被爱』的底层议题。短期会很痛，但也是看清『我不能再寄托于对方才能幸福』的关键节点——爱自己是被爱的前提。——INFP 的本能是先感受再行动，给自己 24 小时缓冲能少后悔。长期看，把感受转化为文字或创作是 INFP 的核心解法。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "breakup"
+    },
+    {
+      "id": "INFP-faq-criticism",
+      "category": "faq",
+      "title": "被批评/被否定",
+      "content": "作为 INFP，会把批评内化为『我就是这样的人』的全盘否定。要练习区分：批评的是我的行为，不一定是我这个人，行为可以改，身份不能动。长期看，把感受转化为文字或创作是 INFP 的核心解法。——INFP 第一反应是看是否符合内心，承认这一本能是自我保护的前提。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "criticism"
+    },
+    {
+      "id": "INFP-faq-alone-weekend",
+      "category": "faq",
+      "title": "一个人过周末",
+      "content": "作为 INFP，独处时容易陷入过去的回忆和反刍。准备一个『接地气』的小事清单：做饭、整理、写信，独处时有抓手能避免过度反刍进入情绪低谷。——INFP 第一反应是看是否符合内心，承认这一本能是自我保护的前提。短期内会迷茫，长期看是 INFP 最值钱的判断。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "alone-weekend"
+    },
+    {
+      "id": "INFP-faq-decision",
+      "category": "faq",
+      "title": "重大抉择",
+      "content": "作为 INFP，会在『安全但无聊』和『热爱但风险』之间反复摇摆。诚实地写下两个选项未来 5 年最坏和最好的样子，常能看清自己更怕哪个——怕的那个往往就是答案。短期内会迷茫，长期看是 INFP 最值钱的判断。——INFP 的本能是先感受再行动，给自己 24 小时缓冲能少后悔。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "decision"
+    },
+    {
+      "id": "INFP-faq-self-doubt",
+      "category": "faq",
+      "title": "自我怀疑/意义缺失",
+      "content": "作为 INFP，自我怀疑常常不是能力问题而是意义问题——『我做这件事到底是为了什么』。可以暂停一周什么都不做，让自己内心那个真实答案自己浮上来。——INFP 的本能是先感受再行动，给自己 24 小时缓冲能少后悔。长期看，把感受转化为文字或创作是 INFP 的核心解法。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "self-doubt"
+    },
+    {
+      "id": "INFP-faq-social-drain",
+      "category": "faq",
+      "title": "社交后疲惫恢复",
+      "content": "作为 INFP，社交是高消耗行为特别是情绪密集的场合。提前规划社交后的独处恢复时间，是可持续生活的最低保障，不要等到崩溃再补。长期看，把感受转化为文字或创作是 INFP 的核心解法。——INFP 第一反应是看是否符合内心，承认这一本能是自我保护的前提。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "social-drain"
+    },
+    {
+      "id": "INFP-faq-learning-new-skill",
+      "category": "faq",
+      "title": "入门新领域",
+      "content": "作为 INFP 学新东西，最容易掉进『必须找到意义才学』的陷阱。但有些技能的意义是学了之后才看见的，建议：先学 30 小时，再判断是否要继续，避免被意义感挡在起点。——INFP 第一反应是看是否符合内心，承认这一本能是自我保护的前提。短期内会迷茫，长期看是 INFP 最值钱的判断。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "learning-new-skill"
+    },
+    {
+      "id": "INFP-faq-teamwork",
+      "category": "faq",
+      "title": "团队协作摩擦",
+      "content": "作为 INFP，开会时想法被否决心里会先凉半截，但别让这种凉变成自动弃权——会先把想法写成一页纸备着，找一个私下能听你说完的同盟确认它值不值得被提，再决定是否在下一次会上重申。接受多数决定但保留底线：哪些情况你会主动退出项目，哪些你会坚持。长期看，INFP 的真诚只有在不被反复辜负时才会持续。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "teamwork"
+    }
+  ]
+}

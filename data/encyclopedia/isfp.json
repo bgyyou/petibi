@@ -1,0 +1,282 @@
+{
+  "personality": "ISFP",
+  "animal": "卡皮巴拉",
+  "family": "explorer",
+  "entries": [
+    {
+      "id": "ISFP-trait-01",
+      "category": "trait",
+      "title": "安静的存在感",
+      "content": "在群体里不抢话，但你会自然注意到他。卡皮巴拉气质名副其实，是天然的『安静的中心』。在安静的环境里最有存在感。做喜欢的事能进入心流。不擅长长期规划。对美的事物极敏感。",
+      "tags": [
+        "安静",
+        "存在"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-trait-02",
+      "category": "trait",
+      "title": "当下派",
+      "content": "活在当下，享受当下的美和感受，不太焦虑未来——焦虑通常来自『被要求规划未来』。做喜欢的事能进入心流。不擅长长期规划。对美的事物极敏感。在安静的环境里最有存在感。",
+      "tags": [
+        "当下",
+        "感受"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-trait-03",
+      "category": "trait",
+      "title": "美感强",
+      "content": "对美的事物有天然的感知力，穿搭、空间、艺术都能感受到别人感受不到的细节。不擅长长期规划。对美的事物极敏感。在安静的环境里最有存在感。做喜欢的事能进入心流。不擅长长期规划。",
+      "tags": [
+        "美感",
+        "感知"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-trait-04",
+      "category": "trait",
+      "title": "行动自由型",
+      "content": "不喜欢被规则和计划框住，喜欢自己节奏慢慢推进，被催会本能反感。对美的事物极敏感。在安静的环境里最有存在感。做喜欢的事能进入心流。不擅长长期规划。对美的事物极敏感。",
+      "tags": [
+        "自由",
+        "节奏"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-cognitive-01",
+      "category": "cognitive",
+      "title": "主导 Fi · 内倾情感",
+      "content": "用内心价值系统做判断，不符合的再多人推也不干。",
+      "tags": [
+        "Fi",
+        "价值"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-cognitive-02",
+      "category": "cognitive",
+      "title": "辅助 Se · 外倾实感",
+      "content": "对当下的感受和体验有极强的感知力，活在『这一刻』。",
+      "tags": [
+        "Se",
+        "当下"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-strength-01",
+      "category": "strength",
+      "title": "审美创造力",
+      "content": "对色彩、造型、空间的感知力强，是天然的艺术家。",
+      "tags": [
+        "审美",
+        "创造"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-strength-02",
+      "category": "strength",
+      "title": "温和不伤",
+      "content": "天然温和不攻击，与人冲突会本能退让。",
+      "tags": [
+        "温和",
+        "不伤"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-strength-03",
+      "category": "strength",
+      "title": "当下专注",
+      "content": "做喜欢的事可以进入心流，不被外界打扰。",
+      "tags": [
+        "心流",
+        "专注"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-weakness-01",
+      "category": "weakness",
+      "title": "未来规划弱",
+      "content": "不擅长长期规划，常常『船到桥头自然直』，但有些事不能等桥。",
+      "tags": [
+        "规划",
+        "长期"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-weakness-02",
+      "category": "weakness",
+      "title": "回避冲突",
+      "content": "为了不破坏关系把不满咽回去，长期变成隐性怨气。",
+      "tags": [
+        "回避",
+        "压抑"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-weakness-03",
+      "category": "weakness",
+      "title": "过度敏感",
+      "content": "对批评和否定极敏感，容易被小事伤到。",
+      "tags": [
+        "敏感",
+        "脆弱"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-career-01",
+      "category": "career",
+      "title": "艺术 / 设计类岗位",
+      "content": "如独立艺术家、设计师、手作匠人；需要自由表达审美。",
+      "tags": [
+        "艺术",
+        "设计"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-career-02",
+      "category": "career",
+      "title": "手作 / 体验类岗位",
+      "content": "如咖啡师、烘焙师、园艺；适合动手做有美感的事。",
+      "tags": [
+        "手作",
+        "体验"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-relationship-01",
+      "category": "relationship",
+      "title": "温柔安静的陪伴型",
+      "content": "ISFP 不需要高频社交，但需要少数能进入内心的人。能用『我在』代替千言万语，需要对方懂得珍惜沉默。",
+      "tags": [
+        "温柔",
+        "陪伴"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISFP-faq-public-speaking",
+      "category": "faq",
+      "title": "当众演讲/发言",
+      "content": "作为 ISFP，会把当众被否定的瞬间反复回放。要承认：一次反馈不等于你全部的价值——很多人根本没注意到你说的那句话。长期看，这是 ISFP 从被动走向主动表达的关键。——ISFP 第一反应是先感受，承认这一本能后才能不被他人的评价卷走。短期内会显得被动，长期看是 ISFP 最深的感受力。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "public-speaking"
+    },
+    {
+      "id": "ISFP-faq-conflict",
+      "category": "faq",
+      "title": "人际冲突处理",
+      "content": "作为 ISFP，会在冲突当下沉默，过几天才反刍出想说的话。重要冲突前把核心想说的写下来带身上，写下来的也算数。——ISFP 第一反应是先感受，承认这一本能后才能不被他人的评价卷走。短期内会显得被动，长期看是 ISFP 最深的感受力。——ISFP 的本能是先照顾自己的节奏，刻意练习『24 小时规则』能减少冲动决策。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "conflict"
+    },
+    {
+      "id": "ISFP-faq-deadline",
+      "category": "faq",
+      "title": "截止日期赶工",
+      "content": "作为 ISFP，会因为没达到自己心中的完美而拖延交付。设定『先交 70% 再迭代』的硬规则，完成度本身就是进度。短期内会显得被动，长期看是 ISFP 最深的感受力。——ISFP 的本能是先照顾自己的节奏，刻意练习『24 小时规则』能减少冲动决策。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "deadline"
+    },
+    {
+      "id": "ISFP-faq-breakup",
+      "category": "faq",
+      "title": "分手后的调整",
+      "content": "作为 ISFP，会把前任符号化为『唯一的灵魂伴侣』。要承认：心动是真的，但神化会挡住后面的可能性——前任不是唯一的选项。——ISFP 的本能是先照顾自己的节奏，刻意练习『24 小时规则』能减少冲动决策。长期看，这是 ISFP 从被动走向主动表达的关键。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "breakup"
+    },
+    {
+      "id": "ISFP-faq-criticism",
+      "category": "faq",
+      "title": "被批评/被否定",
+      "content": "作为 ISFP，会把批评内化为『我就是这样的人』。区分：批评的是行为不一定是你这个人，行为可以改身份不能动。长期看，这是 ISFP 从被动走向主动表达的关键。——ISFP 第一反应是先感受，承认这一本能后才能不被他人的评价卷走。短期内会显得被动，长期看是 ISFP 最深的感受力。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "criticism"
+    },
+    {
+      "id": "ISFP-faq-alone-weekend",
+      "category": "faq",
+      "title": "一个人过周末",
+      "content": "作为 ISFP，独处不是孤独而是充电。主动给自己留大块独处时间，是可持续社交的前提——关系里的能量必须先充好再给出去。——ISFP 第一反应是先感受，承认这一本能后才能不被他人的评价卷走。短期内会显得被动，长期看是 ISFP 最深的感受力。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "alone-weekend"
+    },
+    {
+      "id": "ISFP-faq-new-job",
+      "category": "faq",
+      "title": "入职新岗位",
+      "content": "作为 ISFP，会对新环境的『冷』消耗能量。先观察：是对方慢热还是真的排斥——前者可以等，后者早走是止损。短期内会显得被动，长期看是 ISFP 最深的感受力。——ISFP 的本能是先照顾自己的节奏，刻意练习『24 小时规则』能减少冲动决策。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "new-job"
+    },
+    {
+      "id": "ISFP-faq-decision",
+      "category": "faq",
+      "title": "重大抉择",
+      "content": "作为 ISFP，会凭当下的感觉选忽略长期后果。重要决策前给自己 24 小时冷静期——直觉强但仍需要冷处理。——ISFP 的本能是先照顾自己的节奏，刻意练习『24 小时规则』能减少冲动决策。长期看，这是 ISFP 从被动走向主动表达的关键。——ISFP 第一反应是先感受，承认这一本能后才能不被他人的评价卷走。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "decision"
+    },
+    {
+      "id": "ISFP-faq-social-drain",
+      "category": "faq",
+      "title": "社交后疲惫恢复",
+      "content": "作为 ISFP，社交是高消耗行为特别是情绪密集场合。给自己留足恢复时间——你不需要成为社交达人，做自己最舒服。长期看，这是 ISFP 从被动走向主动表达的关键。——ISFP 第一反应是先感受，承认这一本能后才能不被他人的评价卷走。短期内会显得被动，长期看是 ISFP 最深的感受力。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "social-drain"
+    },
+    {
+      "id": "ISFP-faq-self-doubt",
+      "category": "faq",
+      "title": "自我怀疑/意义缺失",
+      "content": "作为 ISFP 自我怀疑，常常不是能力问题而是『我不确定是不是真的喜欢这个』。可以暂停一周什么都不做，让自己内心那个真实答案自己浮上来。——ISFP 第一反应是先感受，承认这一本能后才能不被他人的评价卷走。短期内会显得被动，长期看是 ISFP 最深的感受力。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "self-doubt"
+    },
+    {
+      "id": "ISFP-faq-teamwork",
+      "category": "faq",
+      "title": "团队协作摩擦",
+      "content": "作为 ISFP，开会时你的点子被绕过去、心里堵得慌，但当场硬怼不是你的招——会把想法画成图或写成小标签单独发出去，给别人一点时间咀嚼。私下找 1 个同盟帮你把话转达过去，被否也接受，但不让自己的声音长期缺位。先在安全的小范围里练表达，再逐步推到正式场合。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "teamwork"
+    }
+  ]
+}

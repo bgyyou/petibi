@@ -1,0 +1,30 @@
+{
+  "name": "petibi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Petibi —— MBTI 桌宠（Electron 透明悬浮窗原型，M1 工单）",
+  "main": "out/main/main.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && electron-vite build && electron-builder",
+    "build:app": "electron-vite build",
+    "pack:dir": "electron-builder --dir"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^2.3.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vitest": "^1.6.1"
+  }
+}

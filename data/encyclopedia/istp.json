@@ -1,0 +1,272 @@
+{
+  "personality": "ISTP",
+  "animal": "豹",
+  "family": "explorer",
+  "entries": [
+    {
+      "id": "ISTP-trait-01",
+      "category": "trait",
+      "title": "冷静观察者",
+      "content": "进入任何场合先观察再出手，像豹一样靠洞察取胜——出手之前已经把局面看透了。动手做事时最有存在感。在危机里最稳。不擅长解释情感。自由是核心需求。动手做事时最有存在感。",
+      "tags": [
+        "冷静",
+        "观察"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-trait-02",
+      "category": "trait",
+      "title": "动手能力极强",
+      "content": "理解世界靠『拆开看』，机械、代码、运动一学就会。在危机里最稳。不擅长解释情感。自由是核心需求。动手做事时最有存在感。在危机里最稳。不擅长解释情感。自由是核心需求。",
+      "tags": [
+        "动手",
+        "实操"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-trait-03",
+      "category": "trait",
+      "title": "危机中最稳",
+      "content": "事情崩了别人慌他最稳，能快速看到本质问题，是天然的危机处理人。不擅长解释情感。自由是核心需求。动手做事时最有存在感。在危机里最稳。不擅长解释情感。自由是核心需求。",
+      "tags": [
+        "危机",
+        "稳定"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-trait-04",
+      "category": "trait",
+      "title": "空间感和因果感强",
+      "content": "对物理空间和因果链条有天然的感知力，是工程师/设计师的好苗子。自由是核心需求。动手做事时最有存在感。在危机里最稳。不擅长解释情感。自由是核心需求。动手做事时最有存在感。",
+      "tags": [
+        "空间",
+        "因果"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-cognitive-01",
+      "category": "cognitive",
+      "title": "主导 Ti · 内倾思维",
+      "content": "一切在自己逻辑网里自洽，否则不接受。",
+      "tags": [
+        "Ti",
+        "逻辑"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-cognitive-02",
+      "category": "cognitive",
+      "title": "辅助 Se · 外倾实感",
+      "content": "对当下环境和现实细节有极强的感知，能快速反应。",
+      "tags": [
+        "Se",
+        "反应"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-strength-01",
+      "category": "strength",
+      "title": "危机处理",
+      "content": "出事了 ISTP 最稳，能在混乱里快速识别核心问题。",
+      "tags": [
+        "危机",
+        "问题解决"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-strength-02",
+      "category": "strength",
+      "title": "动手能力",
+      "content": "技术类、机械类、运动类上手极快。",
+      "tags": [
+        "动手",
+        "技术"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-strength-03",
+      "category": "strength",
+      "title": "独立自主",
+      "content": "不需要被管，自己能定目标自己推进。",
+      "tags": [
+        "独立",
+        "自主"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-weakness-01",
+      "category": "weakness",
+      "title": "情感表达弱",
+      "content": "做了很多但说不出口，对方感觉不到被爱。",
+      "tags": [
+        "表达",
+        "情感"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-weakness-02",
+      "category": "weakness",
+      "title": "承诺恐惧",
+      "content": "害怕长期承诺被锁死，会下意识保持距离。",
+      "tags": [
+        "承诺",
+        "距离"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-weakness-03",
+      "category": "weakness",
+      "title": "抗无聊能力差",
+      "content": "对重复无聊的事本能抗拒，频繁换工作换方向。",
+      "tags": [
+        "无聊",
+        "切换"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-career-01",
+      "category": "career",
+      "title": "技术 / 工程类岗位",
+      "content": "如工程师、机械师、技术支持；需要动手解决问题。",
+      "tags": [
+        "技术",
+        "工程"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-career-02",
+      "category": "career",
+      "title": "应急 / 安全类岗位",
+      "content": "如应急响应、安全工程、军警；适合高压下的快速决策。",
+      "tags": [
+        "应急",
+        "安全"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-relationship-01",
+      "category": "relationship",
+      "title": "自由 + 行动的伴侣",
+      "content": "ISTP 不是浪漫型而是行动型，能用『我把事情办了』表达爱。需要对方懂得珍惜沉默的陪伴。",
+      "tags": [
+        "自由",
+        "行动"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTP-faq-public-speaking",
+      "category": "faq",
+      "title": "当众演讲/发言",
+      "content": "作为 ISTP，通常不爱背稿更依赖临场观察和反应。把核心三个点想清楚，给自己留即兴发挥的空间，反而显得更有气场——观众能感觉到『这个人是真懂』。长期看，这是 ISTP 从被动走向主动表达的关键。——ISTP 第一反应是先观察再行动，承认这一本能是冷静的前提。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "public-speaking"
+    },
+    {
+      "id": "ISTP-faq-conflict",
+      "category": "faq",
+      "title": "人际冲突处理",
+      "content": "作为 ISTP，会本能退出冲突现场冷静。但对方可能解读为『逃避』——说一句『我需要十分钟』比直接消失好，让对方知道你在乎而不是不在乎。——ISTP 第一反应是先观察再行动，承认这一本能是冷静的前提。短期内会显得被动，长期看是 ISTP 最强的洞察。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "conflict"
+    },
+    {
+      "id": "ISTP-faq-deadline",
+      "category": "faq",
+      "title": "截止日期赶工",
+      "content": "作为 ISTP，会在最后阶段爆发赶工，效率惊人但伤身体。提前规划进度，把爆发留给真正需要的紧急情况，不要让慢性透支变成常态。短期内会显得被动，长期看是 ISTP 最强的洞察。——ISTP 的本能是先想退路，刻意练习『先回应一句再退』能减少误会。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "deadline"
+    },
+    {
+      "id": "ISTP-faq-breakup",
+      "category": "faq",
+      "title": "分手后的调整",
+      "content": "作为 ISTP，外表恢复得很快（生活照旧），但内在消化其实没完成。给自己私下留点悲伤的时间，是健康的——外表冷淡不代表不痛。——ISTP 的本能是先想退路，刻意练习『先回应一句再退』能减少误会。长期看，这是 ISTP 从被动走向主动表达的关键。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "breakup"
+    },
+    {
+      "id": "ISTP-faq-criticism",
+      "category": "faq",
+      "title": "被批评/被否定",
+      "content": "作为 ISTP，被批评当下不会反驳但内心已经冷了。冷静期后该说的要说，不然积怨——沉默不等于没问题，问题会在某天爆出来。长期看，这是 ISTP 从被动走向主动表达的关键。——ISTP 第一反应是先观察再行动，承认这一本能是冷静的前提。短期内会显得被动，长期看是 ISTP 最强的洞察。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "criticism"
+    },
+    {
+      "id": "ISTP-faq-alone-weekend",
+      "category": "faq",
+      "title": "一个人过周末",
+      "content": "作为 ISTP，独处 + 动手做事是最佳充电方式。允许自己玩得『无意义』，是必要的——周末有 4 小时纯放空不算浪费时间。——ISTP 第一反应是先观察再行动，承认这一本能是冷静的前提。短期内会显得被动，长期看是 ISTP 最强的洞察。——ISTP 的本能是先想退路，刻意练习『先回应一句再退』能减少误会。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "alone-weekend"
+    },
+    {
+      "id": "ISTP-faq-new-job",
+      "category": "faq",
+      "title": "入职新岗位",
+      "content": "作为 ISTP，遇到流程过严的公司会本能想跑。先识别：是临时阵痛还是结构性问题？前者忍 6 个月再判断，后者早走是止损。短期内会显得被动，长期看是 ISTP 最强的洞察。——ISTP 的本能是先想退路，刻意练习『先回应一句再退』能减少误会。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "new-job"
+    },
+    {
+      "id": "ISTP-faq-decision",
+      "category": "faq",
+      "title": "重大抉择",
+      "content": "作为 ISTP 会凭当下的感觉和直觉选，忽略长期后果。重要决策前给自己 24 小时『冷静期』，能减少冲动——直觉强但仍需要冷处理。——ISTP 的本能是先想退路，刻意练习『先回应一句再退』能减少误会。长期看，这是 ISTP 从被动走向主动表达的关键。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "decision"
+    },
+    {
+      "id": "ISTP-faq-teamwork",
+      "category": "faq",
+      "title": "团队协作分歧",
+      "content": "作为 ISTP，会被太多流程消耗耐心。先识别：流程背后有合理原因吗？有的就接受，没的就简化——别把所有流程都当成对效率的绑架。长期看，这是 ISTP 从被动走向主动表达的关键。——ISTP 第一反应是先观察再行动，承认这一本能是冷静的前提。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "teamwork"
+    },
+    {
+      "id": "ISTP-faq-social-drain",
+      "category": "faq",
+      "title": "社交后疲惫恢复",
+      "content": "作为 ISTP，社交是高消耗行为特别是情绪密集场合。给自己留足恢复时间是必要的——你不需要成为社交达人，做自己最舒服。——ISTP 第一反应是先观察再行动，承认这一本能是冷静的前提。短期内会显得被动，长期看是 ISTP 最强的洞察。——ISTP 的本能是先想退路，刻意练习『先回应一句再退』能减少误会。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "social-drain"
+    }
+  ]
+}

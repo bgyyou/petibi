@@ -1,0 +1,25 @@
+<!-- 【文件说明】渲染进程入口页面：透明背景 + React 挂载点，桌宠组件在 src/App.tsx -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Petibi</title>
+    <style>
+      /* 页面本身必须全透明，壁纸才能透过 Electron 透明窗显示出来 */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        overflow: hidden;
+        /* 防止拖拽时选中文字/图片 */
+        user-select: none;
+        -webkit-user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.tsx"></script>
+  </body>
+</html>

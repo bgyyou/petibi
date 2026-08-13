@@ -1,0 +1,281 @@
+{
+  "personality": "INFJ",
+  "animal": "天鹅",
+  "family": "diplomat",
+  "entries": [
+    {
+      "id": "INFJ-trait-01",
+      "category": "trait",
+      "title": "安静的理想主义者",
+      "content": "外表安静温和，内心有一张关于『人应该怎样被善待』的隐形准则。会为理想默默努力而非声张，是少见的低调理想主义者。在人少的场合更自在，嘈杂社交会消耗能量。容易被误认为神秘，深入了解会非常温柔。",
+      "tags": [
+        "理想",
+        "内敛"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-trait-02",
+      "category": "trait",
+      "title": "直觉极准",
+      "content": "读人能力强，对方还没开口已经知道接下来要说什么。常被说『看人很准』，本质是大量模式积累后的快速判断。容易被误认为神秘，深入了解会非常温柔。在意的事愿意做很久。独处是 INFJ 整理内心的必备时间。",
+      "tags": [
+        "直觉",
+        "读人"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-trait-03",
+      "category": "trait",
+      "title": "深度连接者",
+      "content": "不在数量而在质量，三五段深度关系足以撑起整个情感世界。浅社交会让他疲惫，更看重关系的真诚度。在意的事愿意做很久。独处是 INFJ 整理内心的必备时间。在人少的场合更自在，嘈杂社交会消耗能量。",
+      "tags": [
+        "深度",
+        "连接"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-trait-04",
+      "category": "trait",
+      "title": "完美主义 + 自我施压",
+      "content": "对自己的期待高于任何外部要求，常因『还达不到自己心中的标准』而内耗，旁人看起来已经很好了他还觉得不够。独处是 INFJ 整理内心的必备时间。在人少的场合更自在，嘈杂社交会消耗能量。",
+      "tags": [
+        "完美主义",
+        "内耗"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-cognitive-01",
+      "category": "cognitive",
+      "title": "主导 Ni · 内倾直觉",
+      "content": "对人和事的走向有强烈的直觉判断，常能在事件发生前就感到某种『氛围不对』。",
+      "tags": [
+        "Ni",
+        "直觉"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-cognitive-02",
+      "category": "cognitive",
+      "title": "辅助 Fe · 外倾情感",
+      "content": "天然能感知他人情绪，对周围人的情感波动极其敏感，会不自觉吸收别人的情绪。",
+      "tags": [
+        "Fe",
+        "共情"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-strength-01",
+      "category": "strength",
+      "title": "深度共情",
+      "content": "能在对方还没说出口前就读懂情绪，常被认为『最懂我的人』。",
+      "tags": [
+        "共情",
+        "读心"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-strength-02",
+      "category": "strength",
+      "title": "愿景与意义感",
+      "content": "能在混乱里看见未来的可能性，并愿意为那个愿景长期投入，是激励型领袖的底色。",
+      "tags": [
+        "愿景",
+        "意义"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-strength-03",
+      "category": "strength",
+      "title": "写作 / 表达深度",
+      "content": "擅长把复杂的内心感受组织成清晰有温度的文字，是天然的内容创作者。",
+      "tags": [
+        "写作",
+        "表达"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-weakness-01",
+      "category": "weakness",
+      "title": "过度吸收他人情绪",
+      "content": "在情感支持类关系里容易被对方拖垮，要刻意设置情感边界，否则会被消耗到空。",
+      "tags": [
+        "边界",
+        "共情过载"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-weakness-02",
+      "category": "weakness",
+      "title": "完美主义 + 拖延",
+      "content": "对自己的标准太高，迟迟不敢动手，怕做出来不够好。需要硬规则：完成 > 完美。",
+      "tags": [
+        "完美主义",
+        "拖延"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-weakness-03",
+      "category": "weakness",
+      "title": "难以拒绝",
+      "content": "说不出口 NO，承担过多他人需求，长期会把能量掏空。",
+      "tags": [
+        "拒绝",
+        "取悦"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-career-01",
+      "category": "career",
+      "title": "心理 / 教育类岗位",
+      "content": "如心理咨询师、教育设计、人生教练；适合深度理解并帮助他人成长。",
+      "tags": [
+        "心理",
+        "教育"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-career-02",
+      "category": "career",
+      "title": "写作 / 内容创作类",
+      "content": "如长内容作者、剧本创作、知识 IP；能把复杂感受组织成有共鸣的文字。",
+      "tags": [
+        "写作",
+        "创作"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-relationship-01",
+      "category": "relationship",
+      "title": "灵魂伴侣型追求",
+      "content": "INFJ 不愿将就，倾向于等待并识别真正在精神层面同频的伴侣。一旦认定，全然投入。",
+      "tags": [
+        "灵魂伴侣"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INFJ-faq-public-speaking",
+      "category": "faq",
+      "title": "当众演讲/发言",
+      "content": "作为 INFJ，通常会花几天反刍『是不是哪句话说错了』『大家是不是不感兴趣』。要承认：一次演讲的反馈不全是对你的评价，70% 是听众自己的状态。长期看，这是 INFJ 从共情者走向引导者的关键。——INFJ 第一反应是替对方想，承认这一点才能保护自己。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "public-speaking"
+    },
+    {
+      "id": "INFJ-faq-conflict",
+      "category": "faq",
+      "title": "人际冲突处理",
+      "content": "作为 INFJ，发生冲突时会下意识替对方找理由，甚至先道歉。但要识别：对方的错不是你的责任，允许自己坚持立场是健康关系的前提。——INFJ 第一反应是替对方想，承认这一点才能保护自己。短期内会委屈自己，长期看是 INFJ 最深的洞见。——INFJ 的本能是先共情再判断，要刻意练习『先认账再共情』。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "conflict"
+    },
+    {
+      "id": "INFJ-faq-deadline",
+      "category": "faq",
+      "title": "截止日期赶工",
+      "content": "作为 INFJ，会因为没达到自己心中的完美而拖延交付。设定『先交 70% 的版本，再迭代』的硬规则，能极大降低内耗——完成度本身就是进度。短期内会委屈自己，长期看是 INFJ 最深的洞见。——INFJ 的本能是先共情再判断，要刻意练习『先认账再共情』。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "deadline"
+    },
+    {
+      "id": "INFJ-faq-breakup",
+      "category": "faq",
+      "title": "分手后的调整",
+      "content": "作为 INFJ，会把前任符号化为『唯一的灵魂伴侣』。要承认：心动的感觉是真实的，但把它神格化会挡住后面的可能性。——INFJ 的本能是先共情再判断，要刻意练习『先认账再共情』。长期看，这是 INFJ 从共情者走向引导者的关键。——INFJ 第一反应是替对方想，承认这一点才能保护自己。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "breakup"
+    },
+    {
+      "id": "INFJ-faq-criticism",
+      "category": "faq",
+      "title": "被批评/被否定",
+      "content": "作为 INFJ，被批评后会在脑里反刍几十遍，分不清是『事实』还是『语气』。区分两者：事实认账，语气可以选择不接收。长期看，这是 INFJ 从共情者走向引导者的关键。——INFJ 第一反应是替对方想，承认这一点才能保护自己。短期内会委屈自己，长期看是 INFJ 最深的洞见。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "criticism"
+    },
+    {
+      "id": "INFJ-faq-alone-weekend",
+      "category": "faq",
+      "title": "一个人过周末",
+      "content": "作为 INFJ，独处不是孤独而是充电。主动给自己留大块独处时间，是可持续社交的前提——关系里的能量必须先充好再给出去。——INFJ 第一反应是替对方想，承认这一点才能保护自己。短期内会委屈自己，长期看是 INFJ 最深的洞见。——INFJ 的本能是先共情再判断，要刻意练习『先认账再共情』。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "alone-weekend"
+    },
+    {
+      "id": "INFJ-faq-new-job",
+      "category": "faq",
+      "title": "入职新岗位",
+      "content": "作为 INFJ，会被新环境的『冷』消耗。先观察三个月：有些冷是对方慢热，有些是真的排斥，前者可以等，后者早走是止损。短期内会委屈自己，长期看是 INFJ 最深的洞见。——INFJ 的本能是先共情再判断，要刻意练习『先认账再共情』。长期看，这是 INFJ 从共情者走向引导者的关键。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "new-job"
+    },
+    {
+      "id": "INFJ-faq-decision",
+      "category": "faq",
+      "title": "重大抉择",
+      "content": "作为 INFJ，会在『对自己最优』和『对别人最不打扰』之间反复拉扯。要提醒自己：所有重要决定都有连带影响，零代价选项不存在。——INFJ 的本能是先共情再判断，要刻意练习『先认账再共情』。长期看，这是 INFJ 从共情者走向引导者的关键。——INFJ 第一反应是替对方想，承认这一点才能保护自己。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "decision"
+    },
+    {
+      "id": "INFJ-faq-money-issue",
+      "category": "faq",
+      "title": "钱的问题（账单/借债）",
+      "content": "作为 INFJ 遇到钱的问题，会下意识觉得谈钱伤感情、不好意思谈，最后小问题拖成大问题。建议：把『钱怎么算』当成对关系的尊重而不是冒犯，越早谈清楚越能保护关系。长期看，这是 INFJ 从共情者走向引导者的关键。——INFJ 第一反应是替对方想，承认这一点才能保护自己。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "money-issue"
+    },
+    {
+      "id": "INFJ-faq-caregiving",
+      "category": "faq",
+      "title": "长期照顾他人",
+      "content": "作为 INFJ 长期照顾他人，最容易掉进『对方离不开我我走不了』的陷阱。识别：你的照顾需要被对方主动要求而不是你单方面认定，定期确认对方真实需求是健康的方式。——INFJ 第一反应是替对方想，承认这一点才能保护自己。短期内会委屈自己，长期看是 INFJ 最深的洞见。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "caregiving"
+    },
+    {
+      "id": "INFJ-faq-teamwork",
+      "category": "faq",
+      "title": "团队协作摩擦",
+      "content": "作为 INFJ，群里那张隐形的合影你其实早就读懂了，但直接揭穿反而会被当小题大做——会先观察一两次确认判断，再私下找 1 个同盟验证，最后才用 1:1 把问题摆到当事人面前。关键区别是『修人』还是『自保』：前者值得投入，后者该及时退出。短期看似温吞，长期看 INFJ 的洞察只有在被允许放慢节奏时才会被真正听见。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "teamwork"
+    }
+  ]
+}

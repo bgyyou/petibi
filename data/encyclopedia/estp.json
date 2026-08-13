@@ -1,0 +1,282 @@
+{
+  "personality": "ESTP",
+  "animal": "猴子",
+  "family": "explorer",
+  "entries": [
+    {
+      "id": "ESTP-trait-01",
+      "category": "trait",
+      "title": "行动派",
+      "content": "想到就做，不会在脑子里绕三圈。猴子气质名副其实，是朋友圈里行动力最强的人。在现场行动时最有存在感。危机里反应最快。不擅长长期规划。对新鲜事极度兴奋。在现场行动时最有存在感。",
+      "tags": [
+        "行动",
+        "快速"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-trait-02",
+      "category": "trait",
+      "title": "现场反应强",
+      "content": "对当下环境的变化有极快的反应速度，能临场救火，是天然的应急人。危机里反应最快。不擅长长期规划。对新鲜事极度兴奋。在现场行动时最有存在感。危机里反应最快。不擅长长期规划。",
+      "tags": [
+        "反应",
+        "临场"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-trait-03",
+      "category": "trait",
+      "title": "谈判高手",
+      "content": "能在压力下快速找到对方的关键诉求并成交，是天然的销售。不擅长长期规划。对新鲜事极度兴奋。在现场行动时最有存在感。危机里反应最快。不擅长长期规划。对新鲜事极度兴奋。",
+      "tags": [
+        "谈判",
+        "成交"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-trait-04",
+      "category": "trait",
+      "title": "风险偏好",
+      "content": "对风险有天然的兴奋感，喜欢不确定带来的刺激——无聊是最大的敌人。对新鲜事极度兴奋。在现场行动时最有存在感。危机里反应最快。不擅长长期规划。对新鲜事极度兴奋。在现场行动时最有存在感。",
+      "tags": [
+        "风险",
+        "刺激"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-cognitive-01",
+      "category": "cognitive",
+      "title": "主导 Se · 外倾实感",
+      "content": "对当下环境的感知和反应极快，是天生的现场玩家。",
+      "tags": [
+        "Se",
+        "现场"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-cognitive-02",
+      "category": "cognitive",
+      "title": "辅助 Ti · 内倾思维",
+      "content": "在快反应背后有快速逻辑链做支撑，不是真的没思考。",
+      "tags": [
+        "Ti",
+        "快速逻辑"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-strength-01",
+      "category": "strength",
+      "title": "危机处理",
+      "content": "出事了 ESTP 最先动，能在混乱里快速行动。",
+      "tags": [
+        "危机",
+        "行动"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-strength-02",
+      "category": "strength",
+      "title": "谈判成交",
+      "content": "能在压力下快速找到对方的关键诉求并达成交易。",
+      "tags": [
+        "谈判",
+        "成交"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-strength-03",
+      "category": "strength",
+      "title": "当下快乐",
+      "content": "能把当下过得精彩，是聚会里的发动机。",
+      "tags": [
+        "快乐",
+        "发动机"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-weakness-01",
+      "category": "weakness",
+      "title": "长远规划弱",
+      "content": "不擅长长期规划，常常『先爽再说』，有些事要等爽完了才发现来不及。",
+      "tags": [
+        "规划",
+        "长期"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-weakness-02",
+      "category": "weakness",
+      "title": "风险评估弱",
+      "content": "为追求刺激低估风险，事后才知道代价。",
+      "tags": [
+        "风险",
+        "冲动"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-weakness-03",
+      "category": "weakness",
+      "title": "不耐烦",
+      "content": "对慢节奏的人容易不耐烦，团队里可能显得咄咄逼人。",
+      "tags": [
+        "耐心",
+        "急躁"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-career-01",
+      "category": "career",
+      "title": "销售 / 商务类岗位",
+      "content": "如销售、BD、商务谈判；需要快速反应和成交能力。",
+      "tags": [
+        "销售",
+        "商务"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-career-02",
+      "category": "career",
+      "title": "应急 / 体育 / 娱乐类",
+      "content": "如应急响应、运动员、演艺；需要高能量和现场反应。",
+      "tags": [
+        "应急",
+        "娱乐"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-relationship-01",
+      "category": "relationship",
+      "title": "激情新鲜的伴侣",
+      "content": "ESTP 在关系里需要持续的新鲜感和刺激，能长期走下去的伴侣通常是也爱玩、能一起冒险的类型。",
+      "tags": [
+        "激情",
+        "新鲜"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESTP-faq-public-speaking",
+      "category": "faq",
+      "title": "当众演讲/发言",
+      "content": "作为 ESTP，通常不怯场甚至享受，越热越兴奋。但要小心：兴奋时容易跑题，提前定好核心三点，并请人在第 25 和 50 分钟举牌提醒。长期看，把爆发力收口到真正重要的事上能放大成果。——ESTP 第一反应是先上手做，承认这一本能是行动力的前提。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "public-speaking"
+    },
+    {
+      "id": "ESTP-faq-conflict",
+      "category": "faq",
+      "title": "人际冲突处理",
+      "content": "作为 ESTP，会当场暴发但也容易当场和解。要承认：别人不一定会这么快翻篇，给对方留消化时间——和解需要仪式感不是口头一句『没事了』。——ESTP 第一反应是先上手做，承认这一本能是行动力的前提。短期内会显得冲动，长期看是 ESTP 最强的现场能力。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "conflict"
+    },
+    {
+      "id": "ESTP-faq-deadline",
+      "category": "faq",
+      "title": "截止日期赶工",
+      "content": "作为 ESTP，会在最后阶段爆发赶工，效率惊人但伤身体。提前规划进度，把爆发留给真正紧急的——不要让慢性透支变成常态。短期内会显得冲动，长期看是 ESTP 最强的现场能力。——ESTP 的本能是先爽再说，刻意设锁定规则能减少翻车。长期看，把爆发力收口到真正重要的事上能放大成果。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "deadline"
+    },
+    {
+      "id": "ESTP-faq-breakup",
+      "category": "faq",
+      "title": "分手后的调整",
+      "content": "作为 ESTP，会把分手当 chapter close，半年内可能进入新关系。问题不是太快进入，而是没消化上段——把上一段写成复盘文档是健康的方式。——ESTP 的本能是先爽再说，刻意设锁定规则能减少翻车。长期看，把爆发力收口到真正重要的事上能放大成果。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "breakup"
+    },
+    {
+      "id": "ESTP-faq-criticism",
+      "category": "faq",
+      "title": "被批评/被否定",
+      "content": "作为 ESTP，被批评当下会反弹，但过几天会反刍。把反弹当辩论材料整理，能减少情绪浓度——写在纸上比发在群里安全。长期看，把爆发力收口到真正重要的事上能放大成果。——ESTP 第一反应是先上手做，承认这一本能是行动力的前提。短期内会显得冲动，长期看是 ESTP 最强的现场能力。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "criticism"
+    },
+    {
+      "id": "ESTP-faq-alone-weekend",
+      "category": "faq",
+      "title": "一个人过周末",
+      "content": "作为 ESTP，独处超过一定时长会想找刺激。把周末拆成两类：休息半天 + 必须有一个能推进的项目——完全放空不可持续。——ESTP 第一反应是先上手做，承认这一本能是行动力的前提。短期内会显得冲动，长期看是 ESTP 最强的现场能力。——ESTP 的本能是先爽再说，刻意设锁定规则能减少翻车。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "alone-weekend"
+    },
+    {
+      "id": "ESTP-faq-new-job",
+      "category": "faq",
+      "title": "入职新岗位",
+      "content": "作为 ESTP，前三个月最有吸引力之后就痒了。要识别是『真的不合适』还是『新鲜感阈值到了』——后者换地方也救不了。短期内会显得冲动，长期看是 ESTP 最强的现场能力。——ESTP 的本能是先爽再说，刻意设锁定规则能减少翻车。长期看，把爆发力收口到真正重要的事上能放大成果。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "new-job"
+    },
+    {
+      "id": "ESTP-faq-decision",
+      "category": "faq",
+      "title": "重大抉择",
+      "content": "作为 ESTP 会觉得选 A 就关上了 B 的门。现实是：成年人选 A 是为了在 A 上拿到足够深的东西，B 没你想的那么可惜。——ESTP 的本能是先爽再说，刻意设锁定规则能减少翻车。长期看，把爆发力收口到真正重要的事上能放大成果。——ESTP 第一反应是先上手做，承认这一本能是行动力的前提。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "decision"
+    },
+    {
+      "id": "ESTP-faq-social-drain",
+      "category": "faq",
+      "title": "社交后疲惫恢复",
+      "content": "作为 ESTP 社交通常充电不耗电——但前提是有新的刺激。重复寒暄、低信息量聚会也耗电，要选择脑力型社交而不是来者不拒。长期看，把爆发力收口到真正重要的事上能放大成果。——ESTP 第一反应是先上手做，承认这一本能是行动力的前提。短期内会显得冲动，长期看是 ESTP 最强的现场能力。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "social-drain"
+    },
+    {
+      "id": "ESTP-faq-creative-block",
+      "category": "faq",
+      "title": "创作瓶颈/卡壳",
+      "content": "作为 ESTP 遇到创作瓶颈，最差的方式是死磕同一个题目。换题目往往是最快突破：先做点完全不相关的兴趣项目，过两天再回来，原来的卡点常常自动解开。——ESTP 第一反应是先上手做，承认这一本能是行动力的前提。短期内会显得冲动，长期看是 ESTP 最强的现场能力。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "creative-block"
+    },
+    {
+      "id": "ESTP-faq-teamwork",
+      "category": "faq",
+      "title": "团队协作摩擦",
+      "content": "作为 ESTP，开会发现大家只会讲大词不动手，你会立刻把会议拖进实战——把『下周完成战略对齐』这种空话换成『明天 24 小时内做这一件事的最小可行版』。用一次小胜利证明团队还能跑，再拉 1-2 个敢动的人组成反小分队推进下一步。长期看，ESTP 的反应速度只有在被允许落地时才能成为团队的引擎。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "teamwork"
+    }
+  ]
+}

@@ -10,6 +10,7 @@ release/
 
 # 美术资源（闭源资产，不进公开仓库——PRD §5 开源边界）
 assets/art/
+resources/sprites/
 *.psd
 *.aseprite
 

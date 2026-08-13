@@ -1,0 +1,19 @@
+{
+  "//": "【文件说明】TypeScript 配置：一份配置同时覆盖主进程（electron/）与渲染进程（src/），npm run typecheck 使用",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node"]
+  },
+  "include": ["electron", "src", "electron.vite.config.ts", "vitest.config.ts"]
+}

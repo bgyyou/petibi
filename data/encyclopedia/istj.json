@@ -1,0 +1,272 @@
+{
+  "personality": "ISTJ",
+  "animal": "海狸",
+  "family": "sentinel",
+  "entries": [
+    {
+      "id": "ISTJ-trait-01",
+      "category": "trait",
+      "title": "靠谱如瑞士钟表",
+      "content": "答应的事一定办到，按时按质。海狸气质名副其实，靠勤劳和可靠著称，是朋友圈里最不会掉链子的人。在稳定结构里能发挥最大价值。答应了的事一定办到。不擅长突然变通。慢热但稳定。",
+      "tags": [
+        "靠谱",
+        "守信"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-trait-02",
+      "category": "trait",
+      "title": "尊重规则与流程",
+      "content": "对规则的态度是『既然存在就有道理』。不会为效率牺牲流程，是组织运转的稳定基础。答应了的事一定办到。不擅长突然变通。慢热但稳定。在稳定结构里能发挥最大价值。答应了的事一定办到。",
+      "tags": [
+        "规则",
+        "流程"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-trait-03",
+      "category": "trait",
+      "title": "事实派",
+      "content": "做事靠数据、文件、过往记录，不太相信空口白话——口头承诺在他眼里不算数。不擅长突然变通。慢热但稳定。在稳定结构里能发挥最大价值。答应了的事一定办到。不擅长突然变通。",
+      "tags": [
+        "事实",
+        "依据"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-trait-04",
+      "category": "trait",
+      "title": "慢热但稳定",
+      "content": "关系一旦建立就稳定可靠，不轻易因为外部变化而动摇，是少见的『长期稳定型』。慢热但稳定。在稳定结构里能发挥最大价值。答应了的事一定办到。不擅长突然变通。慢热但稳定。",
+      "tags": [
+        "稳定",
+        "慢热"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-cognitive-01",
+      "category": "cognitive",
+      "title": "主导 Si · 内倾实感",
+      "content": "对过往经验和事实数据有极强的记忆力，常被同事当成『活字典』。",
+      "tags": [
+        "Si",
+        "记忆"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-cognitive-02",
+      "category": "cognitive",
+      "title": "辅助 Te · 外倾思维",
+      "content": "把经验落地为标准化流程，让一切有据可依。",
+      "tags": [
+        "Te",
+        "标准化"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-strength-01",
+      "category": "strength",
+      "title": "执行力强",
+      "content": "交办的事情会从头到尾跟到底，闭环能力是稀缺品质。",
+      "tags": [
+        "执行",
+        "闭环"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-strength-02",
+      "category": "strength",
+      "title": "细致可靠",
+      "content": "对细节的敏感度高，能在别人忽略的地方发现问题，是团队的隐形质量官。",
+      "tags": [
+        "细致",
+        "发现"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-strength-03",
+      "category": "strength",
+      "title": "长期稳定",
+      "content": "不轻易跳槽、不轻易改变立场，是团队里的稳定锚点。",
+      "tags": [
+        "稳定",
+        "锚点"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-weakness-01",
+      "category": "weakness",
+      "title": "抗拒变化",
+      "content": "对『推翻重来』『新方案』本能抗拒，哪怕新方案明显更优。",
+      "tags": [
+        "抗拒",
+        "变化"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-weakness-02",
+      "category": "weakness",
+      "title": "不善表达情感",
+      "content": "做了很多但说很少，对方常感觉不到被爱，需要练习把做的事说出口。",
+      "tags": [
+        "表达",
+        "情感"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-weakness-03",
+      "category": "weakness",
+      "title": "过于照章办事",
+      "content": "在需要变通和创新的场合反应慢，被认为死板。",
+      "tags": [
+        "变通",
+        "死板"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-career-01",
+      "category": "career",
+      "title": "财务 / 审计 / 法务类",
+      "content": "如会计、审计、合规；需要细致、稳定、按规则执行。",
+      "tags": [
+        "财务",
+        "合规"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-career-02",
+      "category": "career",
+      "title": "运营 / 行政管理类",
+      "content": "如行政主管、运营经理；适合在稳定结构里把日常事务管得井井有条。",
+      "tags": [
+        "运营",
+        "管理"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-relationship-01",
+      "category": "relationship",
+      "title": "长期稳定型伴侣",
+      "content": "ISTJ 不是浪漫型而是陪伴型，能把『我爱你』转化为 30 年的早餐和账单按时付清。",
+      "tags": [
+        "稳定",
+        "长期"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ISTJ-faq-public-speaking",
+      "category": "faq",
+      "title": "当众演讲/发言",
+      "content": "作为 ISTJ，通常会提前背熟逐字稿并演练至少五遍。紧张来自『怕出错』——把可能出错的点全列出来应对：忘词怎么办、设备故障怎么办、被提问答不上怎么办，能大幅降低焦虑。长期看，这是 ISTJ 区别于他人的可靠感来源。——ISTJ 第一反应是按流程办，承认这一本能后能减少冲突。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "public-speaking"
+    },
+    {
+      "id": "ISTJ-faq-conflict",
+      "category": "faq",
+      "title": "人际冲突处理",
+      "content": "作为 ISTJ，会本能用道理回应冲突，但对方要的是情绪认领。先回应情绪再讲道理，效率反而翻倍：先说『你生气是合理的』，再讲事实。——ISTJ 第一反应是按流程办，承认这一本能后能减少冲突。短期内会显得慢，长期看是 ISTJ 最稳的底色。——ISTJ 的本能是先完善再交，给自己设硬截止日能减少拖延。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "conflict"
+    },
+    {
+      "id": "ISTJ-faq-deadline",
+      "category": "faq",
+      "title": "截止日期赶工",
+      "content": "作为 ISTJ，通常把 DDL 任务拆成甘特图逐项打勾。这是优势，但别让完美排序成为不开工的借口——卡在『再优化一下计划』上比没计划更糟糕。短期内会显得慢，长期看是 ISTJ 最稳的底色。——ISTJ 的本能是先完善再交，给自己设硬截止日能减少拖延。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "deadline"
+    },
+    {
+      "id": "ISTJ-faq-breakup",
+      "category": "faq",
+      "title": "分手后的调整",
+      "content": "作为 ISTJ，会按部就班恢复：清理东西、调整作息、回工作。看似冷静，其实是用规律压住情绪，给自己消化时间——秩序是他疗愈的方式。——ISTJ 的本能是先完善再交，给自己设硬截止日能减少拖延。长期看，这是 ISTJ 区别于他人的可靠感来源。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "breakup"
+    },
+    {
+      "id": "ISTJ-faq-criticism",
+      "category": "faq",
+      "title": "被批评/被否定",
+      "content": "作为 ISTJ，会当场认账但回家反复想。承认对方说的对≠承认自己不行，把这两者分开，否则会陷入『我永远不够好』的内耗。长期看，这是 ISTJ 区别于他人的可靠感来源。——ISTJ 第一反应是按流程办，承认这一本能后能减少冲突。短期内会显得慢，长期看是 ISTJ 最稳的底色。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "criticism"
+    },
+    {
+      "id": "ISTJ-faq-alone-weekend",
+      "category": "faq",
+      "title": "一个人过周末",
+      "content": "作为 ISTJ，独处按 checklist 过得充实。允许自己偶尔打破 checklist 也算『休息』——周末有一天什么都不做，不是浪费时间是充电。——ISTJ 第一反应是按流程办，承认这一本能后能减少冲突。短期内会显得慢，长期看是 ISTJ 最稳的底色。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "alone-weekend"
+    },
+    {
+      "id": "ISTJ-faq-new-job",
+      "category": "faq",
+      "title": "入职新岗位",
+      "content": "作为 ISTJ，会本能想补全新公司的流程。可以做但不能越权：以『建议』姿态提出而非替别人建章立制，否则会被暗里挡。短期内会显得慢，长期看是 ISTJ 最稳的底色。——ISTJ 的本能是先完善再交，给自己设硬截止日能减少拖延。长期看，这是 ISTJ 区别于他人的可靠感来源。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "new-job"
+    },
+    {
+      "id": "ISTJ-faq-decision",
+      "category": "faq",
+      "title": "重大抉择",
+      "content": "作为 ISTJ，会按过往惯例选最稳的方案。但有些节点就是需要跳出惯例，每 5 年留一次『破例预算』，是健康的——不破例的人生会在某个节点卡住。——ISTJ 的本能是先完善再交，给自己设硬截止日能减少拖延。长期看，这是 ISTJ 区别于他人的可靠感来源。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "decision"
+    },
+    {
+      "id": "ISTJ-faq-social-drain",
+      "category": "faq",
+      "title": "社交后疲惫恢复",
+      "content": "作为 ISTJ，社交是高消耗行为特别是高密度场合。提前规划恢复时间，是对自己负责——社交不是义务，是需要管理成本的活动。长期看，这是 ISTJ 区别于他人的可靠感来源。——ISTJ 第一反应是按流程办，承认这一本能后能减少冲突。短期内会显得慢，长期看是 ISTJ 最稳的底色。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "social-drain"
+    },
+    {
+      "id": "ISTJ-faq-teamwork",
+      "category": "faq",
+      "title": "团队协作分歧",
+      "content": "作为 ISTJ 面对不停变的方向会本能抗拒。先把『今天必须交付什么』和『未来可以再讨论什么』分开，能减少摩擦——别把所有方向变化都当成对你的否定。——ISTJ 第一反应是按流程办，承认这一本能后能减少冲突。短期内会显得慢，长期看是 ISTJ 最稳的底色。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "teamwork"
+    }
+  ]
+}

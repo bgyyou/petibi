@@ -1,0 +1,15 @@
+# 【文件说明】electron-builder 打包配置：产出 Windows NSIS 安装包到 release/（红线 R1）
+appId: com.petibi.app
+productName: Petibi
+directories:
+  output: release
+# 只打包 electron-vite 的构建产物（out/main、out/preload、out/renderer）
+files:
+  - out/**
+win:
+  target: nsis
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  shortcutName: Petibi

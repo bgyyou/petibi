@@ -1,0 +1,281 @@
+{
+  "personality": "ENTJ",
+  "animal": "狮子",
+  "family": "analyst",
+  "entries": [
+    {
+      "id": "ENTJ-trait-01",
+      "category": "trait",
+      "title": "天生指挥官气质",
+      "content": "进入任何群体都会下意识判断『谁在主导、谁是关键路径、我该怎么介入』。不一定要当头，但思维已经按指挥模式运转，第一反应是统筹而非跟随。在承担领导角色时最自然，在被领导时容易憋屈。",
+      "tags": [
+        "主导",
+        "指挥"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-trait-02",
+      "category": "trait",
+      "title": "目标至上",
+      "content": "所有行动先问『这是否推进目标』。无意义的流程、客套、慢讨论会被直接跳过，效率是他衡量一切行动的第一把尺。短期相处觉得直接，长期相处能感到担当。决策失误时会自己扛，不甩锅。",
+      "tags": [
+        "目标",
+        "效率"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-trait-03",
+      "category": "trait",
+      "title": "决断且自信",
+      "content": "判断一旦做出就承担后果，不怕为决定买单。不喜欢把决定悬着拖累团队，宁可快错也不要慢对。决策失误时会自己扛，不甩锅。对他人期望高，常被误解为强势。在承担领导角色时最自然，在被领导时容易憋屈。",
+      "tags": [
+        "决断",
+        "担当"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-trait-04",
+      "category": "trait",
+      "title": "真诚粗暴",
+      "content": "说话直接到近乎粗鲁，不绕弯子。对很多人是优点，对敏感者是雷区——自己常意识不到对方已经受伤。对他人期望高，常被误解为强势。在承担领导角色时最自然，在被领导时容易憋屈。",
+      "tags": [
+        "直接",
+        "粗暴"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-cognitive-01",
+      "category": "cognitive",
+      "title": "主导 Te · 外倾思维",
+      "content": "一切用结果说话：能交付就继续，不能就换人/换方案。高效决策是肌肉记忆。",
+      "tags": [
+        "Te",
+        "效率"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-cognitive-02",
+      "category": "cognitive",
+      "title": "辅助 Ni · 内倾直觉",
+      "content": "看长期方向的能力极强，能从一团乱麻里抽出一条主线，并把短期资源对齐到这条主线。",
+      "tags": [
+        "Ni",
+        "远见"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-strength-01",
+      "category": "strength",
+      "title": "强组织力",
+      "content": "能把愿景拆成可执行计划，明确分工、deadline、验收标准，让团队跑得像一台机器。",
+      "tags": [
+        "组织",
+        "执行"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-strength-02",
+      "category": "strength",
+      "title": "快速决策",
+      "content": "在信息不全时仍能拍板，并承担结果。市场窗口稍纵即逝时，这是决定性优势。",
+      "tags": [
+        "决策",
+        "担当"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-strength-03",
+      "category": "strength",
+      "title": "战略格局",
+      "content": "不止看一城一池，更关心整个棋盘的格局，能识别值得长期投入的核心战场。",
+      "tags": [
+        "战略",
+        "格局"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-weakness-01",
+      "category": "weakness",
+      "title": "不容软弱",
+      "content": "对『还不够好』的容忍度低，容易在无意间否定还在努力但尚未达标的人。",
+      "tags": [
+        "高压",
+        "冷酷"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-weakness-02",
+      "category": "weakness",
+      "title": "忽略情绪成本",
+      "content": "觉得『把事做好』就是最大的善意，看不见背后的情绪摩擦，长期会让团队疲倦。",
+      "tags": [
+        "情感盲区"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-weakness-03",
+      "category": "weakness",
+      "title": "控制欲",
+      "content": "倾向把所有事抓在手里，对下属的『做得不够好』缺乏耐心。容易让自己累死、把人逼走。",
+      "tags": [
+        "控制",
+        "放手"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-career-01",
+      "category": "career",
+      "title": "管理 / 创业类岗位",
+      "content": "如 CEO、业务负责人、运营总监；需要统筹资源、定方向、带团队冲向目标。",
+      "tags": [
+        "管理",
+        "创业"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-career-02",
+      "category": "career",
+      "title": "战略咨询 / 投行类岗位",
+      "content": "如战略顾问、投资经理；偏好高压决策、长期视野、不怕为判断买单。",
+      "tags": [
+        "战略",
+        "金融"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-relationship-01",
+      "category": "relationship",
+      "title": "对等成长的伙伴关系",
+      "content": "ENTJ 不会满足于单纯的陪伴关系，会下意识把对方也拉到『共同成长』的轨道上。需要对方能跟上节奏，并主动表达被需要的部分。",
+      "tags": [
+        "对等",
+        "成长"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTJ-faq-public-speaking",
+      "category": "faq",
+      "title": "当众演讲/发言",
+      "content": "作为 ENTJ，通常不会紧张——紧张源于『我可能控制不住场面』。ENTJ 一上台就自然接管节奏：先扫一眼全场确立气场，再抛出结构化内容压住场面，把演讲当作一次微型的指挥演练。长期看，这是从『自己强』走向『团队强』的关键。——ENTJ 第一反应是定方向，定下方向才有安全感。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "public-speaking"
+    },
+    {
+      "id": "ENTJ-faq-conflict",
+      "category": "faq",
+      "title": "人际冲突处理",
+      "content": "作为 ENTJ，通常会当面把问题摊开不留模糊地带。但要注意语气：同样的话用『我观察到』开头，对方接受度比『你总是』高三倍，冲突的损耗能下降一大半。——ENTJ 第一反应是定方向，定下方向才有安全感。短期内会觉得慢，长期看是在为执行力留余量。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "conflict"
+    },
+    {
+      "id": "ENTJ-faq-deadline",
+      "category": "faq",
+      "title": "截止日期赶工",
+      "content": "作为 ENTJ，遇到团队进度赶不上会立刻重排优先级——砍任务、加人、加班、并行。短期有效，长期容易把团队用废，要留 10% 余量做恢复，否则下个季度的 DDL 没人扛得住。短期内会觉得慢，长期看是在为执行力留余量。——ENTJ 的本能是接管一切，要刻意练习放权。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "deadline"
+    },
+    {
+      "id": "ENTJ-faq-breakup",
+      "category": "faq",
+      "title": "分手后的调整",
+      "content": "作为 ENTJ，处理分手的方式是快速切下一段——不是因为无情，而是用『下一段的成功』证明自己没被击垮。这种方式短期提效，长期可能没消化完就进入新关系，给下段埋雷。——ENTJ 的本能是接管一切，要刻意练习放权。长期看，这是从『自己强』走向『团队强』的关键。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "breakup"
+    },
+    {
+      "id": "ENTJ-faq-criticism",
+      "category": "faq",
+      "title": "被批评/被否定",
+      "content": "作为 ENTJ，被更高层当面否定方案时会忍住当场反驳，会后拿数据再约一次一对一讨论。要避免把反驳当面子问题——对方否定方案，不是否定你这个人，区分清楚才能保留修正空间。长期看，这是从『自己强』走向『团队强』的关键。——ENTJ 第一反应是定方向，定下方向才有安全感。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "criticism"
+    },
+    {
+      "id": "ENTJ-faq-new-job",
+      "category": "faq",
+      "title": "入职新岗位",
+      "content": "作为 ENTJ 到新公司，会发现流程慢得令人窒息。先做两件事：摸清楚现有流程背后是谁的利益，识别哪些可以改、哪些不能动。贸然推反而会被暗里挡，节奏感比改革口号重要。——ENTJ 第一反应是定方向，定下方向才有安全感。短期内会觉得慢，长期看是在为执行力留余量。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "new-job"
+    },
+    {
+      "id": "ENTJ-faq-decision",
+      "category": "faq",
+      "title": "重大抉择",
+      "content": "作为 ENTJ，犹豫通常不是因为信息不够，而是因为情绪成本被低估了。把情感成本也写进决策矩阵（家庭、健康、关系），权重给够反而能拍板。短期内会觉得慢，长期看是在为执行力留余量。——ENTJ 的本能是接管一切，要刻意练习放权。长期看，这是从『自己强』走向『团队强』的关键。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "decision"
+    },
+    {
+      "id": "ENTJ-faq-social-drain",
+      "category": "faq",
+      "title": "社交后疲惫恢复",
+      "content": "作为 ENTJ，社交本身是能量源而非消耗品——但前提是话题能推进目标。纯闲聊、低信息量聚会也会耗电，要有选择地参加而不是来者不拒。——ENTJ 的本能是接管一切，要刻意练习放权。长期看，这是从『自己强』走向『团队强』的关键。——ENTJ 第一反应是定方向，定下方向才有安全感。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "social-drain"
+    },
+    {
+      "id": "ENTJ-faq-family-pressure",
+      "category": "faq",
+      "title": "家庭压力（催婚/催生）",
+      "content": "作为 ENTJ 面对家庭催婚催生，会本能想用『我有自己的节奏』回应，但常被理解为冷漠。先承认对方的关心，再讲自己的安排，能把对抗变成对话，比硬顶有效得多。长期看，这是从『自己强』走向『团队强』的关键。——ENTJ 第一反应是定方向，定下方向才有安全感。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "family-pressure"
+    },
+    {
+      "id": "ENTJ-faq-leading-team",
+      "category": "faq",
+      "title": "带团队/管下属",
+      "content": "作为 ENTJ 带团队，最容易掉的坑是『我自己干比教别人快』。短期确实，长期会把自己累死。建议：把每个任务当作培训机会，让下属在做中学，比替他做完然后换下一个更可持续。——ENTJ 第一反应是定方向，定下方向才有安全感。短期内会觉得慢，长期看是在为执行力留余量。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "leading-team"
+    },
+    {
+      "id": "ENTJ-faq-teamwork",
+      "category": "faq",
+      "title": "团队协作摩擦",
+      "content": "作为 ENTJ，对反复拖进度的人耐心天然偏低——会先把责任按 RACI 矩阵落到纸面上，让对方对『负责』二字没有解释空间。私下 1:1 给一个 30 天改进窗口并形成记录，到期未达标的直接走 HR 或上级通道，不在低效关系里消耗自己。把功劳和责任都摊清楚，是 ENTJ 守住团队节奏的本能。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "teamwork"
+    }
+  ]
+}

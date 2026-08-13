@@ -1,0 +1,272 @@
+{
+  "personality": "ENTP",
+  "animal": "狐狸",
+  "family": "analyst",
+  "entries": [
+    {
+      "id": "ENTP-trait-01",
+      "category": "trait",
+      "title": "脑洞永动机",
+      "content": "任何一个点子都能被他接到三个新方向上，5 分钟能产生 20 个 idea，但落地比例往往不高。脑里的项目永远比手上的多。新点子冒得比旧点子完结得快。兴趣阈值高，无聊是最大的敌人。",
+      "tags": [
+        "创意",
+        "发散"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-trait-02",
+      "category": "trait",
+      "title": "辩论成瘾",
+      "content": "不是为了赢，而是享受思维碰撞。会主动站在反方替你说话，帮你把方案打补丁，是天然的反方陪练。兴趣阈值高，无聊是最大的敌人。辩论是 ENTP 表达兴趣的方式。在不确定环境里最兴奋。",
+      "tags": [
+        "辩论",
+        "思辨"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-trait-03",
+      "category": "trait",
+      "title": "规则解构者",
+      "content": "看到规则第一反应是『为什么必须这样』『还有别的玩法吗』。适合破局，不适合守成，是组织里的破局角色。辩论是 ENTP 表达兴趣的方式。在不确定环境里最兴奋。新点子冒得比旧点子完结得快。",
+      "tags": [
+        "解构",
+        "破局"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-trait-04",
+      "category": "trait",
+      "title": "兴趣驱动型",
+      "content": "可以一周连轴转研究一个新领域，半个月后兴趣转移到下一个，前一个就停在 80%。常被认为不专一，其实是好奇心太强。在不确定环境里最兴奋。新点子冒得比旧点子完结得快。",
+      "tags": [
+        "好奇",
+        "跳跃"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-cognitive-01",
+      "category": "cognitive",
+      "title": "主导 Ne · 外倾直觉",
+      "content": "脑里同时开多条线，看到任何事物都能连接到六七个不相关的概念。创意密度极高但需要 Ti 收口。",
+      "tags": [
+        "Ne",
+        "发散"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-cognitive-02",
+      "category": "cognitive",
+      "title": "辅助 Ti · 内倾思维",
+      "content": "在看似跳跃的 idea 背后有一根隐藏的逻辑线，把 idea 串成体系。逻辑链不闭合之前，不会轻易动手。",
+      "tags": [
+        "Ti",
+        "逻辑"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-strength-01",
+      "category": "strength",
+      "title": "创造力爆发",
+      "content": "需要新方案的场合（产品策划、创意提案、破局），能快速给出多个非主流角度。",
+      "tags": [
+        "创意",
+        "破局"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-strength-02",
+      "category": "strength",
+      "title": "学习速度快",
+      "content": "对新领域能在几天内抓到核心框架，常担任团队里的『跨领域翻译机』。",
+      "tags": [
+        "学习",
+        "迁移"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-strength-03",
+      "category": "strength",
+      "title": "抗压乐观",
+      "content": "面对挫折的恢复速度极强，把失败当数据点而不是身份事件，能带团队在不确定里前进。",
+      "tags": [
+        "乐观",
+        "抗压"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-weakness-01",
+      "category": "weakness",
+      "title": "细节杀手",
+      "content": "对宏观有趣、对细节无感，把项目从 80% 推到 100% 的工作最让他痛苦。",
+      "tags": [
+        "细节",
+        "收尾"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-weakness-02",
+      "category": "weakness",
+      "title": "承诺打折",
+      "content": "答应时真心，做的时候发现更好玩的事，承诺就自动降级，需要被监督。",
+      "tags": [
+        "承诺",
+        "分散"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-weakness-03",
+      "category": "weakness",
+      "title": "辩论过头",
+      "content": "为了好玩跟伴侣/上司也辩论，对方会被激怒，要分清『这是思考练习』还是『这是真实冲突』。",
+      "tags": [
+        "辩论",
+        "边界"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-career-01",
+      "category": "career",
+      "title": "产品 / 创业类岗位",
+      "content": "如产品经理、连续创业者；需要快速试错、跨领域连接、不怕推翻重来。",
+      "tags": [
+        "产品",
+        "创业"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-career-02",
+      "category": "career",
+      "title": "创意 / 战略类岗位",
+      "content": "如品牌策划、投资分析师；偏好不确定环境，能从混沌中找模式。",
+      "tags": [
+        "创意",
+        "战略"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-relationship-01",
+      "category": "relationship",
+      "title": "需要智识刺激的伴侣",
+      "content": "ENTP 对无聊的容忍度极低，能长期走下去的伴侣必须有独立思想、能交锋、还能在争论后一起吃饭。",
+      "tags": [
+        "智识",
+        "交锋"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENTP-faq-public-speaking",
+      "category": "faq",
+      "title": "当众演讲/发言",
+      "content": "作为 ENTP，通常一开口就沉浸在想法里，时间和结构都飞了。准备阶段要硬性规定三个核心点和严格时长，并请人卡表——不然一小时的演讲能在 5 分钟跑完三个点。长期看，把能量收口到 1-2 件事上能放大成果。——ENTP 第一反应是找反方论据，看到反方才安心。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "public-speaking"
+    },
+    {
+      "id": "ENTP-faq-conflict",
+      "category": "faq",
+      "title": "人际冲突处理",
+      "content": "作为 ENTP，会把冲突当辩论赛继续推，不知道什么时候已经触底。要练习读『对方已经不是在辩论而是在被攻击』的信号，适时刹车，否则赢了道理输了关系。——ENTP 第一反应是找反方论据，看到反方才安心。短期内会显得冲动，长期看是 ENTP 的创意引擎。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "conflict"
+    },
+    {
+      "id": "ENTP-faq-deadline",
+      "category": "faq",
+      "title": "截止日期赶工",
+      "content": "作为 ENTP，会在 DDL 前突然冒出『新方案可能更好』的念头，结果两头空。规则：DDL 前 48 小时进入锁定模式，只收尾不创新，把新点子写在 backlog 里下次再说。短期内会显得冲动，长期看是 ENTP 的创意引擎。——ENTP 的本能是先试再优化，承认这一本能后能少踩坑。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "deadline"
+    },
+    {
+      "id": "ENTP-faq-breakup",
+      "category": "faq",
+      "title": "分手后的调整",
+      "content": "作为 ENTP，会把分手当 chapter close，半年内可能进入新关系。问题不是太快进入，而是没消化上段就给下段埋雷——把上一段写成复盘文档是健康的方式。——ENTP 的本能是先试再优化，承认这一本能后能少踩坑。长期看，把能量收口到 1-2 件事上能放大成果。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "breakup"
+    },
+    {
+      "id": "ENTP-faq-criticism",
+      "category": "faq",
+      "title": "被批评/被否定",
+      "content": "作为 ENTP，被批评时第一反应是找反驳论据，哪怕对方说的对。可以试试 24 小时冷静期规则：先不回应，回完再说，多数时候会发现对方的批评其实有道理。长期看，把能量收口到 1-2 件事上能放大成果。——ENTP 第一反应是找反方论据，看到反方才安心。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "criticism"
+    },
+    {
+      "id": "ENTP-faq-decision",
+      "category": "faq",
+      "title": "重大抉择",
+      "content": "作为 ENTP，会觉得选 A 就关上了 B 的门。现实是：成年人选 A 是为了在 A 上拿到足够深的东西，B 没你想的那么可惜。深度比宽度更稀缺。——ENTP 第一反应是找反方论据，看到反方才安心。短期内会显得冲动，长期看是 ENTP 的创意引擎。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "decision"
+    },
+    {
+      "id": "ENTP-faq-social-drain",
+      "category": "faq",
+      "title": "社交后疲惫恢复",
+      "content": "作为 ENTP 本身是社交能量源型，但前提是话题能刺激脑。重复寒暄、纯酒局一样耗电，要选择脑力型社交，而不是来者不拒。短期内会显得冲动，长期看是 ENTP 的创意引擎。——ENTP 的本能是先试再优化，承认这一本能后能少踩坑。长期看，把能量收口到 1-2 件事上能放大成果。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "social-drain"
+    },
+    {
+      "id": "ENTP-faq-teamwork",
+      "category": "faq",
+      "title": "团队协作分歧",
+      "content": "作为 ENTP，会本能抗拒死板流程。先认清：流程是给团队用的不是给个人用的，你可以选择性遵守或提出修改建议，而不是消极抵触——后者浪费的是自己的心力。——ENTP 的本能是先试再优化，承认这一本能后能少踩坑。长期看，把能量收口到 1-2 件事上能放大成果。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "teamwork"
+    },
+    {
+      "id": "ENTP-faq-creative-block",
+      "category": "faq",
+      "title": "创作瓶颈/卡壳",
+      "content": "作为 ENTP 遇到创作瓶颈，最差的方式是死磕同一个题目。换题目往往是最快突破：先做点完全不相关的兴趣项目，过两天再回来，原来的卡点常常自动解开。长期看，把能量收口到 1-2 件事上能放大成果。——ENTP 第一反应是找反方论据，看到反方才安心。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "creative-block"
+    },
+    {
+      "id": "ENTP-faq-relocation",
+      "category": "faq",
+      "title": "搬家/换城市",
+      "content": "作为 ENTP 搬去新城市，前三个月兴奋度爆棚，之后会痒。想区分『真的不合适』还是『新鲜感阈值到了』，后者换地方也救不了——可以先把生活半径、社交圈按月建设，给自己 6 个月再判断。——ENTP 第一反应是找反方论据，看到反方才安心。短期内会显得冲动，长期看是 ENTP 的创意引擎。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "relocation"
+    }
+  ]
+}

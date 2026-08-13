@@ -1,0 +1,118 @@
+{
+  "version": "1.0",
+  "scenarios_file": "scenarios.md",
+  "personalities": [
+    {
+      "personality": "INTJ",
+      "animal": "猫头鹰",
+      "family": "analyst",
+      "entry_count": 26,
+      "file": "intj.json"
+    },
+    {
+      "personality": "INTP",
+      "animal": "猫",
+      "family": "analyst",
+      "entry_count": 25,
+      "file": "intp.json"
+    },
+    {
+      "personality": "ENTJ",
+      "animal": "狮子",
+      "family": "analyst",
+      "entry_count": 26,
+      "file": "entj.json"
+    },
+    {
+      "personality": "ENTP",
+      "animal": "狐狸",
+      "family": "analyst",
+      "entry_count": 25,
+      "file": "entp.json"
+    },
+    {
+      "personality": "INFJ",
+      "animal": "天鹅",
+      "family": "diplomat",
+      "entry_count": 26,
+      "file": "infj.json"
+    },
+    {
+      "personality": "INFP",
+      "animal": "蝴蝶",
+      "family": "diplomat",
+      "entry_count": 26,
+      "file": "infp.json"
+    },
+    {
+      "personality": "ENFJ",
+      "animal": "金毛",
+      "family": "diplomat",
+      "entry_count": 26,
+      "file": "enfj.json"
+    },
+    {
+      "personality": "ENFP",
+      "animal": "海豚",
+      "family": "diplomat",
+      "entry_count": 26,
+      "file": "enfp.json"
+    },
+    {
+      "personality": "ISTJ",
+      "animal": "海狸",
+      "family": "sentinel",
+      "entry_count": 25,
+      "file": "istj.json"
+    },
+    {
+      "personality": "ISFJ",
+      "animal": "企鹅",
+      "family": "sentinel",
+      "entry_count": 26,
+      "file": "isfj.json"
+    },
+    {
+      "personality": "ESTJ",
+      "animal": "熊",
+      "family": "sentinel",
+      "entry_count": 25,
+      "file": "estj.json"
+    },
+    {
+      "personality": "ESFJ",
+      "animal": "大象",
+      "family": "sentinel",
+      "entry_count": 26,
+      "file": "esfj.json"
+    },
+    {
+      "personality": "ISTP",
+      "animal": "豹",
+      "family": "explorer",
+      "entry_count": 25,
+      "file": "istp.json"
+    },
+    {
+      "personality": "ISFP",
+      "animal": "卡皮巴拉",
+      "family": "explorer",
+      "entry_count": 26,
+      "file": "isfp.json"
+    },
+    {
+      "personality": "ESTP",
+      "animal": "猴子",
+      "family": "explorer",
+      "entry_count": 26,
+      "file": "estp.json"
+    },
+    {
+      "personality": "ESFP",
+      "animal": "鹦鹉",
+      "family": "explorer",
+      "entry_count": 26,
+      "file": "esfp.json"
+    }
+  ]
+}

@@ -1,0 +1,282 @@
+{
+  "personality": "ENFJ",
+  "animal": "金毛",
+  "family": "diplomat",
+  "entries": [
+    {
+      "id": "ENFJ-trait-01",
+      "category": "trait",
+      "title": "天生的照顾者",
+      "content": "进入任何场合都会下意识关注『谁需要帮助、谁被忽略』。金毛气质名副其实，是天然的暖场人。在照顾他人的过程中获得能量。对情绪氛围极敏感，能先他人一步察觉。被人需要时会更有动力。",
+      "tags": [
+        "照顾",
+        "关注"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-trait-02",
+      "category": "trait",
+      "title": "高度社交敏感",
+      "content": "能精准感知群体氛围的变化，是天然的气氛调和者，能在他人还没意识到时先察觉到不对。对情绪氛围极敏感，能先他人一步察觉。被人需要时会更有动力。不擅长拒绝，需要刻意练习。",
+      "tags": [
+        "社交",
+        "氛围"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-trait-03",
+      "category": "trait",
+      "title": "责任感强",
+      "content": "答应了别人的事会尽全力完成，宁可自己累也不愿失信。是朋友圈里最值得托付的人。被人需要时会更有动力。不擅长拒绝，需要刻意练习。在照顾他人的过程中获得能量。对情绪氛围极敏感，能先他人一步察觉。",
+      "tags": [
+        "责任",
+        "守信"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-trait-04",
+      "category": "trait",
+      "title": "自我牺牲倾向",
+      "content": "容易把别人的需求放在自己的前面，长期会把自己耗空。需要刻意练习『先照顾自己』。不擅长拒绝，需要刻意练习。在照顾他人的过程中获得能量。对情绪氛围极敏感，能先他人一步察觉。",
+      "tags": [
+        "牺牲",
+        "取悦"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-cognitive-01",
+      "category": "cognitive",
+      "title": "主导 Fe · 外倾情感",
+      "content": "天然以他人情绪为决策坐标，能在群体里快速协调不同人的需求。",
+      "tags": [
+        "Fe",
+        "协调"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-cognitive-02",
+      "category": "cognitive",
+      "title": "辅助 Ni · 内倾直觉",
+      "content": "在照顾当下之余，能看见人和事的长远走向。常被形容为『直觉很强的 leader』。",
+      "tags": [
+        "Ni",
+        "远见"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-strength-01",
+      "category": "strength",
+      "title": "人际协调力",
+      "content": "能在团队冲突中找出各方都能接受的方案，是稀缺的『黏合剂』角色。",
+      "tags": [
+        "协调",
+        "黏合"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-strength-02",
+      "category": "strength",
+      "title": "激励他人",
+      "content": "能精准看见每个人的潜力，并能用对方听得进的话推一把，是天生的教练。",
+      "tags": [
+        "激励",
+        "看见"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-strength-03",
+      "category": "strength",
+      "title": "组织与执行",
+      "content": "擅长把愿景变成大家愿意参与的具体计划并跟进落地，能让团队愿意跟你干。",
+      "tags": [
+        "组织",
+        "执行"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-weakness-01",
+      "category": "weakness",
+      "title": "过度卷入",
+      "content": "对别人的问题过度共情，承担不属于自己的责任，是被消耗的最大原因。",
+      "tags": [
+        "卷入",
+        "边界"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-weakness-02",
+      "category": "weakness",
+      "title": "回避冲突",
+      "content": "为了维护和谐不愿直面冲突，长期会积累隐性怨恨。",
+      "tags": [
+        "回避",
+        "压抑"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-weakness-03",
+      "category": "weakness",
+      "title": "自我认同依赖外界",
+      "content": "容易把『他人是否需要我』当成自我价值感来源，要建立内生的价值感锚点。",
+      "tags": [
+        "依赖",
+        "价值"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-career-01",
+      "category": "career",
+      "title": "教育 / 培训类岗位",
+      "content": "如教师、培训师、HR；适合一对多引导成长，能让别人在你手上变好。",
+      "tags": [
+        "教育",
+        "培训"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-career-02",
+      "category": "career",
+      "title": "管理 / 公共关系类",
+      "content": "如团队 leader、公关、非营利组织负责人；适合协调多方资源达成共同目标。",
+      "tags": [
+        "管理",
+        "公关"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-relationship-01",
+      "category": "relationship",
+      "title": "深度陪伴 + 共同成长",
+      "content": "ENFJ 既要情感陪伴也要共同成长，会下意识把对方拉进自己关心的成长议题里。需要对方能接受这种被拉动的节奏。",
+      "tags": [
+        "陪伴",
+        "成长"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ENFJ-faq-public-speaking",
+      "category": "faq",
+      "title": "当众演讲/发言",
+      "content": "作为 ENFJ，会把大家的反应当作『我讲得不够好』的证据反复反刍。要承认：演讲效果不全由你决定，听众当下的状态占一半。长期看，照顾好自己才能持续照顾别人。——ENFJ 第一反应是先安抚别人，承认这一本能后才能守住边界。短期内会委屈，长期看是 ENFJ 最强的同理心。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "public-speaking"
+    },
+    {
+      "id": "ENFJ-faq-conflict",
+      "category": "faq",
+      "title": "人际冲突处理",
+      "content": "作为 ENFJ，会本能先道歉让对方消气，但委屈没出口。长期会变成隐性怨恨——要练习在道歉之后补一句『但我也想说的是……』，冲突的损耗能下降一大半。——ENFJ 第一反应是先安抚别人，承认这一本能后才能守住边界。短期内会委屈，长期看是 ENFJ 最强的同理心。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "conflict"
+    },
+    {
+      "id": "ENFJ-faq-deadline",
+      "category": "faq",
+      "title": "截止日期赶工",
+      "content": "作为 ENFJ，会在团队 DDL 前主动揽活儿，最后耽误自己的工作。设立『我自己的 DDL 优先』的硬规则，不是自私是必要，否则你累垮了团队也没人顶。短期内会委屈，长期看是 ENFJ 最强的同理心。——ENFJ 的本能是揽活儿，刻意练习『我先做自己那份』是关键。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "deadline"
+    },
+    {
+      "id": "ENFJ-faq-breakup",
+      "category": "faq",
+      "title": "分手后的调整",
+      "content": "作为 ENFJ，分手后第一反应是担心对方能不能过好。要承认：分手后对方的生活不再由你负责，专注自己才是健康的——你的关心如果对方没领情，反而是负担。——ENFJ 的本能是揽活儿，刻意练习『我先做自己那份』是关键。长期看，照顾好自己才能持续照顾别人。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "breakup"
+    },
+    {
+      "id": "ENFJ-faq-criticism",
+      "category": "faq",
+      "title": "被批评/被否定",
+      "content": "作为 ENFJ，会先想『是不是我哪里做得不够好』。要练习：批评里 50% 是对方的投射，先停 24 小时再回应，能避免很多不必要的自责。长期看，照顾好自己才能持续照顾别人。——ENFJ 第一反应是先安抚别人，承认这一本能后才能守住边界。短期内会委屈，长期看是 ENFJ 最强的同理心。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "criticism"
+    },
+    {
+      "id": "ENFJ-faq-alone-weekend",
+      "category": "faq",
+      "title": "一个人过周末",
+      "content": "作为 ENFJ，独处时容易觉得『我是不是该去看看谁』，结果又累。允许自己『纯休息』也是一种能力——每周至少给自己 4 小时完全不被任何人需要的时间。——ENFJ 第一反应是先安抚别人，承认这一本能后才能守住边界。短期内会委屈，长期看是 ENFJ 最强的同理心。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "alone-weekend"
+    },
+    {
+      "id": "ENFJ-faq-new-job",
+      "category": "faq",
+      "title": "入职新岗位",
+      "content": "作为 ENFJ，会把融入新团队当成自己的 KPI，焦虑过度。先认清：融入需要时间，前三个月慢一点是正常的，不要强求自己第一周就跟所有人熟络。短期内会委屈，长期看是 ENFJ 最强的同理心。——ENFJ 的本能是揽活儿，刻意练习『我先做自己那份』是关键。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "new-job"
+    },
+    {
+      "id": "ENFJ-faq-decision",
+      "category": "faq",
+      "title": "重大抉择",
+      "content": "作为 ENFJ，会陷入『每个人都不受伤的最优解』的幻想，结果拖到无法决策。要承认：所有重要决定都有人要承担不开心——你没办法让所有人满意。——ENFJ 的本能是揽活儿，刻意练习『我先做自己那份』是关键。长期看，照顾好自己才能持续照顾别人。——ENFJ 第一反应是先安抚别人，承认这一本能后才能守住边界。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "decision"
+    },
+    {
+      "id": "ENFJ-faq-social-drain",
+      "category": "faq",
+      "title": "社交后疲惫恢复",
+      "content": "作为 ENFJ，社交常扮演照顾者角色，结束后会感到被掏空。给自己写一份『社交后恢复清单』：独处、阅读、散步，是必要的充电机制。长期看，照顾好自己才能持续照顾别人。——ENFJ 第一反应是先安抚别人，承认这一本能后才能守住边界。短期内会委屈，长期看是 ENFJ 最强的同理心。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "social-drain"
+    },
+    {
+      "id": "ENFJ-faq-networking",
+      "category": "faq",
+      "title": "主动社交/破冰",
+      "content": "作为 ENFJ 参加社交场合，本能是主动破冰、把陌生人介绍给熟人、照顾到角落里的每一个人。优势是连接人极快，劣势是结束时会非常累——给每个活动设『我可以聊的人 ≤ 8 位』的硬规则，是可持续社交的关键。——ENFJ 第一反应是先安抚别人，承认这一本能后才能守住边界。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "networking"
+    },
+    {
+      "id": "ENFJ-faq-teamwork",
+      "category": "faq",
+      "title": "团队协作摩擦",
+      "content": "作为 ENFJ，第一反应永远是维护团队和谐，但群里被反复攻击不是和谐是失序——会私下 1:1 跟当事人聊清楚：是能力问题还是态度问题，再决定是否向上反映。把『我帮你的小忙』清单摊出来，让对方意识到这种隐形付出需要被承认，必要时把承担的任务重新分摊到其他人头上。长期看，ENFJ 必须学会温和地说不。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "teamwork"
+    }
+  ]
+}

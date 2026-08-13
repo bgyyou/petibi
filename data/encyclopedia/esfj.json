@@ -1,0 +1,282 @@
+{
+  "personality": "ESFJ",
+  "animal": "大象",
+  "family": "sentinel",
+  "entries": [
+    {
+      "id": "ESFJ-trait-01",
+      "category": "trait",
+      "title": "群体粘合剂",
+      "content": "到哪里都会主动照顾气氛、串场、把人与人连起来。大象照顾象群的画面感，是天然的社交核心。在照顾群体氛围时最有价值。被人需要会更有动力。不擅长独自决策。人际关系里非常忠诚。",
+      "tags": [
+        "群体",
+        "照顾"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-trait-02",
+      "category": "trait",
+      "title": "社交敏感",
+      "content": "能精准感知群体情绪变化，是天然的气氛调和者，能在他人还没意识到时先察觉不对。被人需要会更有动力。不擅长独自决策。人际关系里非常忠诚。在照顾群体氛围时最有价值。被人需要会更有动力。",
+      "tags": [
+        "敏感",
+        "调和"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-trait-03",
+      "category": "trait",
+      "title": "重视和谐",
+      "content": "把关系和谐放在显要位置，宁可自己让步也不愿冲突，是朋友圈里最让人相处舒服的人。不擅长独自决策。人际关系里非常忠诚。在照顾群体氛围时最有价值。被人需要会更有动力。",
+      "tags": [
+        "和谐",
+        "让步"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-trait-04",
+      "category": "trait",
+      "title": "记忆社交细节",
+      "content": "记得每个朋友的生日、喜好、家里小孩的名字，是天然的『关系管家』。人际关系里非常忠诚。在照顾群体氛围时最有价值。被人需要会更有动力。不擅长独自决策。人际关系里非常忠诚。",
+      "tags": [
+        "细节",
+        "记忆"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-cognitive-01",
+      "category": "cognitive",
+      "title": "主导 Fe · 外倾情感",
+      "content": "以群体和谐为决策坐标，擅长把不同人组织到一起做事。",
+      "tags": [
+        "Fe",
+        "组织"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-cognitive-02",
+      "category": "cognitive",
+      "title": "辅助 Si · 内倾实感",
+      "content": "依靠过往经验和事实做事，稳扎稳打。",
+      "tags": [
+        "Si",
+        "经验"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-strength-01",
+      "category": "strength",
+      "title": "人际协调力",
+      "content": "能在冲突中找出大家都能接受的方案，是稀缺的角色。",
+      "tags": [
+        "协调",
+        "调和"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-strength-02",
+      "category": "strength",
+      "title": "组织活动",
+      "content": "把一群人组织起来做一件具体的事，是天然的活动主理人。",
+      "tags": [
+        "组织",
+        "活动"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-strength-03",
+      "category": "strength",
+      "title": "关怀细致",
+      "content": "对人的关心细致到『你上次提过的那本书我买了送你』。",
+      "tags": [
+        "关怀",
+        "细致"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-weakness-01",
+      "category": "weakness",
+      "title": "过度取悦",
+      "content": "为了维护和谐不表达真实想法，长期会积怨。",
+      "tags": [
+        "取悦",
+        "积怨"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-weakness-02",
+      "category": "weakness",
+      "title": "回避冲突",
+      "content": "宁可自己让步也不愿冲突，最后可能用情绪爆发代替。",
+      "tags": [
+        "回避",
+        "爆发"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-weakness-03",
+      "category": "weakness",
+      "title": "依赖外界认可",
+      "content": "把『被需要』当成自我价值来源，健康的成长是建立内生的价值锚点。",
+      "tags": [
+        "依赖",
+        "价值"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-career-01",
+      "category": "career",
+      "title": "教育 / 公共服务类",
+      "content": "如教师、社工、HR；适合一对多关系维护。",
+      "tags": [
+        "教育",
+        "公共"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-career-02",
+      "category": "career",
+      "title": "行政 / 客户运营类",
+      "content": "如行政主管、运营经理；适合稳定结构里的人际维护。",
+      "tags": [
+        "行政",
+        "运营"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-relationship-01",
+      "category": "relationship",
+      "title": "温暖陪伴的照顾型",
+      "content": "ESFJ 会把关系经营成温暖的家，会记住每个纪念日。能走到底的伴侣是懂得珍惜和回应的。",
+      "tags": [
+        "温暖",
+        "陪伴"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "ESFJ-faq-public-speaking",
+      "category": "faq",
+      "title": "当众演讲/发言",
+      "content": "作为 ESFJ，会把大家的反应当成『我讲得不够好』的证据。要承认：演讲效果不全由你决定——听众状态、议题契合度、时机都占一半。长期看，这是 ESFJ 从取悦走向被尊重的关键。——ESFJ 第一反应是先道歉让对方好受，承认这一本能后才能表达自己。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "public-speaking"
+    },
+    {
+      "id": "ESFJ-faq-conflict",
+      "category": "faq",
+      "title": "人际冲突处理",
+      "content": "作为 ESFJ，会本能先道歉让对方消气，但委屈没出口。允许自己说『我也有不舒服的部分』，不是不善良是必要，长期压抑会让关系突然崩。——ESFJ 第一反应是先道歉让对方好受，承认这一本能后才能表达自己。短期内会委屈，长期看是 ESFJ 最深的体贴。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "conflict"
+    },
+    {
+      "id": "ESFJ-faq-deadline",
+      "category": "faq",
+      "title": "截止日期赶工",
+      "content": "作为 ESFJ，会本能揽下别人的急活儿，最后自己的活被压缩。设立『我自己的 DDL 优先』的硬规则，否则你累垮了也没人顶。短期内会委屈，长期看是 ESFJ 最深的体贴。——ESFJ 的本能是先揽活儿，设立『我先做自己那份』的硬规则。长期看，这是 ESFJ 从取悦走向被尊重的关键。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "deadline"
+    },
+    {
+      "id": "ESFJ-faq-breakup",
+      "category": "faq",
+      "title": "分手后的调整",
+      "content": "作为 ESFJ，分手后第一反应是担心对方能不能过好。要承认：分手后对方的生活不再由你负责，专注自己才是健康的。——ESFJ 的本能是先揽活儿，设立『我先做自己那份』的硬规则。长期看，这是 ESFJ 从取悦走向被尊重的关键。——ESFJ 第一反应是先道歉让对方好受，承认这一本能后才能表达自己。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "breakup"
+    },
+    {
+      "id": "ESFJ-faq-criticism",
+      "category": "faq",
+      "title": "被批评/被否定",
+      "content": "作为 ESFJ，会先想『是不是我哪里做得不够好』。要练习：批评里 50% 是对方投射，先停 24 小时再回应，能避免很多不必要的自责。长期看，这是 ESFJ 从取悦走向被尊重的关键。——ESFJ 第一反应是先道歉让对方好受，承认这一本能后才能表达自己。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "criticism"
+    },
+    {
+      "id": "ESFJ-faq-alone-weekend",
+      "category": "faq",
+      "title": "一个人过周末",
+      "content": "作为 ESFJ，独处时容易觉得『我是不是该去看看谁』，结果又累。允许自己『纯休息』也是一种能力——每周给自己 4 小时不被任何人需要的时间。——ESFJ 第一反应是先道歉让对方好受，承认这一本能后才能表达自己。短期内会委屈，长期看是 ESFJ 最深的体贴。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "alone-weekend"
+    },
+    {
+      "id": "ESFJ-faq-new-job",
+      "category": "faq",
+      "title": "入职新岗位",
+      "content": "作为 ESFJ，会把融入新团队当成自己的 KPI。先认清：融入需要时间，前三个月慢一点是正常的——不要强求自己第一周就跟所有人熟络。短期内会委屈，长期看是 ESFJ 最深的体贴。——ESFJ 的本能是先揽活儿，设立『我先做自己那份』的硬规则。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "new-job"
+    },
+    {
+      "id": "ESFJ-faq-decision",
+      "category": "faq",
+      "title": "重大抉择",
+      "content": "作为 ESFJ，会陷入『每个人都不受伤的最优解』的幻想，结果拖到无法决策。要承认：所有重要决定都有人要承担不开心——你没办法让所有人满意。——ESFJ 的本能是先揽活儿，设立『我先做自己那份』的硬规则。长期看，这是 ESFJ 从取悦走向被尊重的关键。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "decision"
+    },
+    {
+      "id": "ESFJ-faq-social-drain",
+      "category": "faq",
+      "title": "社交后疲惫恢复",
+      "content": "作为 ESFJ，社交常扮演照顾者角色，结束后会感到被掏空。给自己写一份『社交后恢复清单』：独处、阅读、散步，是必要的充电机制。长期看，这是 ESFJ 从取悦走向被尊重的关键。——ESFJ 第一反应是先道歉让对方好受，承认这一本能后才能表达自己。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "social-drain"
+    },
+    {
+      "id": "ESFJ-faq-self-doubt",
+      "category": "faq",
+      "title": "自我怀疑/意义缺失",
+      "content": "作为 ESFJ 自我怀疑，常常是因为把别人对你的反馈当成了事实。区分：别人对你的反应是他们的投射，不一定是你真实的样子——你是你自己，不是他们的评分卡。——ESFJ 第一反应是先道歉让对方好受，承认这一本能后才能表达自己。短期内会委屈，长期看是 ESFJ 最深的体贴。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "self-doubt"
+    },
+    {
+      "id": "ESFJ-faq-teamwork",
+      "category": "faq",
+      "title": "团队协作摩擦",
+      "content": "作为 ESFJ，最不能接受的是开会越来越冷场、但自己又被默认成『公益岗』——会把团队里仍然活跃的人立成典型，把分工按 SLA 锁死，给自己的额外付出画一条硬边界。下一次被强塞任务时，用『这次可以，下不为例』的句式温和但明确地拒绝。长期看，ESFJ 必须学会让热心不被滥用。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "teamwork"
+    }
+  ]
+}

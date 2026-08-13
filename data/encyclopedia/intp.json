@@ -1,0 +1,272 @@
+{
+  "personality": "INTP",
+  "animal": "猫",
+  "family": "analyst",
+  "entries": [
+    {
+      "id": "INTP-trait-01",
+      "category": "trait",
+      "title": "思想型观察者",
+      "content": "常常看起来在发呆，其实脑内正在跑一套复杂的推演。对外部刺激的响应阈值高，但一旦被某个问题勾住，可以连续几小时沉浸在自己的思考里，外部世界暂时消失。独处是 INTP 的精神氧气，被迫长时间社交会明显掉电。",
+      "tags": [
+        "观察",
+        "内省"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-trait-02",
+      "category": "trait",
+      "title": "延迟决策者",
+      "content": "不是不想做决定，是总觉得自己还没想全。越重要的决定越慢，宁可错过也不愿草率——这种谨慎有时换来高质量判断，有时只是把机会错过。这种风格在工程、研究、写作类工作里是稀缺资产。",
+      "tags": [
+        "谨慎",
+        "延迟"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-trait-03",
+      "category": "trait",
+      "title": "质疑常识成瘾",
+      "content": "对『大家都这么做』天然警惕，喜欢把一个流行观念拆到底层重新验证一遍是否真的成立。常被认为是抬杠，其实是本能的认知诚实。亲密关系里会慢慢释放，外人不容易看到。在强约束环境下容易出现拖延。",
+      "tags": [
+        "质疑",
+        "求真"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-trait-04",
+      "category": "trait",
+      "title": "社交节能模式",
+      "content": "不是不会社交，是觉得成本高而收益低。聊得动的三五个人能聊到深夜，普通聚会则全程省电模式，宁可在家读书也不想出门寒暄。在强约束环境下容易出现拖延。独处是 INTP 的精神氧气，被迫长时间社交会明显掉电。",
+      "tags": [
+        "节能",
+        "挑剔"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-cognitive-01",
+      "category": "cognitive",
+      "title": "主导 Ti · 内倾思维",
+      "content": "一切结论都要在自己的逻辑网里自洽，否则不论谁说都不接受。容易忽略客观世界的反驳，只因为逻辑上还能找到补强。",
+      "tags": [
+        "Ti",
+        "逻辑"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-cognitive-02",
+      "category": "cognitive",
+      "title": "辅助 Ne · 外倾直觉",
+      "content": "脑内常同时开多条思路，能从一个概念跳到看似无关的另一概念。创造力强但落地常需要外界约束，否则容易飘。",
+      "tags": [
+        "Ne",
+        "发散"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-strength-01",
+      "category": "strength",
+      "title": "深度分析能力",
+      "content": "面对复杂技术问题或抽象概念，能在脑里跑通整个推演链并指出别人跳步的地方。",
+      "tags": [
+        "分析",
+        "深度"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-strength-02",
+      "category": "strength",
+      "title": "原创思考",
+      "content": "不轻易接受框架，喜欢从零建构自己的解释模型，常能在旧问题上提出反常识的新视角。",
+      "tags": [
+        "原创",
+        "反常识"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-strength-03",
+      "category": "strength",
+      "title": "客观中立",
+      "content": "在做判断时能相对克制情感和立场干扰，给出相对公正的评估，朋友之间常担任『诚实反馈人』角色。",
+      "tags": [
+        "客观",
+        "中立"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-weakness-01",
+      "category": "weakness",
+      "title": "执行瘫痪",
+      "content": "想得太多开不了工，脑里的方案已经迭代到第七版，现实里第一版还没动手。",
+      "tags": [
+        "拖延",
+        "行动"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-weakness-02",
+      "category": "weakness",
+      "title": "情感钝感",
+      "content": "对方已经气到发抖，自己还在冷静分析对方为什么不合理，被认为冷血。",
+      "tags": [
+        "情感",
+        "钝感"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-weakness-03",
+      "category": "weakness",
+      "title": "抗压时退缩",
+      "content": "外部冲突压力一大不是面对而是关门，远程沟通、邮件表达优于面对面冲突。",
+      "tags": [
+        "退缩",
+        "冲突回避"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-career-01",
+      "category": "career",
+      "title": "研究 / 工程师类岗位",
+      "content": "如算法工程师、研究员、技术预研岗；需要长时间独自思考并对结论负责。",
+      "tags": [
+        "研究",
+        "技术"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-career-02",
+      "category": "career",
+      "title": "哲学 / 理论类岗位",
+      "content": "如学术研究、知识类内容创作；偏好抽象问题，能坐得住冷板凳。",
+      "tags": [
+        "理论",
+        "抽象"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-relationship-01",
+      "category": "relationship",
+      "title": "慢热但长情的陪伴型",
+      "content": "INTP 不太会主动示好，但一旦认定关系，会用长期的『在场』替代高频的甜言蜜语。需要对方懂得珍惜沉默的陪伴。",
+      "tags": [
+        "慢热",
+        "长情"
+      ],
+      "scenario": null
+    },
+    {
+      "id": "INTP-faq-public-speaking",
+      "category": "faq",
+      "title": "当众演讲/发言",
+      "content": "作为 INTP，通常不会硬背稿而是先把核心逻辑链想清楚。临场大脑空白，多半是因为没真正理解自己在说什么，只在背词。理解逻辑后，哪怕临场换词也不会偏。长期看，这种克制是 INTP 的隐性优势。——INTP 第一反应是分析，理解这一反应是改变的前提。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "public-speaking"
+    },
+    {
+      "id": "INTP-faq-conflict",
+      "category": "faq",
+      "title": "人际冲突处理",
+      "content": "作为 INTP，通常会先把对方的话复述一遍确认理解，再在心里反刍几天才回话。但对方往往等不了那么久——需要刻意训练『48 小时内给出最低限度回应』的硬规则，避免被误解为冷战。——INTP 第一反应是分析，理解这一反应是改变的前提。短期内会反复想，长期看能沉淀出真问题。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "conflict"
+    },
+    {
+      "id": "INTP-faq-deadline",
+      "category": "faq",
+      "title": "截止日期赶工",
+      "content": "作为 INTP，临近 DDL 仍可能推翻结构重写，因为发现了『更优雅的方案』。要承认完美主义会害死交付：先定死『D-1 后不再改架构』的硬规则，把完成度优先于完美度。短期内会反复想，长期看能沉淀出真问题。——INTP 需要 24-48 小时的『冷处理』窗口才回得稳。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "deadline"
+    },
+    {
+      "id": "INTP-faq-breakup",
+      "category": "faq",
+      "title": "分手后的调整",
+      "content": "作为 INTP，分手后会反刍式复盘到底哪里走错了。短期有效，长期会把前任符号化成一道题，反而走不出来。要提醒自己：有些关系问题没有最优解。——INTP 需要 24-48 小时的『冷处理』窗口才回得稳。长期看，这种克制是 INTP 的隐性优势。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "breakup"
+    },
+    {
+      "id": "INTP-faq-criticism",
+      "category": "faq",
+      "title": "被批评/被否定",
+      "content": "作为 INTP，被质疑时不会立刻反驳，而是回去反复检视自己的逻辑。这种诚实是优点，但容易走极端否定自己——要区分『对方说我错了』和『我真错了』，前者常常只是对方的投射。长期看，这种克制是 INTP 的隐性优势。——INTP 第一反应是分析，理解这一反应是改变的前提。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "criticism"
+    },
+    {
+      "id": "INTP-faq-alone-weekend",
+      "category": "faq",
+      "title": "一个人过周末",
+      "content": "作为 INTP，独处是常态不会因此焦虑，反而要警惕另一种极端：用宅回避所有社会连接，三年后发现一个能深聊的朋友都没有。——INTP 第一反应是分析，理解这一反应是改变的前提。短期内会反复想，长期看能沉淀出真问题。——INTP 需要 24-48 小时的『冷处理』窗口才回得稳。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "alone-weekend"
+    },
+    {
+      "id": "INTP-faq-social-drain",
+      "category": "faq",
+      "title": "社交后疲惫恢复",
+      "content": "作为 INTP，通常在社交两小时后能量耗尽，需要立刻回到安静空间。提前在日历里给社交事件后留 3 小时独处缓冲，是可持续社交的最低配置。短期内会反复想，长期看能沉淀出真问题。——INTP 需要 24-48 小时的『冷处理』窗口才回得稳。长期看，这种克制是 INTP 的隐性优势。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "social-drain"
+    },
+    {
+      "id": "INTP-faq-teamwork",
+      "category": "faq",
+      "title": "团队协作分歧",
+      "content": "作为 INTP，会本能抗拒反复对齐会议，觉得效率低。换个角度：协作的价值不在每次会议效率最高，而在让所有人心智模型同步。30% 的沟通时间不是浪费，是降本。——INTP 需要 24-48 小时的『冷处理』窗口才回得稳。长期看，这种克制是 INTP 的隐性优势。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "teamwork"
+    },
+    {
+      "id": "INTP-faq-exam",
+      "category": "faq",
+      "title": "备考/考试压力",
+      "content": "作为 INTP 备考，最容易掉进『无限扩展知识面』的陷阱：觉得这个概念还没懂、那个分支也想看看，结果考前一晚还在追新东西。规则是：考前 7 天只刷真题和错题，新知识让位旧漏洞。长期看，这种克制是 INTP 的隐性优势。——INTP 第一反应是分析，理解这一反应是改变的前提。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "exam"
+    },
+    {
+      "id": "INTP-faq-caregiving",
+      "category": "faq",
+      "title": "长期照顾他人",
+      "content": "作为 INTP 照顾他人，会本能想用『分析问题+给方案』来帮忙，但对方要的不是解决方案，是被听见。先说一句『听起来你很难』，再问『你需要建议还是只是想说说』，能避免 80% 的无效支持。——INTP 第一反应是分析，理解这一反应是改变的前提。",
+      "tags": [
+        "人格化"
+      ],
+      "scenario": "caregiving"
+    }
+  ]
+}

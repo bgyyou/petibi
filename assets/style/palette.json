@@ -1,0 +1,39 @@
+{
+  "//": "Petibi 桌宠统一色板（PRD §8.4）：一族一色。同族 4 个人格服装主色完全对齐 = main；shadow 为全族统一阴影/褶皱色；light 仅作高光点缀。描边统一 outline。动物头毛色用 neutrals。",
+  "families": {
+    "analyst_分析家_紫": { "main": "#785D87", "shadow": "#42334A", "light": "#A27EB6", "highlight": "#CC9EE6" },
+    "diplomat_外交家_绿": { "main": "#3E8F6E", "shadow": "#224F3D", "light": "#54C194", "highlight": "#69F3BB" },
+    "sentinel_守护者_蓝": { "main": "#399FB9", "shadow": "#1F5766", "light": "#4DD7FA", "highlight": "#92CAD8" },
+    "explorer_探险家_黄": { "main": "#E4C728", "shadow": "#7D6D16", "light": "#EBD55E", "highlight": "#F0E089" }
+  },
+  "personalities": {
+    "INTJ": { "animal": "猫头鹰", "family": "analyst" },
+    "INTP": { "animal": "猫",     "family": "analyst" },
+    "ENTJ": { "animal": "狮子",   "family": "analyst" },
+    "ENTP": { "animal": "狐狸",   "family": "analyst" },
+    "INFJ": { "animal": "天鹅",   "family": "diplomat" },
+    "INFP": { "animal": "蝴蝶",   "family": "diplomat" },
+    "ENFJ": { "animal": "金毛",   "family": "diplomat" },
+    "ENFP": { "animal": "海豚",   "family": "diplomat" },
+    "ISTJ": { "animal": "海狸",   "family": "sentinel" },
+    "ISFJ": { "animal": "企鹅",   "family": "sentinel" },
+    "ESTJ": { "animal": "熊",     "family": "sentinel" },
+    "ESFJ": { "animal": "大象",   "family": "sentinel" },
+    "ISTP": { "animal": "豹",     "family": "explorer" },
+    "ISFP": { "animal": "卡皮巴拉", "family": "explorer" },
+    "ESTP": { "animal": "猴子",   "family": "explorer" },
+    "ESFP": { "animal": "鹦鹉",   "family": "explorer" }
+  },
+  "outline": "#2B2320",
+  "//neutrals": "中性色：动物头毛色/肤色专用（人格色系只体现在服装和配饰上）",
+  "neutrals": {
+    "白": "#F2EDE4",
+    "奶油": "#E6D3B3",
+    "浅棕": "#C49A6C",
+    "棕": "#8B5E3C",
+    "深棕": "#5C4033",
+    "灰": "#9A9A9A",
+    "深灰": "#555555",
+    "橘": "#D97B29"
+  }
+}
