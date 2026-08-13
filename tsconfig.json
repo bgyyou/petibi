@@ -15,5 +15,5 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["node"]
   },
-  "include": ["electron", "src", "electron.vite.config.ts", "vitest.config.ts"]
+  "include": ["electron", "src", "server", "electron.vite.config.ts", "vitest.config.ts"]
 }

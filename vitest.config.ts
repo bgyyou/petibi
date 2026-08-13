@@ -1,12 +1,19 @@
-// 【文件说明】vitest 配置：M2 计分引擎测试用，限定只跑 src/scoring/**。
-// 独立于 electron.vite.config.ts，不引入 React/electron plugin，避免被 React JSX / Electron main 模块污染
+// 【文件说明】vitest 配置：M2 计分引擎测试 + 合并后 server 测试 + M3 桌宠交互层面板 reducer 测试。
+// 限定只跑 src/scoring/** / src/panel/__tests__/** / server/tests/**，
+// 不在 src/ 顶层扫 *.test.ts 避免命中 React/渲染进程入口。
 import { defineConfig } from "vitest/config"
 
 export default defineConfig({
   test: {
-    // 只跑 src/scoring/ 下的测试文件；不在 src/ 顶层扫 *.test.ts 避免命中 React/渲染进程入口
-    include: ["src/scoring/**/*.test.ts"],
-    // 纯函数计分引擎不需要 DOM、jsdom、happy-dom；用 node 最稳
+    // 计分引擎 + 合并后 server 测试 + M3 面板 chat-reducer 纯函数测试
+    include: [
+      "src/scoring/**/*.test.ts",
+      "src/panel/__tests__/**/*.test.ts",
+      "server/tests/**/*.test.ts",
+    ],
+    // 纯函数计分引擎与后端集成测试都不需要 DOM；用 node 最稳
     environment: "node",
+    // 串行跑后端测试，避免多个 suite 共享 node:sqlite handle 时偶发卡顿
+    fileParallelism: false,
   },
 })

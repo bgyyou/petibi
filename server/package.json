@@ -1,0 +1,14 @@
+{
+  "//": "【文件说明】server 子项目包描述：仅用于 vscode / IDE 解析 src；运行实际依赖走根 node_modules。better-sqlite3 不再使用（保留声明仅为类型链路占位，运行时无副作用）。",
+  "name": "petibi-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Petibi 后端服务（Express + node:sqlite，对话链路）",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  }
+}

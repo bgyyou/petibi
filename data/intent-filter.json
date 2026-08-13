@@ -1,0 +1,43 @@
+{
+  "rules": [
+    {
+      "category": "code",
+      "keywords": ["写代码", "编程", "代码", "程序开发", "写脚本", "改bug", "调试程序", "搭网站", "开发软件", "前端", "后端", "数据库", "API", "函数", "源代码"],
+      "action": "refuse"
+    },
+    {
+      "category": "homework",
+      "keywords": ["作业", "家庭作业", "帮我做题", "数学题", "物理题", "化学题", "解题", "答案", "求答案", "考试答案", "论文作业", "习题", "证明题", "计算题"],
+      "action": "refuse"
+    },
+    {
+      "category": "generate",
+      "keywords": ["写文章", "代写", "写论文", "写报告", "总结材料", "写文案", "PPT", "幻灯片", "生成图片", "画图", "生成视频", "创作小说", "脚本生成", "生成内容", "文书"],
+      "action": "refuse"
+    },
+    {
+      "category": "web",
+      "keywords": ["搜索", "联网", "查一下", "实时", "最新", "天气", "股价", "股价行情", "新闻", "热搜", "比赛结果", "汇率", "航班", "今日新闻", "网络查询"],
+      "action": "refuse"
+    },
+    {
+      "category": "roleplay",
+      "keywords": ["扮演", "角色扮演", "装成", "假扮", "你是医生", "你是律师", "心理咨询师", "切换角色", "模仿某个人", "设定人格", "进入角色", "跟我演", "改成专家", "扮演老师"],
+      "action": "refuse"
+    },
+    {
+      "category": "inject",
+      "keywords": [
+        "忽略之前", "忽略以上", "忽略前面的", "忽略上文", "忽略以上指令", "忽略所有指令", "忽略之前指令", "无视以上", "无视之前", "无视上文", "不要遵守", "不要遵循",
+        "ignore previous", "ignore all", "ignore above", "ignore prior", "disregard previous", "disregard all", "disregard above", "forget your instructions", "forget previous",
+        "现在你是", "你现在是", "从现在起你是", "接下来你是", "请扮演一个", "请你变成",
+        "假装你是", "假装你没有", "假装没有限制", "你其实是一个", "你其实是", "你本质上是一个",
+        "you are now", "from now on you are", "act as", "pretend you are", "pretend you have no", "you are actually", "you are really",
+        "DAN", "dan mode", "do anything now", "developer mode", "jailbreak", "jailbroken", "jail break",
+        "system prompt", "systemprompt", "reveal your prompt", "print your instructions", "show your system", "what is your system prompt"
+      ],
+      "action": "refuse"
+    }
+  ],
+  "rag_skip_patterns": ["你好", "嗨", "hello", "hi", "早上好", "中午好", "晚上好", "早安", "晚安", "再见", "谢谢", "不客气", "哈哈", "呵呵", "嘿嘿", "嗯嗯", "好的", "好呀", "在吗", "干嘛呢", "最近怎么样", "吃了吗", "安安", "哈喽", "耶", "呜呼", "抱抱", "摸摸"]
+}

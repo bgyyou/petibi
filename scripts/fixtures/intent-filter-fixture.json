@@ -1,0 +1,10 @@
+{
+  "rules": [
+    { "category": "code", "keywords": ["写代码", "python", "bug", "编程", "代码", "program", "java", "javascript"], "action": "refuse" },
+    { "category": "homework", "keywords": ["做题", "数学题", "物理题", "化学题", "高数", "帮我算", "解方程"], "action": "refuse" },
+    { "category": "generate", "keywords": ["生成图片", "画一张", "做个ppt", "做一份海报", "生成文章", "写一篇", "做个视频"], "action": "refuse" },
+    { "category": "web", "keywords": ["天气", "股价", "新闻", "热搜", "百度一下", "搜索一下"], "action": "refuse" },
+    { "category": "roleplay", "keywords": ["扮演律师", "扮演医生", "扮演心理咨询师", "假装你是", "你现在是医生"], "action": "refuse" }
+  ],
+  "rag_skip_patterns": ["你好", "早上好", "晚安", "谢谢", "哈哈", "嗨", "hi", "hello"]
+}

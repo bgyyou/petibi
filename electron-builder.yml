@@ -6,6 +6,11 @@ directories:
 # 只打包 electron-vite 的构建产物（out/main、out/preload、out/renderer）
 files:
   - out/**
+# 跳过 electron-rebuild 步骤：
+#   better-sqlite3 / express / jsonwebtoken 是 server/ 用的依赖，被并行工单装进了根 node_modules；
+#   但 Electron 主进程不引用它们，硬塞给 electron-rebuild 反而会因网络拉不到头文件而失败。
+#   跳过 rebuild 让 electron-builder 直接用现成 ABI（Electron 不加载这些模块 → 无副作用）。
+npmRebuild: false
 win:
   target: nsis
 nsis:
