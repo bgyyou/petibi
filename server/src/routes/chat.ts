@@ -1,6 +1,6 @@
-// 【文件说明】POST /api/chat 路由实现：契约 §4 主对话链路 + M3 流式守卫与三档工单。
+// 【文件说明】POST /api/chat 路由实现：契约 §4 主对话链路 + M3 流式守卫与三档工单 + M4 多轮对话。
 //
-// 流程（按顺序执行，按 M3 流式守卫与三档工单改造后）：
+// 流程（按顺序执行，按 M3 流式守卫与三档工单 + M4 多轮对话改造后）：
 //   1. 鉴权中间件 requireAuth 注入 req.user（JWT 解析后挂载）
 //   2. 查 users 行（userId），未写档直接 409
 //   3. 准备 SSE 响应头
@@ -9,13 +9,15 @@
 //   6. RAG 检索（rag.ts）：闲聊跳过；否则检索 Top 1
 //   7. 档位判定（output-guard.decideReplyTier）：闲聊档 / 标准档 / 深度档
 //   8. **立即发 meta 事件**（恢复 0.3s 思考动画；guard_hit=false）
-//   9. 拼 prompt（personas 基础层 + 人格层 + 档位指令 + RAG 上下文）
+//   9. 拼 prompt（personas 基础层 + 人格层 + 档位指令 + 多轮历史（M4）+ RAG 上下文）
+//        - 多轮历史：若 body 携带 session_id，从 chat_logs 拉最近 6 轮拼接在 system 末尾、
+//          RAG 之前；总长 ≤2000 字做"摘要式截断"（session.ts）。
 //  10. 流式调 LLM（llm.ts），**边生成边推 delta**，**同时增量检查守卫**
 //        - 硬截断（代码块 / 出戏词 / 超档位 1.2 倍）→ 立即掐断，改发 guard 事件 + 该人格拒绝模板
 //        - 软截断（到档位上限未达 1.2 倍）→ 推完当前 delta 后追加 "……" 省略号终止（不算 guard_hit）
 //  11. 终检 applyOutputGuard(question, accumulated, filter)：兜底 inject_fallback（理论上入口已拒，
 //      但作为纵深防御再扫一次 question 是否带 inject 关键词漏到 LLM）
-//  12. 落 chat_logs（含 rag_entry_id / refused / guard_hit）
+//  12. 落 chat_logs（含 rag_entry_id / refused / guard_hit / session_id）
 //  13. 发 done 事件（guard_hit=true 表示本次最终被守卫命中）
 //
 // 响应格式：SSE（text/event-stream），每行 `data: <json>\n\n`。
@@ -42,6 +44,7 @@ import {
   TIER_MAX_TOKENS,
   type ReplyTier,
 } from "../output-guard.js"
+import { formatHistoryForPrompt, loadRecentHistory } from "../session.js"
 import type {
   EncyclopediaFile,
   IntentFilterFile,
@@ -103,7 +106,7 @@ export function createChatRouter(options: {
   // POST / —— 对话主入口（挂载点 /api/chat，内部路径 /）
   router.post("/", async (req: Request, res: Response) => {
     try {
-      const body = (req.body ?? {}) as { question?: string }
+      const body = (req.body ?? {}) as { question?: string; session_id?: string }
       const question = (body.question ?? "").trim()
       if (!question) {
         res.status(400).json({
@@ -112,6 +115,11 @@ export function createChatRouter(options: {
         } satisfies ApiResponse<never>)
         return
       }
+      // M4 多轮对话：客户端传来的会话 id；空串视为单轮（向后兼容）
+      const sessionId =
+        typeof body.session_id === "string" && body.session_id.trim().length > 0
+          ? body.session_id.trim()
+          : null
 
       // 鉴权：JWT 中间件已在 mount 点挂载，req.user 必有；userId 不可解析时抛 401
       const userId = userIdFromRequest(req)
@@ -159,9 +167,9 @@ export function createChatRouter(options: {
         sseWrite(res, { type: "meta", rag_entry_id: null, refused: true, guard_hit: false })
         sseStreamText(res, refusal)
         const insertLog = db.prepare(
-          `INSERT INTO chat_logs(user_id, question, answer, rag_entry_id, refused, guard_hit) VALUES (?, ?, ?, NULL, 1, 0)`,
+          `INSERT INTO chat_logs(user_id, question, answer, rag_entry_id, refused, guard_hit, session_id) VALUES (?, ?, ?, NULL, 1, 0, ?)`,
         )
-        insertLog.run(user.id, question, refusal)
+        insertLog.run(user.id, question, refusal, sessionId)
         sseWrite(res, { type: "done", total_chars: refusal.length, guard_hit: false })
         res.end()
         return
@@ -193,7 +201,7 @@ export function createChatRouter(options: {
       // 必须在 LLM 之前发：前端拿 meta 就启动思考动画，不必等首字
       sseWrite(res, { type: "meta", rag_entry_id: ragEntryId, refused: false, guard_hit: false })
 
-      // 6) 拼 prompt：基础层 + 人格层 + 档位指令 + RAG 上下文
+      // 6) 拼 prompt：基础层 + 人格层 + 档位指令 + 多轮历史（M4）+ RAG 上下文
       const personaCard = (() => {
         try {
           return loadPersonaCard(user.mbti as Personality)
@@ -206,7 +214,14 @@ export function createChatRouter(options: {
         personaCard ? { [user.mbti as Personality]: personaCard } : undefined,
       )
       const tierInstruction = buildTierInstruction(tier)
-      const system = tierInstruction ? `${systemBase}\n\n${tierInstruction}` : systemBase
+      let system = tierInstruction ? `${systemBase}\n\n${tierInstruction}` : systemBase
+      // M4 多轮对话：从 chat_logs 拉最近 6 轮历史，拼接在档位指令之后、RAG 之前；
+      // 总长 ≤2000 字做"摘要式截断"（详见 session.ts）。无 sessionId / 无历史 → 跳过。
+      const history = sessionId ? loadRecentHistory(db, user.id, sessionId) : []
+      const historyCtx = formatHistoryForPrompt(history)
+      if (historyCtx) {
+        system = `${system}\n\n${historyCtx}`
+      }
       const ragCtx = ragResult
         ? "\n\n" + formatEntryForPrompt(ragResult.entry, ragResult.personality)
         : ""
@@ -297,9 +312,9 @@ export function createChatRouter(options: {
 
       // 9) 落 chat_logs
       const insertLog = db.prepare(
-        `INSERT INTO chat_logs(user_id, question, answer, rag_entry_id, refused, guard_hit) VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO chat_logs(user_id, question, answer, rag_entry_id, refused, guard_hit, session_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
       )
-      insertLog.run(user.id, question, finalAnswer, ragEntryId, 0, guardHit ? 1 : 0)
+      insertLog.run(user.id, question, finalAnswer, ragEntryId, 0, guardHit ? 1 : 0, sessionId)
       if (guardHit) {
         console.warn(
           `[chat.guard] user=${user.id} reason=${guardReasonText} evidence=${guard.hardStopEvidence() ?? ""} tier=${tier} q=${question.slice(0, 40)}`,

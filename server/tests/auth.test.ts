@@ -12,6 +12,7 @@ import { openDb, ensureSchema, closeDb } from "../src/db.js"
 import { createMailer } from "../src/mailer.js"
 import { loadConfig } from "../src/config.js"
 import { ErrorCodes } from "../src/errors.js"
+import { todayKey } from "../src/quota.js"
 import type { Db } from "../src/db.js"
 import type { ServerConfig } from "../src/config.js"
 import type { Mailer } from "../src/mailer.js"
@@ -316,7 +317,9 @@ describe("配额 HTTP /api/quota", () => {
 
   it("直接读写库模拟已用 2 次后，remaining = 1", async () => {
     const { token, userId } = await registerAndLogin(env.app, "q2@example.com")
-    const date = new Date().toISOString().slice(0, 10)
+    // 用应用同款的 todayKey()（本地时区 YYYY-MM-DD）写库，否则跨时区时 UTC 切片
+    // (toISOString) 与本地日期相差一天，会导致 GET /api/quota 读到错日期返回 0。
+    const date = todayKey()
     env.db
       .prepare("INSERT INTO chat_usage (user_id, date, count) VALUES (?, ?, ?)")
       .run(userId, date, 2)
@@ -327,7 +330,8 @@ describe("配额 HTTP /api/quota", () => {
 
   it("已用满 → remaining = 0，used = limit", async () => {
     const { token, userId } = await registerAndLogin(env.app, "q3@example.com")
-    const date = new Date().toISOString().slice(0, 10)
+    // 同上：用 todayKey() 与 GET /api/quota 的本地日期对齐
+    const date = todayKey()
     env.db
       .prepare("INSERT INTO chat_usage (user_id, date, count) VALUES (?, ?, ?)")
       .run(userId, date, 3)

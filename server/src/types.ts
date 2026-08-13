@@ -87,6 +87,13 @@ export interface IntentFilterHit {
 /** POST /api/chat 入参 */
 export interface ChatRequestBody {
   question: string
+  /**
+   * 可选：客户端发起的会话串 id（UUID 等）。
+   * 携带时 server 会从 chat_logs 拉取该会话最近 6 轮历史拼进 prompt；
+   * 不携带 / 空串 → 走单轮链路（不拉历史，向后兼容现有调用）。
+   * 工单：M4 多轮对话 B §B1。
+   */
+  session_id?: string
 }
 
 /** POST /api/chat SSE 事件类型（data: 后跟 JSON 字符串）
@@ -146,6 +153,8 @@ export interface ChatLogRow {
   rag_entry_id: string | null
   refused: number // 0/1
   guard_hit: number // 0/1（M3 边界防御：输出守卫是否拦下改用拒绝模板）
+  /** M4 多轮对话：客户端传入的 session_id；NULL = 单轮（无历史） */
+  session_id: string | null
   created_at: string
 }
 

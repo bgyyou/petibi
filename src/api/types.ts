@@ -91,6 +91,12 @@ export type FeedbackApiResponse = FeedbackResponse
 /** POST /api/chat 入参 */
 export interface ChatRequestBody {
   question: string
+  /**
+   * 可选：会话串 id；携带时 server 会拉取该会话最近 6 轮历史拼进 prompt。
+   * 不传 / 传空串 → 走单轮链路（向后兼容）。
+   * 工单：M4 多轮对话 B §B1；UI 持久化由并行工单 A 接管。
+   */
+  session_id?: string
 }
 
 /** SSE 事件类型，与 server/src/types.ts 的 SseEvent 对齐
@@ -143,4 +149,89 @@ export interface QuotaInfo {
   limit: number
   /** 剩余次数（limit - used，下限 0） */
   remaining: number
+}
+
+// ----- 海报分享（M4 工单：PRD §3.5 / REVIEW §2.5）-----
+
+/**
+ * POST /api/posters 入参：上传一张生成好的分享海报。
+ * image_base64 为纯 base64 字符串（不含 data:image/png;base64, 前缀，由 server 拼）。
+ * persona_type 写入数据库供社区广场按人格筛选；question_excerpt / answer_excerpt
+ * 仅做摘要存证，不超过 200 字符，前端在生成海报时已截断。
+ */
+export interface PosterRequest {
+  image_base64: string
+  persona_type: string
+  question_excerpt: string
+  answer_excerpt: string
+}
+
+/** POST /api/posters 响应：服务端分配的海报 id + 状态。status 固定 'pending' 由后续审核回调改 'approved' / 'rejected'。 */
+export interface PosterResponse {
+  poster_id: string
+  status: 'pending' | 'approved' | 'rejected'
+}
+
+// ----- 分享计数（POST /api/me/share-count）-----
+
+/** POST /api/me/share-count 响应：累计分享次数（V2 装扮解锁的前置数据）。 */
+export interface ShareCountResponse {
+  count: number
+  /** 距下次解锁还差多少；null 表示已达最大或尚未配置解锁规则 */
+  next_unlock_at: number | null
+}
+
+// ----- 社区广场（M4 工单 A2：对接 docs/tech/M4-社区后端-交付报告.md 接口）-----
+
+/** GET /api/posters 单条记录（广场列表 / 详情共用） */
+export interface PosterItem {
+  id: number
+  user_id: number
+  image_path: string
+  persona_type: string
+  question_excerpt: string
+  answer_excerpt: string
+  likes: number
+  created_at: string
+}
+
+/** GET /api/posters 响应（分页） */
+export interface PostersListResponse {
+  items: PosterItem[]
+  limit: number
+  offset: number
+}
+
+/** POST /api/posters/:id/like 响应 */
+export interface PosterLikeResponse {
+  liked: boolean
+  likes: number
+}
+
+/** GET /api/posters/:id/comments 单条留言 */
+export interface CommentItem {
+  id: number
+  user_id: number
+  content: string
+  created_at: string
+}
+
+/** GET /api/posters/:id/comments 响应 */
+export interface CommentsListResponse {
+  items: CommentItem[]
+}
+
+/** POST /api/posters/:id/comments 响应 */
+export interface CommentSubmitResponse {
+  comment_id: number
+  status: 'approved' | 'rejected' | 'pending'
+  reason?: string
+}
+
+/**
+ * 留言提交请求体（≤200 字；超长由 server 返 400）。
+ * 与 docs/tech/M4-社区后端-交付报告.md 第 3.4 节接口契约对齐。
+ */
+export interface CommentSubmitRequest {
+  content: string
 }

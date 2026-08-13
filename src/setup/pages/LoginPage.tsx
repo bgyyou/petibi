@@ -119,7 +119,18 @@ export function LoginPage(): JSX.Element {
         </div>
       </div>
       <footer className="setup-footer">
-        <span style={{ fontSize: 12, color: '#8a8a86' }}>登录即同意《用户协议》《隐私政策》</span>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4 }}>
+          <span style={{ fontSize: 12, color: '#8a8a86' }}>登录即同意《用户协议》《隐私政策》</span>
+          {/* M4 工单 A3 访客模式：不登录直接逛百科 / 社区入口 */}
+          <button
+            type="button"
+            className="btn btn-link"
+            onClick={() => window.petApi.enterGuest()}
+            style={{ padding: 0 }}
+          >
+            先逛逛（不登录）
+          </button>
+        </div>
         <button
           type="button"
           className="btn"

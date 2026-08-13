@@ -8,22 +8,38 @@
 //  - 对话接口 (POST /api/chat) 是 SSE 流式，单独提供 streamChat() 而非抛 Promise。
 import type {
   ApiError,
+  ChatRequestBody,
   ChatSseEvent,
+  CommentItem,
+  CommentSubmitRequest,
+  CommentSubmitResponse,
+  CommentsListResponse,
   FeedbackApiResponse,
   FeedbackRequest,
+  PosterItem,
+  PosterLikeResponse,
+  PosterRequest,
+  PosterResponse,
+  PostersListResponse,
   QuotaInfo,
   SaveProfileRequest,
   SaveProfileResponse,
   SendCodeResponse,
   SetPetNicknameRequest,
   SetPetNicknameResponse,
+  ShareCountResponse,
   User,
   VerifyCodeResponse,
 } from './types'
 
 // Vite 在 build / dev 时把 import.meta.env.VITE_* 内联为常量；SSR / Node 测试环境没有时退回到 process.env
 const env = (import.meta as any).env ?? {}
-const USE_MOCK = (env.VITE_USE_MOCK_API ?? 'true') !== 'false'
+/**
+ * USE_MOCK 用 let 而非 const（其余模块顶层仍为 const），便于单元测试通过
+ * __setMockMode(false) 强制走真接口分支测 fetch body / SSE 解析。
+ * 切换仅对后续调用生效，不修改任何 mock 内存表。
+ */
+let USE_MOCK = (env.VITE_USE_MOCK_API ?? 'true') !== 'false'
 const BASE_URL = (env.VITE_API_BASE_URL ?? 'http://localhost:8787') as string
 
 // 网络模拟延迟（mock 模式）：让 UI 表现接近真实接口
@@ -60,9 +76,17 @@ const mockCodes: Map<string, { code: string; expiresAt: number }> = new Map()
 const mockQuota: Map<string, number> = new Map()
 // mock 每日上限（与 server 默认对齐）
 const MOCK_DAILY_LIMIT = 10
+// mock 分享计数：key 是 userId，value 是累计分享次数
+const mockShareCount: Map<string, number> = new Map()
+// mock 海报表：key 是 poster_id（mock-poster-N），value 是入参与时间戳（dev tools 可查）
+const mockPosters: Map<string, PosterRequest & { userId: string; createdAt: string; likes: number }> = new Map()
+// mock 留言表：key 是 poster_id，value 是留言列表（带 id / user_id / 内容 / 时间）
+const mockComments: Map<string, Array<CommentItem & { userId: string }>> = new Map()
 
 let mockTokenCounter = 1
 let mockUserIdCounter = 1
+let mockPosterCounter = 1
+let mockCommentCounter = 1
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -198,6 +222,179 @@ function mockGetQuota(token: string): QuotaInfo {
 }
 
 /**
+ * Mock 上传海报：与并行工单契约 {image_base64, persona_type, question_excerpt, answer_excerpt}
+ * → {poster_id, status} 对齐。mock 模式不真机审、不真落库，只登记到内存 + console。
+ * 返回 poster_id 形如 "mock-poster-N"（自增），status 固定 'pending'。
+ */
+function mockSubmitPoster(token: string, req: PosterRequest): PosterResponse {
+  const hit = Array.from(mockUsers.values()).find((v) => v.token === token)
+  if (!hit) {
+    throw new ApiCallError({ code: 'UNAUTHENTICATED', message: '请先登录' })
+  }
+  const id = `mock-poster-${mockPosterCounter++}`
+  mockPosters.set(id, { ...req, userId: hit.user.id, createdAt: new Date().toISOString(), likes: 0 })
+  console.info(
+    `[mock] 用户 ${hit.user.email} 上传海报 ${id}（persona=${req.persona_type}，base64 长度=${req.image_base64.length}）`,
+  )
+  return { poster_id: id, status: 'pending' }
+}
+
+/** Mock 累计分享次数：递增 1，返回最新值。V2 装扮解锁的前置数据；next_unlock_at 暂为 null。 */
+function mockBumpShareCount(token: string): ShareCountResponse {
+  const hit = Array.from(mockUsers.values()).find((v) => v.token === token)
+  if (!hit) {
+    throw new ApiCallError({ code: 'UNAUTHENTICATED', message: '请先登录' })
+  }
+  const next = (mockShareCount.get(hit.user.id) ?? 0) + 1
+  mockShareCount.set(hit.user.id, next)
+  return { count: next, next_unlock_at: null }
+}
+
+/**
+ * Mock 广场列表：内存预置若干 approved 海报 + 用户现场提交的。
+ * 设计：mock 模式下 mockSubmitPoster 返回 status='pending'，但 mock 列表对当前用户直接放行
+ * （dev 体验优先）；非当前用户提交的内容也按 approved 列出便于浏览。
+ * 与 server 行为差异在 R7 判定里不影响 UI（已通过测试覆盖审核链路）。
+ */
+function mockListPosters(limit: number, offset: number): PostersListResponse {
+  const items: PosterItem[] = []
+  // 预置 4 张示例海报（覆盖 4 族），便于未登录态也能看到社区有内容
+  const seed: Array<Omit<PosterItem, 'image_path'> & { persona_type: string }> = [
+    {
+      id: 9001,
+      user_id: 1,
+      persona_type: 'INTJ',
+      question_excerpt: '明天要当众演讲好紧张',
+      answer_excerpt: '先把讲稿拆成三条线，每条不超过两分钟。先把结构搭稳，再开口。',
+      likes: 12,
+      created_at: '2026-08-10T12:00:00.000Z',
+    },
+    {
+      id: 9002,
+      user_id: 2,
+      persona_type: 'INFP',
+      question_excerpt: '总觉得自己不够好怎么办',
+      answer_excerpt: '把"比较"换成"积累"：你看到的永远是别人准备好的版本，不是过程。',
+      likes: 23,
+      created_at: '2026-08-11T08:30:00.000Z',
+    },
+    {
+      id: 9003,
+      user_id: 3,
+      persona_type: 'ESTP',
+      question_excerpt: '想换工作又怕踩坑',
+      answer_excerpt: '先做一周的信息采集：HR 圈里打 5 个电话，比刷三天招聘软件有用。',
+      likes: 8,
+      created_at: '2026-08-12T03:10:00.000Z',
+    },
+    {
+      id: 9004,
+      user_id: 4,
+      persona_type: 'ISFJ',
+      question_excerpt: '朋友总找我倒情绪垃圾',
+      answer_excerpt: '温柔的拒绝不是背叛：你帮不到对方，是因为对方需要的是专业倾听。',
+      likes: 17,
+      created_at: '2026-08-12T14:48:00.000Z',
+    },
+  ]
+  for (const s of seed) {
+    items.push({
+      id: s.id,
+      user_id: s.user_id,
+      image_path: `mock://poster/${s.id}.png`,
+      persona_type: s.persona_type,
+      question_excerpt: s.question_excerpt,
+      answer_excerpt: s.answer_excerpt,
+      likes: s.likes,
+      created_at: s.created_at,
+    })
+  }
+  // 把用户现场提交的 mock 海报（mockSubmitPoster 入库的）也合并进列表
+  for (const [pid, p] of mockPosters.entries()) {
+    items.push({
+      id: pid as unknown as number,
+      user_id: 0,
+      image_path: `mock://poster/${pid}.png`,
+      persona_type: p.persona_type,
+      question_excerpt: p.question_excerpt,
+      answer_excerpt: p.answer_excerpt,
+      likes: p.likes,
+      created_at: p.createdAt,
+    })
+  }
+  // 按 created_at DESC 排序
+  items.sort((a, b) => (a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0))
+  return { items: items.slice(offset, offset + limit), limit, offset }
+}
+
+/**
+ * Mock 点赞/取消：mockPosters 表里维护 likes 字段；与 server 行为差异（mock 不去重 userId）
+ * 已在工单 M4-社区后端-交付报告.md 标注，UI 体验优先。
+ */
+function mockLikePoster(token: string, posterId: number): PosterLikeResponse {
+  const hit = Array.from(mockUsers.values()).find((v) => v.token === token)
+  if (!hit) {
+    throw new ApiCallError({ code: 'UNAUTHENTICATED', message: '请先登录后再点赞' })
+  }
+  const key = String(posterId)
+  // mock 海报或预置海报（预置是 mock 内存对象，likes 直接调整）
+  const existing = mockPosters.get(key)
+  let likes: number
+  if (existing) {
+    // 简化：每次点击都 +1（mock 不去重），让 UI 能看到计数变化
+    existing.likes = (existing.likes ?? 0) + 1
+    likes = existing.likes
+  } else {
+    likes = 1
+  }
+  return { liked: true, likes }
+}
+
+/** Mock 留言列表：仅返 mockComments 表里的条目 */
+function mockListComments(posterId: number): CommentsListResponse {
+  const items = mockComments.get(String(posterId)) ?? []
+  return { items: items.map((c) => ({ id: c.id, user_id: c.user_id, content: c.content, created_at: c.created_at })) }
+}
+
+/**
+ * Mock 发留言：mock 模式下不接 LocalModeration；直接落库 + 返 approved。
+ * 字数校验与 server 对齐（>200 报 COMMENT_TOO_LONG）。
+ */
+function mockSubmitComment(
+  token: string,
+  posterId: number,
+  req: CommentSubmitRequest,
+): CommentSubmitResponse {
+  const hit = Array.from(mockUsers.values()).find((v) => v.token === token)
+  if (!hit) {
+    throw new ApiCallError({ code: 'UNAUTHENTICATED', message: '请先登录后再留言' })
+  }
+  const trimmed = req.content.trim()
+  if (trimmed.length === 0) {
+    throw new ApiCallError({ code: 'BAD_REQUEST', message: '留言不能为空' })
+  }
+  if (trimmed.length > 200) {
+    throw new ApiCallError({
+      code: 'COMMENT_TOO_LONG',
+      message: `留言不能超过 200 字`,
+      extra: { maxLen: 200, actualLen: trimmed.length },
+    })
+  }
+  const id = mockCommentCounter++
+  const entry = {
+    id,
+    user_id: 0,
+    content: trimmed,
+    created_at: new Date().toISOString(),
+    userId: hit.user.id,
+  }
+  const list = mockComments.get(String(posterId)) ?? []
+  list.push(entry)
+  mockComments.set(String(posterId), list)
+  return { comment_id: id, status: 'approved' }
+}
+
+/**
  * Mock 流式对话：与 server 契约 §4 保持完全一致的事件序列
  * （meta → 多个 delta → done），便于 UI 通用化接入。
  *
@@ -226,11 +423,19 @@ function mockCheckRefuse(question: string): boolean {
   return REFUSE_KEYWORDS.some((k) => question.toLowerCase().includes(k))
 }
 
-/** 异步生成器：分片产出 SSE 事件；调用方按 meta/delta/done/error 自行处理 */
+/** 异步生成器：分片产出 SSE 事件；调用方按 meta/delta/done/error 自行处理
+ *
+ * mock 模式说明（M4 工单 A 衔接工单 B）：
+ *   - sessionId 仅做透传记录（开发体验优先，不真正改 mockComposeAnswer 的回答内容）；
+ *   - 真接口的 server 会按 sessionId 拉取历史轮次拼 prompt，mock 不模拟历史，
+ *     但保证签名一致便于前端代码无差别调用；
+ *   - 调用方（ChatTab）已用 options.sessionId 传入，落到此函数的最后一个参数。
+ */
 async function* mockStreamChat(
   _token: string,
   question: string,
   onQuotaConsumed?: () => void,
+  _sessionId?: string,
 ): AsyncGenerator<ChatSseEvent> {
   // 1) meta（前端在收到 meta 后即可结束 thinking 动画的"等待态"，但本工单约定
   //    meta 仅代表"已就绪"信号，UI 切 thinking 是请求发起即刻，不等 meta）
@@ -325,6 +530,81 @@ async function realGetQuota(token: string): Promise<QuotaInfo> {
   return parseJson<QuotaInfo>(res)
 }
 
+/**
+ * 真接口：上传海报到社区广场。
+ * 契约由并行工单实现：POST /api/posters，body 见 PosterRequest，response 见 PosterResponse。
+ * 接口未就绪时（404 / 500）抛 ApiCallError，UI 走"上墙失败"提示。
+ */
+async function realSubmitPoster(
+  token: string,
+  req: PosterRequest,
+): Promise<PosterResponse> {
+  const res = await fetch(`${BASE_URL}/api/posters`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(req),
+  })
+  return parseJson<PosterResponse>(res)
+}
+
+/**
+ * 真接口：分享次数 +1（V2 装扮解锁前置数据）。
+ * 并行工单契约：POST /api/me/share-count → {count, next_unlock_at}。
+ */
+async function realBumpShareCount(token: string): Promise<ShareCountResponse> {
+  const res = await fetch(`${BASE_URL}/api/me/share-count`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return parseJson<ShareCountResponse>(res)
+}
+
+/**
+ * 真接口：社区广场列表（公开 GET /api/posters）。
+ * 与 docs/tech/M4-社区后端-交付报告.md 第 3.4 节契约对齐：分页 limit/offset，
+ * 只返 status='approved'（server 端硬过滤，UI 无需再判）。
+ */
+async function realListPosters(limit: number, offset: number): Promise<PostersListResponse> {
+  const params = new URLSearchParams({ limit: String(limit), offset: String(offset) })
+  const res = await fetch(`${BASE_URL}/api/posters?${params.toString()}`)
+  return parseJson<PostersListResponse>(res)
+}
+
+/**
+ * 真接口：点赞/取消（POST /api/posters/:id/like，鉴权）。
+ * 返回 { liked, likes }；未登录由 server 返 401，UI 走引导登录分支。
+ */
+async function realLikePoster(token: string, posterId: number): Promise<PosterLikeResponse> {
+  const res = await fetch(`${BASE_URL}/api/posters/${posterId}/like`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return parseJson<PosterLikeResponse>(res)
+}
+
+/** 真接口：留言列表（公开 GET /api/posters/:id/comments，只返 approved）。 */
+async function realListComments(posterId: number): Promise<CommentsListResponse> {
+  const res = await fetch(`${BASE_URL}/api/posters/${posterId}/comments`)
+  return parseJson<CommentsListResponse>(res)
+}
+
+/**
+ * 真接口：发留言（POST /api/posters/:id/comments，鉴权，≤200 字）。
+ * server 先入 pending → 审核 → approved 才展示。客户端取 status 决定反馈文案。
+ */
+async function realSubmitComment(
+  token: string,
+  posterId: number,
+  req: CommentSubmitRequest,
+): Promise<CommentSubmitResponse> {
+  const res = await fetch(`${BASE_URL}/api/posters/${posterId}/comments`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(req),
+  })
+  return parseJson<CommentSubmitResponse>(res)
+}
+
 /** 解析 SSE data: 行；返回按事件分组的数组，便于在生成器里逐条 yield */
 function* parseSseBlocks(buffer: string): Generator<string> {
   let idx: number
@@ -350,19 +630,26 @@ function parseSseEvent(block: string): ChatSseEvent | null {
   }
 }
 
-/** 真接口的 SSE 流；解析过程与 server/src/routes/chat.ts 的事件序列对齐 */
+/** 真接口的 SSE 流；解析过程与 server/src/routes/chat.ts 的事件序列对齐
+ *
+ * sessionId（M4 多轮对话 B §B1）：可选；携带时拼到 body，server 会拉取历史。
+ * UI 持久化（localStorage）由并行工单 A 接管，本函数仅做透传。
+ */
 async function* realStreamChat(
   token: string,
   question: string,
   signal?: AbortSignal,
+  sessionId?: string,
 ): AsyncGenerator<ChatSseEvent> {
+  const body: ChatRequestBody = { question }
+  if (sessionId && sessionId.trim().length > 0) body.session_id = sessionId.trim()
   const resp = await fetch(`${BASE_URL}/api/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ question }),
+    body: JSON.stringify(body),
     signal,
   })
   if (!resp.ok || !resp.body) {
@@ -522,18 +809,114 @@ export async function getQuota(token: string): Promise<QuotaInfo> {
  * 调用方负责在请求发起后切桌宠 thinking 动画、收到首条 delta 后切回 idle。
  * - abort: 外部 AbortController.signal，用于"停止生成"按钮。
  * - onQuotaConsumed: mock 模式触发，配额扣减可视化（real 模式由 server 自管）。
+ * - sessionId: 可选，会话串 id；携带时 server 拉取该会话最近 6 轮历史拼进 prompt
+ *   （M4 多轮对话 B §B1）。UI 持久化（localStorage 等）由并行工单 A 接管，
+ *   本函数只做 API 透传。
  */
 export async function* streamChat(
   token: string,
   question: string,
-  options: { signal?: AbortSignal; onQuotaConsumed?: () => void } = {},
+  options: {
+    signal?: AbortSignal
+    onQuotaConsumed?: () => void
+    sessionId?: string
+  } = {},
 ): AsyncGenerator<ChatSseEvent> {
   if (USE_MOCK) {
     // mock 模式不接入 AbortSignal：dev 体验优先；如需终止由调用方丢弃生成器即可
-    yield* mockStreamChat(token, question, options.onQuotaConsumed)
+    yield* mockStreamChat(token, question, options.onQuotaConsumed, options.sessionId)
     return
   }
-  yield* realStreamChat(token, question, options.signal)
+  yield* realStreamChat(token, question, options.signal, options.sessionId)
+}
+
+/**
+ * 上传分享海报到社区广场（M4 工单：POST /api/posters，并行工单实现）。
+ * 入参：海报的 base64 PNG + 人格 + 问题/回答摘要。
+ * 出参：服务端分配的 poster_id + 初始状态（pending / approved / rejected）。
+ * - mock 模式：返回 "mock-poster-N" 字符串，status='pending'，控制台打日志；
+ * - 接口未就绪：抛 ApiCallError，UI 应在弹窗内展示"上墙失败"并允许保存本地兜底。
+ */
+export async function submitPoster(
+  token: string,
+  req: PosterRequest,
+): Promise<PosterResponse> {
+  if (USE_MOCK) {
+    await delay(MOCK_LATENCY_MS)
+    return mockSubmitPoster(token, req)
+  }
+  return realSubmitPoster(token, req)
+}
+
+/**
+ * 分享次数 +1（M4 工单：POST /api/me/share-count，并行工单实现）。
+ * 与 submitPoster 解耦：用户可能只下载不分享，也可能在分享前取消。
+ * V2 装扮解锁会消费此接口的累计值。
+ */
+export async function bumpShareCount(token: string): Promise<ShareCountResponse> {
+  if (USE_MOCK) {
+    await delay(MOCK_LATENCY_MS / 2)
+    return mockBumpShareCount(token)
+  }
+  return realBumpShareCount(token)
+}
+
+/**
+ * 社区广场列表（M4 工单 A2：GET /api/posters）。
+ * 未登录也可访问（公开接口）；分页 limit ≤ 100，offset ≥ 0。
+ * - mock 模式：返回 4 张预置海报 + 用户现场提交的海报合并列表；
+ * - 真接口：直接转发；server 端硬过滤 status='approved'，未审内容不会泄露。
+ */
+export async function listPosters(
+  options: { limit?: number; offset?: number } = {},
+): Promise<PostersListResponse> {
+  const limit = options.limit ?? 20
+  const offset = options.offset ?? 0
+  if (USE_MOCK) {
+    await delay(MOCK_LATENCY_MS / 2)
+    return mockListPosters(limit, offset)
+  }
+  return realListPosters(limit, offset)
+}
+
+/**
+ * 点赞 / 取消点赞（POST /api/posters/:id/like，鉴权）。
+ * 未登录抛 UNAUTHENTICATED，UI 引导登录。
+ */
+export async function likePoster(token: string, posterId: number): Promise<PosterLikeResponse> {
+  if (USE_MOCK) {
+    await delay(MOCK_LATENCY_MS / 2)
+    return mockLikePoster(token, posterId)
+  }
+  return realLikePoster(token, posterId)
+}
+
+/**
+ * 留言列表（GET /api/posters/:id/comments，公开）。
+ * 未登录也可拉；server 仅返 approved。
+ */
+export async function listComments(posterId: number): Promise<CommentsListResponse> {
+  if (USE_MOCK) {
+    await delay(MOCK_LATENCY_MS / 2)
+    return mockListComments(posterId)
+  }
+  return realListComments(posterId)
+}
+
+/**
+ * 发留言（POST /api/posters/:id/comments，鉴权，≤200 字）。
+ * server 先入 pending → 审核；UI 根据 status 给用户反馈文案（approved / rejected）。
+ */
+export async function submitComment(
+  token: string,
+  posterId: number,
+  req: CommentSubmitRequest,
+): Promise<CommentSubmitResponse> {
+  if (USE_MOCK) {
+    await delay(MOCK_LATENCY_MS)
+    return mockSubmitComment(token, posterId, req)
+  }
+  return realSubmitComment(token, posterId, req)
 }
 
 /** 单元测试 / 调试用：清空 mock 内存表 */
@@ -542,8 +925,13 @@ export function __resetMockDb(): void {
   mockFeedback.clear()
   mockCodes.clear()
   mockQuota.clear()
+  mockShareCount.clear()
+  mockPosters.clear()
+  mockComments.clear()
   mockTokenCounter = 1
   mockUserIdCounter = 1
+  mockPosterCounter = 1
+  mockCommentCounter = 1
 }
 
 /** 单元测试 / 调试用：手动增加 mock 配额计数（模拟 server 已扣减） */
@@ -558,4 +946,19 @@ export function __listMockFeedback(): Array<{ email: string; entries: unknown[] 
     out.push({ email: user.email, entries: mockFeedback.get(user.id) ?? [] })
   }
   return out
+}
+
+/** 单元测试 / 调试用：读 mock 分享次数 */
+export function __getMockShareCount(userId: string): number {
+  return mockShareCount.get(userId) ?? 0
+}
+
+/**
+ * 单元测试用：动态切换 mock / real 模式。
+ * - 仅测试场景使用（与 __resetMockDb / __bumpMockQuota 同前缀约定）；
+ * - 调用后 isMockMode 立即反映新值；
+ * - 不影响 BASE_URL（BASE_URL 仍是模块初始化时定的，除非另设）。
+ */
+export function __setMockMode(value: boolean): void {
+  USE_MOCK = value
 }

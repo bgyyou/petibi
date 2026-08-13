@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>隐私政策 - Petibi</title>
+<style>
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+         max-width: 760px; margin: 32px auto; padding: 0 20px; line-height: 1.7; color: #222; }
+  h1 { font-size: 26px; border-bottom: 2px solid #ddd; padding-bottom: 8px; }
+  h2 { font-size: 19px; margin-top: 28px; }
+  h3 { font-size: 16px; margin-top: 20px; }
+  ul { padding-left: 22px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+  th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; font-size: 14px; }
+  th { background: #f5f5f5; }
+  .meta { color: #666; font-size: 13px; }
+  .callout { background: #f8f8f8; border-left: 4px solid #4a90e2; padding: 12px 16px; margin: 12px 0; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<h1>隐私政策</h1>
+<p class="meta">最后更新：2026-08-13 ｜ 适用产品：Petibi（MBTI 像素桌宠 + 社区广场）</p>
+
+<p>
+Petibi（以下简称"我们"）非常重视用户的隐私与数据安全。本政策说明我们如何收集、使用、存储和保护你的个人信息。
+请仔细阅读；使用本产品即视为你已知悉并同意本政策。
+</p>
+
+<h2>1. 数据收集清单</h2>
+<p>我们仅收集为提供核心功能所必需的最少数据，具体如下：</p>
+
+<table>
+  <tr><th>数据类型</th><th>用途</th><th>是否必填</th></tr>
+  <tr><td>邮箱地址</td><td>账号注册与登录（一次性验证码）</td><td>必填</td></tr>
+  <tr><td>昵称</td><td>个性化展示、主面板"我的"页</td><td>必填</td></tr>
+  <tr><td>MBTI 人格类型 + 情绪细分标签（stable / sensitive）</td><td>驱动对话人格 + 桌宠形象 + 内容推荐</td><td>必填</td></tr>
+  <tr><td>宠物昵称</td><td>自定义桌宠昵称（72 小时冷却）</td><td>选填</td></tr>
+  <tr><td>聊天记录（问答对）</td><td>用于 RAG 知识库检索、对话历史回放、本地配额统计</td><td>自动生成</td></tr>
+  <tr><td>分享海报图片 + 文案摘要</td><td>社区广场展示（须经内容审核）</td><td>选填（上传即同意）</td></tr>
+  <tr><td>留言评论</td><td>社区互动（须经内容审核）</td><td>选填</td></tr>
+  <tr><td>分享计数</td><td>累计统计，未来用于装扮解锁（V2）</td><td>自动生成</td></tr>
+</table>
+
+<p class="meta">
+说明：宠物昵称的本地修改行为本身不会被记录；我们不收集设备信息、IP 地址精确定位、通讯录、剪贴板、相册等敏感权限。
+</p>
+
+<h2>2. 数据存储位置</h2>
+<ul>
+  <li><strong>本地存储（默认）</strong>：邮箱验证码、用户档案、聊天记录、社区内容、审核日志均存储于服务器端 SQLite 数据库（<code>server/data/chat.db</code>）。</li>
+  <li><strong>图片资产</strong>：上传的海报图片存储于服务器端 <code>server/data/posters/&lt;user_id&gt;/</code> 目录；不上传到任何第三方对象存储。</li>
+  <li><strong>云端存储（未来）</strong>：当产品提供云端登录与跨设备同步能力时，会另行告知并提供数据迁移说明。</li>
+</ul>
+
+<div class="callout">
+<strong>关于本地 SQLite</strong>：开发期数据库位于本机；产品上线后我们会在隐私政策更新版明确披露云端存储服务商与所在地域（如境内/境外）。
+</div>
+
+<h2>3. 数据使用方式</h2>
+<ul>
+  <li><strong>邮箱</strong>：用于发送登录验证码；不会用于营销邮件或第三方共享。</li>
+  <li><strong>人格档案 + 聊天记录</strong>：仅用于本产品的对话生成 + 知识检索；不会用于跨用户画像。</li>
+  <li><strong>社区内容</strong>：上传的海报与留言会经过内容审核管道审核，审核结果会写入 <code>moderation_logs</code> 表留痕。</li>
+  <li><strong>分享计数</strong>：累计每个用户主动分享到社区广场的次数，仅本产品内使用。</li>
+</ul>
+
+<h2>4. 第三方共享</h2>
+<p>我们不向第三方出售或交换你的个人信息。下列情况下可能发生有限的数据处理：</p>
+<ul>
+  <li>调用 LLM API（DeepSeek / 智谱等国内大模型服务商）生成对话回复时，本轮对话文本会发送到该服务商；服务商按其合规与隐私协议处理。</li>
+  <li>调用内容安全 API（阿里云/腾讯云）审核社区内容时，待审核文本与图片会发送到该服务商；服务商按其合规与隐私协议处理。</li>
+  <li>法律法规要求或行政/司法机关依法查询时。</li>
+</ul>
+
+<h2>5. 你的权利</h2>
+<ul>
+  <li><strong>查看</strong>：可在产品内"我的"页查看昵称、MBTI、宠物昵称、分享计数等个人信息。</li>
+  <li><strong>修改</strong>：昵称可随时修改；宠物昵称修改有 72 小时冷却（首次设置不限）。</li>
+  <li><strong>注销</strong>：通过主面板"我的 → 账号与隐私 → 注销账号"入口申请账号注销；提交后我们会在 15 个工作日内完成删除（节假日顺延）。</li>
+  <li><strong>删除数据</strong>：注销账号将一并删除你的邮箱、昵称、MBTI、宠物昵称、聊天记录、社区内容、审核日志；累计分享计数会被匿名化保留用于统计分析。</li>
+</ul>
+
+<h2>6. 未成年人保护</h2>
+<p>
+本产品面向 14 岁以上用户；14 岁以下未成年人请在监护人指导下使用，我们不会主动收集未成年人个人信息。
+如发现未成年人误注册，可联系客服协助注销。
+</p>
+
+<h2>7. 政策变更</h2>
+<p>
+本政策可能随产品功能调整而更新；变更会在产品内显著位置公告 7 天后再生效。
+重大变更（如新增数据类型）会通过产品弹窗或邮件通知，并重新征求你的同意。
+</p>
+
+<h2>8. 联系我们</h2>
+<p>
+如有隐私相关问题、行使数据权利或投诉举报，请通过以下方式联系我们：<br />
+邮箱：privacy@petibi.example（占位）<br />
+我们会在 15 个工作日内回复。
+</p>
+
+<hr />
+<p class="meta">© 2026 Petibi. 本政策受中华人民共和国法律管辖。</p>
+
+</body>
+</html>

@@ -5,9 +5,12 @@
 //   - 错误处理统一把 AppError 与未捕获错误转成标准 JSON 响应
 //   - 鉴权通过 requireAuth 中间件按路由粒度挂载，避免耦合
 //   - /api/chat 走 SSE，不属于普通 JSON 响应通道，路由内部自行处理错误
+//   - M4 工单：新增 /api/posters 社区广场路由 + /privacy /terms 合规页面静态路由
 
 import express, { type Express, type NextFunction, type Request, type Response } from "express"
 import cors from "cors"
+import { fileURLToPath } from "node:url"
+import { dirname, join } from "node:path"
 import type { Db } from "./db.js"
 import type { ServerConfig } from "./config.js"
 import type { Mailer } from "./mailer.js"
@@ -17,12 +20,16 @@ import { createAuthRouter } from "./routes/auth.js"
 import { createMeRouter } from "./routes/me.js"
 import { createQuotaRouter } from "./routes/quota.js"
 import { createChatRouter } from "./routes/chat.js"
+import { createPostersRouter, createMeShareCountRouter } from "./routes/posters.js"
+import { createModerationProvider, type ModerationProvider } from "./moderation.js"
 
 /** createApp 依赖注入集合 */
 export interface AppDeps {
   db: Db
   config: ServerConfig
   mailer: Mailer
+  /** M4 工单：内容审核 Provider；不传则 createModerationProvider() 工厂读 env */
+  moderation?: ModerationProvider
 }
 
 /**
@@ -30,6 +37,7 @@ export interface AppDeps {
  */
 export function createApp(deps: AppDeps): Express {
   const { db, config, mailer } = deps
+  const moderation = deps.moderation ?? createModerationProvider()
   const app = express()
 
   // 通用中间件：跨域放行（本地 + 桌宠客户端调用方便；生产可收紧 origin）
@@ -42,6 +50,19 @@ export function createApp(deps: AppDeps): Express {
     res.json({ ok: true, env: config.env })
   })
 
+  // ----- M4 合规页面（红线 R8）：隐私政策 / 用户协议 -----
+  // 直接挂两个 GET 路由，返回 server/public/{privacy,terms}.html。
+  // 路径解析：server/src/app.ts → ../public/...
+  const publicDir = join(dirname(fileURLToPath(import.meta.url)), "..", "public")
+  app.get("/privacy", (_req, res) => {
+    res.sendFile(join(publicDir, "privacy.html"))
+  })
+  app.get("/terms", (_req, res) => {
+    res.sendFile(join(publicDir, "terms.html"))
+  })
+  // M4 海报图片静态托管（避免 404 让前端拿到 path 没法展示）
+  app.use("/data/posters", express.static(join(dirname(fileURLToPath(import.meta.url)), "..", "data", "posters")))
+
   // 公开路由（不需要 token）
   // 注意 mount 点与 router 内部路径拼接：mount="/api/auth"，内部 "/email/code" → 完整 "/api/auth/email/code"
   app.use("/api/auth", createAuthRouter({ db, config, mailer }))
@@ -50,12 +71,17 @@ export function createApp(deps: AppDeps): Express {
   // requireAuth 工厂注入 secret，单测可注入固定 secret 保证可重入
   const auth = requireAuth(config.jwtSecret)
   app.use("/api/me", auth, createMeRouter({ db }))
+  // M4：分享计数路由（鉴权，挂在 /api/me 下）
+  app.use("/api/me", auth, createMeShareCountRouter({ db }))
   app.use("/api/quota", auth, createQuotaRouter({ db, config }))
   app.use(
     "/api/chat",
     auth,
     createChatRouter({ db, llm: config.llm, dailyQuota: config.dailyQuota }),
   )
+  // M4：社区广场路由。GET /api/posters（广场列表）与 GET /api/posters/:id/comments（留言列表）公开；
+  // 其他端点（POST 上传/点赞/留言）在路由内部按需挂载 auth 中间件。
+  app.use("/api/posters", createPostersRouter({ db, config, moderation, auth }))
 
   // 404 兜底：未被任何路由命中
   app.use((req, res) => {

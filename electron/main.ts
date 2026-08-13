@@ -1,8 +1,9 @@
-// 【文件说明】Petibi 主进程（M3 桌宠交互层重构）：
+// 【文件说明】Petibi 主进程（M3 桌宠交互层重构 + M4 海报分享补 portrait IPC）：
 //   1. 启动时根据 userData/profile.json 是否含 mbti 决定先开 setup 窗还是 pet 窗；
 //   2. 同时创建系统托盘（tray），托盘在 setup 阶段也已驻留，方便用户随时退出；
 //   3. 提供 IPC：拖拽（M1 沿用）/ 桌宠右键菜单（含"隐藏桌宠",M3 新增）/ profile 读写（M2 沿用）/
-//      单击桌宠打开面板（M3 新增）/ 面板隐藏（M3 新增）；
+//      单击桌宠打开面板（M3 新增）/ 面板隐藏（M3 新增）/
+//      portrait 读取（M4 海报生成：把 assets/art/portraits/<type>.png 转成 data URL 返回渲染进程）；
 //   4. 桌宠窗和面板窗"关闭"按钮都只隐藏不销毁，进程不退出；托盘"退出"菜单才真正 quit；
 //   5. setup 窗关闭（取消）依旧 quit（避免后台挂窗口）。
 //
@@ -10,6 +11,8 @@
 // setup 窗为正常应用窗口（不透明、有边框、出现在任务栏），适合做邮箱登录 + 测试长流程；
 // panel 窗为 400×600 正常应用窗口，居中显示。
 import { join } from 'path'
+import { readFileSync } from 'fs'
+import * as fsp from 'fs/promises'
 import {
   BrowserWindow,
   Menu,
@@ -193,6 +196,21 @@ function showPanel(): void {
   win.webContents.send('panel:shown')
 }
 
+/**
+ * M4 快捷菜单"跟我对话"：先 ensure panel 窗，再发切 Tab 信号给 panel 渲染进程。
+ * 之所以用独立 IPC 通道（panel:switch-to-chat）而非复用 panel:shown，
+ * 是因为"跟我对话"应当强制切到对话 Tab，而"主面板"是让用户停留在当前 Tab。
+ */
+function showPanelSwitchTo(target: 'chat' | 'baike' | 'community' | 'profile'): void {
+  const win = createPanelWindow()
+  if (!win.isVisible()) win.show()
+  win.focus()
+  win.webContents.send('panel:shown')
+  win.webContents.send('panel:switch-to-chat')
+  // 当前实现下 target 仅作记录（panel 渲染端按 'chat' 处理；后续工单可扩展）
+  void target
+}
+
 /** 关闭 setup 窗并启动 pet 窗（仅在两个窗同时存在的极短过渡期内顺序执行） */
 function transitionSetupToPet(): void {
   if (setupWin && !setupWin.isDestroyed()) {
@@ -324,6 +342,16 @@ function registerIpc(): void {
     transitionSetupToPet()
   })
 
+  // M4 工单 A3 访客模式：用户在 LoginPage 点"先逛逛" → 写 guest 标志 → 关 setup、开 pet
+  ipcMain.on('setup:enter-guest', async () => {
+    try {
+      await writeGuestFlag(true)
+    } catch (err) {
+      console.warn('[main] 写入 guest 标志失败：', err)
+    }
+    transitionSetupToPet()
+  })
+
   // 调试用：渲染进程请求退出 setup（保留接口，方便后续扩展）
   ipcMain.on('setup:cancel', () => {
     isShuttingDown = true
@@ -332,7 +360,7 @@ function registerIpc(): void {
 
   // ===== M3 桌宠交互层新增 =====
 
-  // 桌宠单击（位移 <5px） → 打开主面板
+  // 桌宠单击（位移 <5px） → 打开主面板（保留旧接口：兼容未升级的渲染端）
   ipcMain.on('pet:open-panel', () => {
     showPanel()
   })
@@ -340,6 +368,18 @@ function registerIpc(): void {
   // 桌宠"隐藏桌宠"右键项 → 隐藏 pet 窗
   ipcMain.on('pet:hide', () => {
     hidePet()
+  })
+
+  // ===== M4 快捷菜单 A4：桌宠单击改为弹气泡菜单，点选项各自通知主进程 =====
+
+  // "跟我对话" → 打开主面板 + 让 panel 切到对话 Tab
+  ipcMain.on('pet:quick-chat', () => {
+    showPanelSwitchTo('chat')
+  })
+
+  // "主面板" → 只打开主面板（停留在当前 Tab，让用户自己切）
+  ipcMain.on('pet:quick-panel', () => {
+    showPanel()
   })
 
   // panel 启动期读取本地 profile（panel 渲染进程第一件事）
@@ -352,7 +392,116 @@ function registerIpc(): void {
   ipcMain.on('panel:hide', () => {
     panelWin?.hide()
   })
+
+  // M4 工单 A3：访客模式锁定遮罩里"去登录"按钮 → 主进程关 panel、拉起 setup 窗
+  ipcMain.on('panel:open-setup', () => {
+    // panel 窗先 hide（不销毁），让 setup 窗成为前台焦点
+    if (panelWin && !panelWin.isDestroyed()) {
+      panelWin.hide()
+    }
+    if (!setupWin || setupWin.isDestroyed()) {
+      createSetupWindow()
+    } else {
+      setupWin.show()
+      setupWin.focus()
+    }
+  })
+
+  // ===== M4 海报分享新增 =====
+  /**
+   * 读取人格形象图（assets/art/portraits/<type>.png）并转成 data URL 返回渲染进程。
+   * 设计要点：
+   *  - portrait 是闭源美术资产，放在 assets/ 而非 resources/，不打包进渲染进程的 publicDir；
+   *  - 因此渲染进程不能直接用相对 URL 加载，必须经主进程读取后以 base64 data URL 返回；
+   *  - 只允许 16 型人格白名单内的 type，防止路径穿越读仓库外的文件；
+   *  - 文件不存在时返回 null（UI 走兜底分支：跳过形象图，正常生成海报）。
+   */
+  ipcMain.handle('portrait:read', async (_event, type: string): Promise<string | null> => {
+    if (!MBTI_TYPE_RE.test(type)) return null
+    // process.cwd() 在 dev 是仓库根，prod 是 resources/ 的兄弟目录 out/，两种都需要向上找仓库根
+    const portraitPath = join(process.cwd(), 'assets', 'art', 'portraits', `${type.toLowerCase()}.png`)
+    try {
+      const buf = readFileSync(portraitPath)
+      return `data:image/png;base64,${buf.toString('base64')}`
+    } catch {
+      return null
+    }
+  })
+
+  // ===== M4 整合体验 A1：百科 IPC（data/encyclopedia/<type>.json） =====
+  /**
+   * 读取某一人格的百科全文条目（结构化 JSON：{ personality, animal, family, entries[] }）。
+   * 设计要点：
+   *  - 百科数据是产品核心数据资产（PRD §3.6 / RAG 检索源），但放在 data/ 而非 resources/，
+   *    渲染进程无法直接 fetch，必须经主进程读取 JSON 字符串返回；
+   *  - 白名单限定 16 型人格，防止路径穿越；
+   *  - 文件不存在时返回 null（UI 走兜底：列表展示完整，文案"暂无该人格百科"）；
+   *  - 同步读取：条目平均 ~12KB，IO < 1ms，不走异步。
+   */
+  ipcMain.handle(
+    'encyclopedia:read',
+    async (_event, type: string): Promise<unknown | null> => {
+      if (!MBTI_TYPE_RE.test(type)) return null
+      const filePath = join(process.cwd(), 'data', 'encyclopedia', `${type.toLowerCase()}.json`)
+      try {
+        const raw = readFileSync(filePath, 'utf-8')
+        return JSON.parse(raw)
+      } catch {
+        return null
+      }
+    },
+  )
+
+  /**
+   * 读取百科 index.json（16 人格 → 文件名 + 族色 + 动物）。
+   * 与 data/encyclopedia/<type>.json 是 1:N 关系；index 体积小（<3KB），一次读全。
+   */
+  ipcMain.handle('encyclopedia:index', async (): Promise<unknown | null> => {
+    const filePath = join(process.cwd(), 'data', 'encyclopedia', 'index.json')
+    try {
+      const raw = readFileSync(filePath, 'utf-8')
+      return JSON.parse(raw)
+    } catch {
+      return null
+    }
+  })
+
+  /**
+   * 访客模式标志写入（M4 工单 A3）：渲染进程（LoginPage 点"先逛逛"）写入 userData/guest.json，
+   * 主进程下次启动据此跳过强制登录，直接起 pet + panel。
+   * 不直接读写 StoredProfile，避免污染初始化数据。
+   */
+  ipcMain.handle('guest:set', async (_event, value: boolean): Promise<{ ok: true }> => {
+    await writeGuestFlag(value)
+    return { ok: true }
+  })
+
+  ipcMain.handle('guest:get', async (): Promise<{ isGuest: boolean }> => {
+    return { isGuest: await readGuestFlag() }
+  })
 }
+
+/** 访客模式标记：写入 userData/guest.json；存在视为已选 guest */
+async function writeGuestFlag(value: boolean): Promise<void> {
+  const path = join(app.getPath('userData'), 'guest.json')
+  const tmp = `${path}.tmp`
+  await fsp.writeFile(tmp, JSON.stringify({ isGuest: value }, null, 2), { mode: 0o600 })
+  await fsp.rename(tmp, path)
+}
+
+async function readGuestFlag(): Promise<boolean> {
+  const path = join(app.getPath('userData'), 'guest.json')
+  try {
+    const raw = await fsp.readFile(path, 'utf-8')
+    const parsed = JSON.parse(raw) as { isGuest?: boolean }
+    return Boolean(parsed.isGuest)
+  } catch {
+    return false
+  }
+}
+
+/** 16 型 MBTI 白名单：与 server routes/me.ts 保持一致，避免 portrait IPC 路径穿越 */
+const MBTI_TYPE_RE = /^(INTJ|INTP|ENTJ|ENTP|INFJ|INFP|ENFJ|ENFP|ISTJ|ISFJ|ESTJ|ESFJ|ISTP|ISFP|ESTP|ESFP)$/i
 
 // Electron 就绪后查档案，按状态决定起始窗口；同步建托盘
 app.whenReady().then(async () => {
@@ -365,23 +514,32 @@ app.whenReady().then(async () => {
   }
   registerIpc()
   const stored = await readProfile()
-  if (stored.profile && stored.profile.mbti) {
-    // 已初始化 → 直接起 pet
-    createPetWindow()
-  } else {
-    // 未初始化 → 起 setup 流程
+  // 访客模式分流：profile 未初始化但用户上次选过"先逛逛" → 直接起 pet + panel（绕过 setup）
+  if (!stored.profile || !stored.profile.mbti) {
+    const isGuest = await readGuestFlag()
+    if (isGuest) {
+      createPetWindow()
+      return
+    }
     createSetupWindow()
+    return
   }
+  createPetWindow()
 })
 
 // macOS 习惯：dock 图标被点击时若无窗口则重建。这里没有 dock 图标，纯保险。
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     const storedPromise = readProfile()
-    storedPromise.then((stored) => {
+    storedPromise.then(async (stored) => {
       if (stored.profile && stored.profile.mbti) {
         createPetWindow()
       } else {
+        const isGuest = await readGuestFlag()
+        if (isGuest) {
+          createPetWindow()
+          return
+        }
         createSetupWindow()
       }
     })

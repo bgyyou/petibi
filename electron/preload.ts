@@ -76,6 +76,36 @@ const petApi = {
   onPetHidden: (callback: (hidden: boolean) => void): void => {
     ipcRenderer.on('pet:visibility', (_event, hidden: boolean) => callback(hidden))
   },
+  /**
+   * M4 工单 A4 快捷菜单：桌宠单击改为弹气泡菜单（不再直接 openPanel），
+   * 菜单里"跟我对话"/"主面板"/"隐藏桌宠"三选项各自通过 IPC 通知主进程。
+   */
+  quickActionChat: (): void => {
+    if (ROLE !== 'pet') return
+    ipcRenderer.send('pet:quick-chat')
+  },
+  quickActionPanel: (): void => {
+    if (ROLE !== 'pet') return
+    ipcRenderer.send('pet:quick-panel')
+  },
+  quickActionHide: (): void => {
+    if (ROLE !== 'pet') return
+    ipcRenderer.send('pet:hide')
+  },
+  /**
+   * 主进程通知 pet 渲染进程打开 / 关闭快捷菜单气泡。
+   * 快捷菜单 A4：单击桌宠 → pet 渲染进程显示气泡；点菜单外区域 → pet 渲染进程隐藏。
+   */
+  onQuickMenuVisibility: (callback: (visible: boolean) => void): void => {
+    ipcRenderer.on('pet:quick-menu-visibility', (_event, visible: boolean) => callback(visible))
+  },
+  /**
+   * M4 工单 A3 访客模式：panel 在锁屏点击"去登录"→ 通知主进程拉起 setup 窗。
+   * 与 enterGuest（LoginPage 用）方向相反：从 panel 出发打开 setup。
+   */
+  openSetup: (): void => {
+    ipcRenderer.send('panel:open-setup')
+  },
 
   // ===== M2 新增 API（setup 窗用） =====
   /** 读取本地 userData/profile.json；不存在时返回 { token: null, profile: null } */
@@ -90,6 +120,13 @@ const petApi = {
   completeSetup: (): void => {
     ipcRenderer.send('setup:complete')
   },
+  /**
+   * M4 工单 A3 访客模式：用户在 LoginPage 点"先逛逛" →
+   * 通知主进程写 guest 标志 + 关 setup 窗、开 pet 窗（绕过完整初始化）。
+   */
+  enterGuest: (): void => {
+    ipcRenderer.send('setup:enter-guest')
+  },
   /** 用户主动取消初始化（保留接口，目前未在 UI 调用） */
   cancelSetup: (): void => {
     ipcRenderer.send('setup:cancel')
@@ -100,6 +137,15 @@ const petApi = {
    */
   spriteUrl: (type: string, frame: 'idle_0' | 'idle_1' = 'idle_0'): string => {
     return `sprites/${type.toLowerCase()}/${frame}.png`
+  },
+  /**
+   * 读取人格形象图（512×512，闭源美术资产）并返回 base64 data URL。
+   * M4 海报生成专用：portrait 不在 vite publicDir，渲染进程不能直读，
+   * 经主进程 IPC 走 fs 读取后转 data URL 返回。
+   * 文件不存在或人格非法时返回 null。
+   */
+  getPortraitDataUrl: (type: string): Promise<string | null> => {
+    return ipcRenderer.invoke('portrait:read', type)
   },
 }
 
@@ -117,6 +163,47 @@ const panelApi = {
   /** panel 由外部（桌宠）唤起时收到通知，便于拉取最新配额或切回对话 Tab */
   onPanelShown: (callback: () => void): void => {
     ipcRenderer.on('panel:shown', () => callback())
+  },
+  /**
+   * 切到指定 Tab（外部唤回 / 快捷菜单"跟我对话"用）。
+   * 通过 IPC send 让主进程把事件转发给 panel 渲染进程；
+   * 与 onPanelShown 不同的是携带 target 参数，决定切到哪个 Tab。
+   */
+  onPanelTabRequest: (callback: (target: 'chat' | 'baike' | 'community' | 'profile') => void): void => {
+    ipcRenderer.on('panel:switch-tab', (_event, target) => callback(target))
+  },
+  /**
+   * 主进程转发给 panel 渲染进程："切到对话 Tab"。
+   * 快捷菜单 A4 实现：主进程在用户点"跟我对话"时把该信号转发给 panel。
+   */
+  onPanelSwitchToChat: (callback: () => void): void => {
+    ipcRenderer.on('panel:switch-to-chat', () => callback())
+  },
+  /**
+   * 主进程通知 panel："用户已被引导到登录页 / 初始化流程"。
+   * guest 模式 A3 用：用户点"开始测试"/"登录"时由 setup 窗通知 panel 收起。
+   */
+  onPanelExitGuest: (callback: () => void): void => {
+    ipcRenderer.on('panel:exit-guest', () => callback())
+  },
+  /**
+   * 读 16 人格百科数据：通过主进程读 data/encyclopedia/<type>.json，避免渲染进程直读。
+   * 渲染进程不在 vite publicDir，无法 fetch 仓库根 data/。
+   */
+  readEncyclopedia: (type: string): Promise<unknown | null> => {
+    return ipcRenderer.invoke('encyclopedia:read', type)
+  },
+  /** 读 data/encyclopedia/index.json（人格列表） */
+  readEncyclopediaIndex: (): Promise<unknown | null> => {
+    return ipcRenderer.invoke('encyclopedia:index')
+  },
+  /** 写入访客模式标记（userData/guest.json） */
+  setGuestFlag: (value: boolean): Promise<{ ok: true }> => {
+    return ipcRenderer.invoke('guest:set', value)
+  },
+  /** 读取访客模式标记 */
+  getGuestFlag: (): Promise<{ isGuest: boolean }> => {
+    return ipcRenderer.invoke('guest:get')
   },
 }
 

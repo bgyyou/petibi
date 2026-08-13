@@ -36,6 +36,15 @@ export const ErrorCodes = {
   InvalidPetNickname: "INVALID_PET_NICKNAME",
   /** 宠物昵称修改冷却中（距上次修改不足 72 小时） */
   PetNicknameCooldown: "PET_NICKNAME_COOLDOWN",
+  // ---- M4 社区 / 审核 相关 ----
+  /** 海报 / 留言 / 图片上传参数非法（缺字段、超长、不是 base64 等） */
+  InvalidPoster: "INVALID_POSTER",
+  /** 海报 / 留言内容被审核拒绝（含敏感词或图片违规） */
+  ContentRejected: "CONTENT_REJECTED",
+  /** 海报 / 留言内容仍在审核中（pending），不可读 / 不可上墙 */
+  ContentPending: "CONTENT_PENDING",
+  /** 留言内容超长（POST /api/posters/:id/comments 限 ≤200 字） */
+  CommentTooLong: "COMMENT_TOO_LONG",
 } as const
 
 /** 错误码字面量类型 */
