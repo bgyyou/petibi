@@ -1,27 +1,29 @@
-<!-- 【文件说明】主面板窗（panel window）的入口 HTML：
-     与桌宠窗（src/index.html）分离，避免透明背景样式污染；
-     与 setup 窗（src/setup/index.html）分离，便于 TaskList 单独打包。 -->
+<!-- 【文件说明】主面板窗（panel window）的入口 HTML（T3 工单：DESIGN.md v1）：
+     panel 窗改为 frame:false + 自绘标题栏（src/components/TitleBar.tsx）。
+     桌面像素风：奶油底 + 像素字体。 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <title>Petibi</title>
     <style>
-      /* panel 窗是普通应用窗口，使用浅色纸感底色，与桌宠的透明底色完全隔离 */
+      /* panel 窗基础样式：与 setup 共享色板，标题栏由 TitleBar 组件提供 */
       html,
       body {
         margin: 0;
         padding: 0;
-        background: #fafaf7;
+        background: #fef9ef;
+        color: #2b2320;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
           'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-        color: #2a2a28;
         -webkit-font-smoothing: antialiased;
         height: 100%;
         overflow: hidden;
       }
       #root {
         height: 100%;
+        display: flex;
+        flex-direction: column;
       }
     </style>
   </head>

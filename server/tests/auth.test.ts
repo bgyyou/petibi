@@ -1,5 +1,6 @@
 // 【文件说明】后端鉴权 / 邮箱登录集成测试（合并自 M2 工单 __tests__/api.test.ts 鉴权部分 + 新增 JWT 链路）
 // 覆盖：发码 / 校验 / 自动注册 / 写档 / quota HTTP 路由 / healthz / 404 / 鉴权失败
+// + M4 P2-025 登录门禁：JWT 默认 30 天有效期（config.jwtExpiresInSec）
 //
 // 跑法：cd server && npx vitest run tests/auth.test.ts
 // 与 chat-route.test.ts / quota.test.ts / intent-filter.test.ts 等并列存在，互不干扰。
@@ -285,18 +286,46 @@ describe("写档 /api/me/profile", () => {
     expect(res.body.error.code).toBe(ErrorCodes.InvalidProfile)
   })
 
-  it("重复写档 → 409", async () => {
+  it("Bug 1 修复：重复写档改为 UPSERT（200，覆盖 mbti/subtype/nickname）", async () => {
+    // M4 P2-025：原行为是「重复写档 → 409」；现在重测人格走 ResultPage →
+    // saveProfile 必须能更新已存在的档案，否则重测链路在 server 端就 409 了。
     const { token } = await registerAndLogin(env.app, "dup@example.com")
     const first = await request(env.app)
       .post("/api/me/profile")
       .set("Authorization", `Bearer ${token}`)
       .send({ nickname: "A", mbti: "INTJ", subtype: "stable" })
     expect(first.status).toBe(200)
+    expect(first.body.mbti).toBe("INTJ")
+    // 第二次写档视为更新，不再 409
     const second = await request(env.app)
       .post("/api/me/profile")
       .set("Authorization", `Bearer ${token}`)
       .send({ nickname: "B", mbti: "INFP", subtype: "sensitive" })
-    expect(second.status).toBe(409)
+    expect(second.status).toBe(200)
+    expect(second.body.mbti).toBe("INFP")
+    expect(second.body.subtype).toBe("sensitive")
+    expect(second.body.nickname).toBe("B")
+    // 后续 /api/me 也应看到更新后的值
+    const me = await request(env.app).get("/api/me").set("Authorization", `Bearer ${token}`)
+    expect(me.body.mbti).toBe("INFP")
+    expect(me.body.subtype).toBe("sensitive")
+  })
+
+  it("Bug 1：重测语义——同 nickname 重复提交，仅 mbti/subtype 变更也能成功", async () => {
+    const { token } = await registerAndLogin(env.app, "retest@example.com")
+    await request(env.app)
+      .post("/api/me/profile")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ nickname: "蝴蝶", mbti: "ESFP", subtype: "stable" })
+    // 重测：nickname 不变，mbti/subtype 改
+    const retest = await request(env.app)
+      .post("/api/me/profile")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ nickname: "蝴蝶", mbti: "INTJ", subtype: "sensitive" })
+    expect(retest.status).toBe(200)
+    expect(retest.body.mbti).toBe("INTJ")
+    expect(retest.body.subtype).toBe("sensitive")
+    expect(retest.body.nickname).toBe("蝴蝶")
   })
 })
 
@@ -389,3 +418,43 @@ describe("/api/chat 鉴权 + profile 完整性", () => {
 
 // 防止 TypeScript 认为 Mailer 是 unused（构造时已注入；类型导入仅用于 setupEnv 签名）
 void (null as unknown as Mailer)
+
+describe("M4 P2-025 登录门禁：JWT 30 天有效期", () => {
+  let env: TestEnv
+  beforeEach(() => { env = setupEnv() })
+  afterEach(() => env.cleanup())
+
+  /**
+   * 真实链路下校验：login 拿到的 token 解析后 exp - iat 应约等于 30 天。
+   * - config.jwtExpiresInSec 默认 60*60*24*30（30 天）；
+   * - jsonwebtoken 在签发时把 exp = iat + expiresInSec 写入 payload；
+   * - ±5 秒容差是因为 iat 用秒、jwt.sign 也用秒，与测试运行时的 wall clock 有微小漂移。
+   */
+  it("默认 jwtExpiresInSec=30 天（login 返回的 token 解析 exp - iat ≈ 30*86400）", async () => {
+    const { token } = await registerAndLogin(env.app)
+    const parts = token.split(".")
+    expect(parts).toHaveLength(3)
+    const payloadJson = Buffer.from(parts[1], "base64url").toString("utf8")
+    const payload = JSON.parse(payloadJson) as { iat?: number; exp?: number }
+    expect(typeof payload.iat).toBe("number")
+    expect(typeof payload.exp).toBe("number")
+    const lifetime = (payload.exp as number) - (payload.iat as number)
+    const days30 = 30 * 24 * 60 * 60
+    expect(lifetime).toBeGreaterThanOrEqual(days30 - 5)
+    expect(lifetime).toBeLessThanOrEqual(days30 + 5)
+  })
+
+  it("覆盖 jwtExpiresInSec 后 token 寿命随之变化（验证 config 透传）", async () => {
+    env.cleanup()
+    // 用 1 小时（3600 秒）跑一次确认 overrides 生效
+    env = setupEnv({ jwtExpiresInSec: 3600 })
+    const { token } = await registerAndLogin(env.app)
+    const parts = token.split(".")
+    const payload = JSON.parse(
+      Buffer.from(parts[1], "base64url").toString("utf8"),
+    ) as { iat: number; exp: number }
+    const lifetime = payload.exp - payload.iat
+    expect(lifetime).toBeGreaterThanOrEqual(3600 - 5)
+    expect(lifetime).toBeLessThanOrEqual(3600 + 5)
+  })
+})

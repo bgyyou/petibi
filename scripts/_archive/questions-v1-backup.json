@@ -1,0 +1,326 @@
+{
+  "version": "1.0",
+  "dimensions": ["EI", "SN", "TF", "JP", "ES"],
+  "questions": [
+    {
+      "id": "EI01",
+      "dimension": "EI",
+      "direction": "E",
+      "text": "和不熟悉的同学组队时，你通常很快就能自然地聊起来。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #11（Feel comfortable around people.）中文化场景改写"
+    },
+    {
+      "id": "EI02",
+      "dimension": "EI",
+      "direction": "E",
+      "text": "和朋友讨论一个你熟悉的话题时，你常会接着说下去。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #21（Start conversations.）中文化场景改写"
+    },
+    {
+      "id": "EI03",
+      "dimension": "EI",
+      "direction": "E",
+      "text": "集体活动刚开始时，你常会主动把大家都带动起来。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #31（Talk to a lot of different people at parties.）中文化场景改写"
+    },
+    {
+      "id": "EI04",
+      "dimension": "EI",
+      "direction": "E",
+      "text": "一群人聊天时，你通常不介意成为话题的中心。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #41（Don't mind being the center of attention.）中文化场景改写"
+    },
+    {
+      "id": "EI05",
+      "dimension": "EI",
+      "direction": "I",
+      "text": "面对刚认识的人，你通常会先安静地听一会儿。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #46（Am quiet around strangers.）中文化场景改写"
+    },
+    {
+      "id": "EI06",
+      "dimension": "EI",
+      "direction": "I",
+      "text": "在需要临时发言的场合，你会先在脑中把内容整理好。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #26（Have little to say.）中文化场景改写"
+    },
+    {
+      "id": "EI07",
+      "dimension": "EI",
+      "direction": "I",
+      "text": "聚会里人很多时，你往往更愿意和少数熟人待在一起。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #16（Keep in the background.）中文化场景改写"
+    },
+    {
+      "id": "EI08",
+      "dimension": "EI",
+      "direction": "I",
+      "text": "刚认识的人在场时，你通常不会抢着表现自己。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #36（Don't like to draw attention to myself.）中文化场景改写"
+    },
+    {
+      "id": "SN01",
+      "dimension": "SN",
+      "direction": "S",
+      "text": "学习新技能时，你更愿意从具体可复现的操作步骤开始。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #20（Am not interested in abstract ideas.）中文化场景改写"
+    },
+    {
+      "id": "SN02",
+      "dimension": "SN",
+      "direction": "S",
+      "text": "比起讨论抽象概念，你通常更容易被真实案例吸引。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #10（Have difficulty understanding abstract ideas.）中文化场景改写"
+    },
+    {
+      "id": "SN03",
+      "dimension": "SN",
+      "direction": "S",
+      "text": "做手头任务时，你更容易注意到眼前的具体细节。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #13（Pay attention to details.）中文化场景改写"
+    },
+    {
+      "id": "SN04",
+      "dimension": "SN",
+      "direction": "S",
+      "text": "需要做判断时，你更愿意先看已经可以验证的事实。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Competence facet（Look at the facts.）中文化场景改写"
+    },
+    {
+      "id": "SN05",
+      "dimension": "SN",
+      "direction": "N",
+      "text": "看到一个点子时，你常会继续想它还能变成什么。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #25（Have excellent ideas.）中文化场景改写"
+    },
+    {
+      "id": "SN06",
+      "dimension": "SN",
+      "direction": "N",
+      "text": "面对熟悉的问题，你偶尔也会主动寻找一个全新的解法。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #50（Am full of ideas.）中文化场景改写"
+    },
+    {
+      "id": "SN07",
+      "dimension": "SN",
+      "direction": "N",
+      "text": "和人讨论观点时，你很容易注意到事情背后的多种可能。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #15（Have a vivid imagination.）中文化场景改写"
+    },
+    {
+      "id": "SN08",
+      "dimension": "SN",
+      "direction": "N",
+      "text": "选择活动时，你有时会优先考虑它能否带来新鲜体验。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Adventurousness facet（Prefer variety to routine.）中文化场景改写"
+    },
+    {
+      "id": "TF01",
+      "dimension": "TF",
+      "direction": "T",
+      "text": "朋友纠结方案时，你通常先比较哪个选项更有效率。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Rationality facet（Do things in a logical order.）中文化场景改写"
+    },
+    {
+      "id": "TF02",
+      "dimension": "TF",
+      "direction": "T",
+      "text": "做重要决定时，你更看重事实和一致的标准。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Rationality facet（Believe in a logical answer for everything.）中文化场景改写"
+    },
+    {
+      "id": "TF03",
+      "dimension": "TF",
+      "direction": "T",
+      "text": "讨论出现分歧时，你更愿意直接指出问题在哪里。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Rationality facet（Come straight to the point.）中文化场景改写"
+    },
+    {
+      "id": "TF04",
+      "dimension": "TF",
+      "direction": "T",
+      "text": "时间有限时，你通常会先按影响和优先级作出取舍。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Rationality facet（Reason logically.）中文化场景改写"
+    },
+    {
+      "id": "TF05",
+      "dimension": "TF",
+      "direction": "F",
+      "text": "朋友遇到不顺时，你通常会先照顾他的感受。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #37（Take time out for others.）中文化场景改写"
+    },
+    {
+      "id": "TF06",
+      "dimension": "TF",
+      "direction": "F",
+      "text": "小组意见不一致时，你希望先听每个人为什么这么想。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #17（Sympathize with others' feelings.）中文化场景改写"
+    },
+    {
+      "id": "TF07",
+      "dimension": "TF",
+      "direction": "F",
+      "text": "面对亲近的人提要求时，你很难完全不考虑他的难处。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #42（Feel others' emotions.）中文化场景改写"
+    },
+    {
+      "id": "TF08",
+      "dimension": "TF",
+      "direction": "F",
+      "text": "看到别人因为失误而难过时，你会主动表示理解。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #42（Feel others' emotions.）中文化场景改写"
+    },
+    {
+      "id": "JP01",
+      "dimension": "JP",
+      "direction": "J",
+      "text": "周末有临时空档时，你通常会提前想好怎么安排。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #3（Am always prepared.）中文化场景改写"
+    },
+    {
+      "id": "JP02",
+      "dimension": "JP",
+      "direction": "J",
+      "text": "开始一项长期任务前，你会先列出几个关键步骤。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #33（Like order.）中文化场景改写"
+    },
+    {
+      "id": "JP03",
+      "dimension": "JP",
+      "direction": "J",
+      "text": "有几件事要同时处理时，你习惯先做完一件再接下一件。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #23（Get chores done right away.）中文化场景改写"
+    },
+    {
+      "id": "JP04",
+      "dimension": "JP",
+      "direction": "J",
+      "text": "约定好的安排临近变化时，你会尽快把替代方案定下来。",
+      "source": "IPIP",
+      "source_ref": "IPIP-BFFM item #43（Follow a schedule.）中文化场景改写"
+    },
+    {
+      "id": "JP05",
+      "dimension": "JP",
+      "direction": "P",
+      "text": "手里的安排不排满时，你反而更容易发现当天的惊喜。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Adventurousness facet（Prefer variety to routine.）中文化场景改写"
+    },
+    {
+      "id": "JP06",
+      "dimension": "JP",
+      "direction": "P",
+      "text": "做选择时，你常会先保留几个可能，再继续观察。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Adventurousness facet（Prefer variety to routine.）中文化场景改写"
+    },
+    {
+      "id": "JP07",
+      "dimension": "JP",
+      "direction": "P",
+      "text": "碰到没有固定答案的事，你更愿意边走边调整。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Adventurousness facet（Prefer variety to routine.）中文化场景改写"
+    },
+    {
+      "id": "JP08",
+      "dimension": "JP",
+      "direction": "P",
+      "text": "临时出现新的可能时，你通常不急着马上定下来。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Adventurousness facet（Prefer variety to routine.）中文化场景改写"
+    },
+    {
+      "id": "ES01",
+      "dimension": "ES",
+      "direction": "stable",
+      "text": "遇到临时插队或规则被改时，你通常能让自己保持冷静。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Stability facet（Keep my cool.）中文化场景改写"
+    },
+    {
+      "id": "ES02",
+      "dimension": "ES",
+      "direction": "stable",
+      "text": "一天里小麻烦不断时，你一般不会被其中一件打乱太久。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Stability facet（Am not easily bothered by things.）中文化场景改写"
+    },
+    {
+      "id": "ES03",
+      "dimension": "ES",
+      "direction": "stable",
+      "text": "原计划临时被打乱后，你很快就能把情绪平复下来。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Stability facet（Seldom get mad.）中文化场景改写"
+    },
+    {
+      "id": "ES04",
+      "dimension": "ES",
+      "direction": "stable",
+      "text": "反复修改已经很接近完成的事情，你通常不会立刻烦躁。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Stability facet（Am not easily frustrated.）中文化场景改写"
+    },
+    {
+      "id": "ES05",
+      "dimension": "ES",
+      "direction": "sensitive",
+      "text": "突然多出几项任务时，你很快就会觉得压力很大。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Stability facet（Get stressed out easily.）中文化场景改写"
+    },
+    {
+      "id": "ES06",
+      "dimension": "ES",
+      "direction": "sensitive",
+      "text": "收到语气不太友好的消息时，你的心情很容易受影响。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Stability facet（Get upset easily.）中文化场景改写"
+    },
+    {
+      "id": "ES07",
+      "dimension": "ES",
+      "direction": "sensitive",
+      "text": "工作环境里声音或节奏一变，你就很难继续专注。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Stability facet（Am easily disturbed.）中文化场景改写"
+    },
+    {
+      "id": "ES08",
+      "dimension": "ES",
+      "direction": "sensitive",
+      "text": "一天里常有意料之外的小事，你的情绪会跟着起落。",
+      "source": "IPIP",
+      "source_ref": "IPIP AB5C Stability facet（Change my mood a lot.）中文化场景改写"
+    }
+  ]
+}

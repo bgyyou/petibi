@@ -540,7 +540,8 @@ export function ChatTab(): ReactNode {
                 onClick={() => void handleGeneratePoster(m.id)}
                 title="把这轮对话生成可分享的海报"
               >
-                🎨 生成海报
+                <PixelPosterIcon />
+                生成海报
               </button>
             </div>
           )}
@@ -579,7 +580,8 @@ export function ChatTab(): ReactNode {
           disabled={streaming}
           title="清空当前对话，开启新会话（不影响历史对话）"
         >
-          ✨ 新会话
+          <PixelSparkleIcon />
+          新会话
         </button>
         <span className={`chat-quota-pill ${quotaEmpty ? 'is-empty' : ''}`}>
           {quota ? `已用 ${quota.used}` : '—'}
@@ -590,9 +592,9 @@ export function ChatTab(): ReactNode {
       <div className="chat-messages" ref={listRef}>
         {messages.length === 0 && (
           <div className="chat-empty">
-            <div style={{ fontSize: 28, marginBottom: 8 }}>👋</div>
-            <div>和你的桌宠聊聊吧</div>
-            <div style={{ marginTop: 8, fontSize: 11, color: '#b0b0aa' }}>
+            <PixelWaveIcon />
+            <div style={{ marginTop: 8 }}>和你的桌宠聊聊吧</div>
+            <div style={{ marginTop: 8, fontSize: 11, color: '#8b8680' }}>
               {PLACEHOLDER_SAMPLE}
             </div>
           </div>
@@ -654,7 +656,11 @@ export function ChatTab(): ReactNode {
             <div className="poster-modal-body">
               {posterModal.mode === 'generating' && (
                 <div className="poster-modal-loading">
-                  <div className="poster-spinner" aria-hidden="true" />
+                  <div className="poster-spinner" aria-hidden="true">
+                    {Array.from({ length: 16 }).map((_, i) => (
+                      <span key={i} />
+                    ))}
+                  </div>
                   <div>正在绘制海报…</div>
                 </div>
               )}
@@ -719,5 +725,75 @@ export function ChatTab(): ReactNode {
         </div>
       )}
     </div>
+  )
+}
+
+// ===== 像素图标（DESIGN.md §3 禁止 emoji 当功能图标）=====
+/** 海报 icon：像素画板 + 4 色块；尺寸 12×12 */
+function PixelPosterIcon(): ReactNode {
+  return (
+    <svg
+      viewBox="0 0 12 12"
+      width="12"
+      height="12"
+      shapeRendering="crispEdges"
+      aria-hidden="true"
+    >
+      {/* 画板边框 */}
+      <rect x="1" y="2" width="10" height="8" fill="#2B2320" />
+      {/* 画板内底色 */}
+      <rect x="2" y="3" width="8" height="6" fill="#FEF9EF" />
+      {/* 像素色块：4 个不同色（DESIGN.md §2 四族色） */}
+      <rect x="3" y="4" width="2" height="2" fill="#785D87" />
+      <rect x="6" y="4" width="2" height="2" fill="#3E8F6E" />
+      <rect x="3" y="7" width="2" height="2" fill="#399FB9" />
+      <rect x="6" y="7" width="2" height="2" fill="#E4C728" />
+    </svg>
+  )
+}
+
+/** 挥手 icon：像素手掌；尺寸 28×28（空状态用） */
+function PixelWaveIcon(): ReactNode {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      width="32"
+      height="32"
+      shapeRendering="crispEdges"
+      aria-hidden="true"
+    >
+      {/* 手掌轮廓 */}
+      <rect x="4" y="3" width="6" height="1" fill="#2B2320" />
+      <rect x="3" y="4" width="8" height="1" fill="#2B2320" />
+      <rect x="3" y="5" width="9" height="5" fill="#E4C728" />
+      <rect x="3" y="10" width="8" height="1" fill="#2B2320" />
+      <rect x="4" y="11" width="6" height="1" fill="#2B2320" />
+      {/* 手指 */}
+      <rect x="3" y="4" width="1" height="2" fill="#2B2320" />
+      <rect x="5" y="2" width="1" height="2" fill="#2B2320" />
+      <rect x="7" y="2" width="1" height="2" fill="#2B2320" />
+      <rect x="9" y="3" width="1" height="2" fill="#2B2320" />
+      {/* 袖口 */}
+      <rect x="3" y="11" width="8" height="2" fill="#785D87" />
+    </svg>
+  )
+}
+
+/** 闪光 icon：4 个像素块拼一个十字星 */
+function PixelSparkleIcon(): ReactNode {
+  return (
+    <svg
+      viewBox="0 0 8 8"
+      width="10"
+      height="10"
+      shapeRendering="crispEdges"
+      aria-hidden="true"
+    >
+      <rect x="3" y="0" width="2" height="2" fill="#2B2320" />
+      <rect x="3" y="6" width="2" height="2" fill="#2B2320" />
+      <rect x="0" y="3" width="2" height="2" fill="#2B2320" />
+      <rect x="6" y="3" width="2" height="2" fill="#2B2320" />
+      <rect x="2" y="2" width="4" height="4" fill="#E4C728" />
+    </svg>
   )
 }

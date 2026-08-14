@@ -1,134 +1,265 @@
-/* 【文件说明】初始化流程窗的样式：纸感浅色底、圆角卡片、统一字号节奏。
-   与桌宠窗的"透明背景 + 单元素 128×128"完全隔离，避免互相干扰。 */
+/* 【文件说明】初始化流程窗（setup）的样式（T3 工单 / DESIGN.md v1 落地）：
+   与桌宠的"透明背景 + 单元素 128×128"完全隔离，避免互相干扰。
+   视觉规则（DESIGN.md §3 硬性规则 = 最高优先级）：
+     - 禁止圆角 / 渐变 / 柔和阴影；统一 3px 墨边框 #2B2320 / 4px 硬阴影 / 奶油底 #FEF9EF
+     - 强调色只用四族色（紫 #785D87 / 绿 #3E8F6E / 蓝 #399FB9 / 黄 #E4C728）
+     - 按钮 hover 时 4px→2px 阴影 + 位移 2px；active 时阴影消失 + 位移 4px
+     - 标题用像素字体（PetibiPixel），正文系统黑体栈 */
 
-/* 全局布局 */
+/* ===== 全局布局 ===== */
 .setup-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100%;
-  padding: 32px 48px;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 24px 36px;
   box-sizing: border-box;
-  background: #fafaf7;
-  color: #2a2a28;
+  background: var(--cream);
+  color: var(--ink);
+  position: relative;
 }
 
+/* ===== 页头 ===== */
 .setup-header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+  /* 收尾修复：固定不被压缩；选人格页 4×4 卡片很满时不能让 header 被挤掉 */
+  flex: 0 0 auto;
 }
 
+/* 标题：像素字体（H1 = 24px，DESIGN.md §4） */
 .setup-title {
   margin: 0;
-  font-size: 22px;
-  font-weight: 600;
+  font-family: var(--font-pixel-en), var(--font-pixel-cn), var(--font-body);
+  font-size: var(--fs-h1);
+  font-weight: 400;
   letter-spacing: 0.5px;
+  color: var(--ink);
+  image-rendering: pixelated;
+  /* 像素字体小标题在 setup 桌面端稍大点：26px */
+  line-height: 1.2;
 }
 
 .setup-subtitle {
   margin: 0;
-  font-size: 14px;
-  color: #6e6e6a;
+  font-size: var(--fs-small);
+  color: var(--mute);
   font-weight: 400;
 }
 
+/* ===== 主体 ===== */
 .setup-body {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
+/* ===== 页脚 ===== */
 .setup-footer {
-  margin-top: 20px;
+  margin-top: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  flex: 0 0 auto;
+  padding-top: 12px;
+  border-top: var(--border-px) dashed var(--mute);
 }
 
+/* ===== 返回键（M4 setup 返回导航工单 + 收尾修复）=====
+   setup 流程每步左上角的「← 返回」按钮：像素风纸白底 + 3px 墨边框 + 硬阴影。
+   风格对齐 DESIGN.md §3 / §5：禁止圆角 / 渐变 / 柔和阴影；hover 时 4px→2px + 位移 2px。
+   位置：作为 setup-shell 内 setup-header 之上的独立一行（左对齐），
+   这样"左上角"语义明确，且不挤压标题区。返回目标文字由 label prop 注入。
+
+   收尾修复：owner 实测反馈"选人格页看不到返回键"。原因：setup-shell 内的 flex
+   column 默认 flex-shrink:1，setup-body 在 4×4 人格卡片很多时会压缩 setup-back
+   的渲染区域甚至把按钮挤出可视范围。这里固定 flex-shrink:0 让按钮始终完整显示；
+   同时 z-index 提升到 20 确保不被 setup-header / 卡片覆盖；字号略放大到 13px 提升
+   在 800×640 setup 窗里的可视性。 */
+.setup-back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--paper);
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+  transition: var(--transition);
+  user-select: none;
+  /* 收尾修复：不让 setup-body 的 overflow-y:auto 把按钮挤出去；不缩不缩 */
+  flex: 0 0 auto;
+  z-index: 20;
+  /* 防止 titlebar 拖拽区捕获鼠标事件导致按钮看似不响应（防御纵深） */
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+.setup-back:hover:not(:disabled) {
+  box-shadow: 1px 1px 0 var(--ink);
+  transform: translate(1px, 1px);
+  background: var(--family-color-bg);
+}
+.setup-back:active:not(:disabled) {
+  box-shadow: 0 0 0 var(--ink);
+  transform: translate(2px, 2px);
+}
+.setup-back:disabled,
+.setup-back.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  /* 置灰时不响应 hover 位移（避免视觉抖动） */
+  box-shadow: 2px 2px 0 var(--ink);
+  transform: none;
+}
+/* 左箭头 icon 容器（SVG 像素画） */
+.setup-back-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+}
+/* 返回目标文字（"返回昵称" / "返回登录" 等） */
+.setup-back-label {
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
 .mock-banner {
   align-self: flex-end;
   padding: 4px 10px;
-  border-radius: 12px;
-  background: #fff4d6;
-  color: #8a6a1e;
-  font-size: 12px;
-  border: 1px solid #ecd58a;
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  background: var(--family-explorer-bg);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  margin-bottom: 12px;
+  box-shadow: 2px 2px 0 var(--ink);
 }
 
-/* 表单控件 */
+.error-banner {
+  background: #fbe9e9;
+  border: var(--border-px) solid #b53a3a;
+  color: #8a2a2a;
+  border-radius: 0;
+  padding: 8px 12px;
+  font-size: var(--fs-small);
+  margin-bottom: 12px;
+  box-shadow: 2px 2px 0 #b53a3a;
+}
+
+/* ===== 表单 ===== */
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .field label {
-  font-size: 13px;
-  color: #5e5e58;
+  font-size: var(--fs-small);
+  color: var(--mute);
+  font-weight: 500;
 }
 
 .field input,
 .field textarea {
-  padding: 10px 12px;
-  border: 1px solid #d6d2c8;
-  border-radius: 8px;
-  background: #ffffff;
-  font-size: 14px;
   font-family: inherit;
-  color: #2a2a28;
+  font-size: var(--fs-body);
+  padding: 10px 12px;
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
   outline: none;
-  transition: border-color 120ms ease;
+  transition: var(--transition);
+  box-shadow: 2px 2px 0 var(--ink);
 }
 
 .field input:focus,
 .field textarea:focus {
-  border-color: #8a6a1e;
+  border-color: var(--family-color);
+  box-shadow: inset 0 0 0 2px var(--family-color), 2px 2px 0 var(--family-color);
 }
 
 .field-error {
-  font-size: 12px;
+  font-size: var(--fs-small);
   color: #b53a3a;
-}
-
-/* 按钮 */
-.btn {
-  padding: 10px 18px;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  background: #2a2a28;
-  color: #fafaf7;
-  font-size: 14px;
   font-weight: 500;
+}
+
+/* ===== 按钮 ===== */
+.btn {
+  font-family: inherit;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  padding: 10px 18px;
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
   cursor: pointer;
-  transition: opacity 120ms ease, background 120ms ease;
+  box-shadow: var(--shadow-rest);
+  transition: var(--transition);
+  user-select: none;
 }
 
-.btn:hover {
-  opacity: 0.92;
+.btn:hover:not(:disabled) {
+  box-shadow: var(--shadow-hover);
+  transform: translate(2px, 2px);
 }
-
+.btn:active:not(:disabled) {
+  box-shadow: var(--shadow-active);
+  transform: translate(4px, 4px);
+}
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* 主按钮 = 族色填充 + 白字 */
+.btn:not(.btn-ghost):not(.btn-link) {
+  background: var(--family-color);
+  color: #fff;
+  border-color: var(--ink);
+}
+.btn:not(.btn-ghost):not(.btn-link):hover:not(:disabled) {
+  /* hover：族色阴影（更柔和的位移），让族色按钮不会和黑色硬阴影冲突 */
+  box-shadow: 2px 2px 0 var(--ink);
+  transform: translate(2px, 2px);
+}
+
 .btn-ghost {
-  background: transparent;
-  color: #5e5e58;
-  border-color: #d6d2c8;
+  background: var(--paper);
+  color: var(--ink);
 }
 
 .btn-link {
   background: transparent;
-  color: #2a2a28;
+  color: var(--family-color);
   border-color: transparent;
   padding: 4px 0;
   text-decoration: underline;
   text-underline-offset: 4px;
+  box-shadow: none;
+}
+.btn-link:hover {
+  transform: none;
+  box-shadow: none;
+  opacity: 0.85;
 }
 
 .btn-row {
@@ -137,31 +268,44 @@
   align-items: center;
 }
 
-/* 进度条 */
+/* ===== 进度条 ===== */
 .progress {
   width: 100%;
-  height: 6px;
-  background: #ece7da;
-  border-radius: 3px;
+  height: 12px;
+  background: var(--paper);
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
+  box-shadow: 2px 2px 0 var(--ink);
 }
 
 .progress-bar {
   height: 100%;
-  background: #8a6a1e;
-  transition: width 200ms ease;
+  background: var(--family-color);
+  /* 像素风进度条：linear-gradient 配合 6px 等距硬块，模拟"逐像素推进" */
+  background-image: linear-gradient(
+    to right,
+    var(--family-color) 0,
+    var(--family-color) 6px,
+    rgba(255, 255, 255, 0.3) 6px,
+    rgba(255, 255, 255, 0.3) 12px
+  );
+  background-size: 12px 100%;
+  background-repeat: repeat-x;
+  transition: width 200ms ease-out;
 }
 
 .progress-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  color: #6e6e6a;
-  margin-bottom: 24px;
+  font-size: var(--fs-small);
+  color: var(--mute);
+  margin-bottom: 18px;
+  font-family: var(--font-pixel-en), var(--font-body);
 }
 
-/* 16 选 1 卡片网格 */
+/* ===== 16 人格卡片网格 ===== */
 .persona-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -169,59 +313,72 @@
   padding: 4px;
 }
 
+/* 卡片：族色底 + 3px 墨边框 + 4px 硬阴影（DESIGN.md §5 按钮规则同款位移反馈） */
 .persona-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 14px 8px;
-  border: 1px solid transparent;
-  border-radius: 10px;
+  padding: 14px 6px;
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
   cursor: pointer;
-  transition: transform 120ms ease, border-color 120ms ease;
+  transition: var(--transition);
   text-align: center;
-  font-size: 13px;
+  font-size: var(--fs-small);
+  box-shadow: var(--shadow-rest);
+  background: var(--paper);
+  color: var(--ink);
 }
 
 .persona-card:hover {
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+  transform: translate(2px, 2px);
 }
 
 .persona-card.is-selected {
-  border-color: #2a2a28;
-  box-shadow: 0 0 0 1px #2a2a28 inset;
+  /* 选中态：族色边框 + 族色阴影 + 族色 inset 高亮（不动用渐变） */
+  border-color: var(--family-color);
+  box-shadow:
+    inset 0 0 0 2px var(--family-color),
+    2px 2px 0 var(--ink);
+  transform: translate(2px, 2px);
 }
 
 .persona-card-type {
-  font-weight: 600;
-  font-size: 14px;
+  font-family: var(--font-pixel-en), var(--font-pixel-cn), var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-h2);
   letter-spacing: 0.5px;
   margin-bottom: 4px;
+  color: var(--ink);
 }
 
 .persona-card-animal {
-  font-size: 12px;
-  opacity: 0.8;
+  font-size: var(--fs-small);
+  color: var(--mute);
 }
 
-/* 单题答题卡 */
+/* ===== 单题答题卡 ===== */
 .question-card {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 24px;
-  background: #ffffff;
-  border: 1px solid #ece7da;
-  border-radius: 12px;
+  padding: 20px;
+  background: var(--paper);
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-rest);
 }
 
 .question-text {
   margin: 0;
   font-size: 16px;
   line-height: 1.6;
-  color: #2a2a28;
+  color: var(--ink);
 }
 
+/* 5 级量表：5 列等分；像素风选 1-5 */
 .scale-row {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -229,118 +386,260 @@
 }
 
 .scale-btn {
-  padding: 12px 0;
-  border: 1px solid #d6d2c8;
-  background: #ffffff;
-  border-radius: 8px;
+  padding: 10px 0;
+  border: var(--border-px) solid var(--ink);
+  background: var(--paper);
+  border-radius: 0;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--fs-small);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  transition: background 120ms ease, border-color 120ms ease;
+  transition: var(--transition);
+  box-shadow: 2px 2px 0 var(--ink);
 }
 
-.scale-btn:hover {
-  background: #f4efe2;
+.scale-btn:hover:not(.is-active) {
+  background: var(--family-color-bg);
+  box-shadow: 1px 1px 0 var(--ink);
+  transform: translate(1px, 1px);
 }
 
 .scale-btn.is-active {
-  background: #2a2a28;
-  color: #fafaf7;
-  border-color: #2a2a28;
+  background: var(--family-color);
+  color: #fff;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 var(--ink);
+  transform: translate(2px, 2px);
 }
 
 .scale-num {
-  font-size: 16px;
-  font-weight: 600;
+  font-family: var(--font-pixel-en), var(--font-body);
+  font-size: var(--fs-h2);
+  font-weight: 400;
 }
 
 .scale-label {
   font-size: 11px;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
-/* 结果页 */
+/* ===== 结果页（核心升级区 / T3 第 4 条）===== */
 .result-shell {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  padding: 16px;
+  gap: 18px;
+  padding: 8px 0;
 }
 
+/* 人格结果卡片：族色边框 + 硬阴影 + 像素元素（大字 + 细分标签） */
 .result-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 24px;
-  background: #ffffff;
-  border: 1px solid #ece7da;
-  border-radius: 16px;
-  min-width: 320px;
+  gap: 14px;
+  padding: 28px 36px 22px;
+  background: var(--paper);
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  min-width: 340px;
+  box-shadow: var(--shadow-rest);
 }
 
-.result-type {
-  font-size: 36px;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-
-.result-subtype {
-  font-size: 14px;
-  padding: 2px 10px;
-  border-radius: 12px;
-  background: #f4efe2;
-  color: #5e5e58;
-}
-
-.result-animal {
-  font-size: 14px;
-  color: #5e5e58;
-}
-
+/* 32×32 桌宠 sprite 容器 */
 .result-portrait {
   width: 128px;
   height: 128px;
   image-rendering: pixelated;
+  /* 像素感：sprite 外加 3px 墨边框，与设计令牌一致 */
+  border: var(--border-px) solid var(--ink);
+  background: var(--family-color-bg);
 }
 
+/* 4 字母 MBTI 大字：像素字体 + 大号（DESIGN.md §4 字号节奏，最大 ~40px） */
+.result-type {
+  font-family: var(--font-pixel-en), var(--font-pixel-cn), var(--font-body);
+  font-size: var(--fs-pixel-xl);
+  font-weight: 400;
+  letter-spacing: 4px;
+  color: var(--ink);
+  line-height: 1;
+  image-rendering: pixelated;
+}
+
+/* 细分标签（坚定型 / 善感型）：族色实底 + 白字 + 无圆角 */
+.result-subtype {
+  font-family: var(--font-pixel-cn), var(--font-body);
+  font-size: var(--fs-small);
+  padding: 4px 14px;
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  background: var(--family-color);
+  color: #fff;
+  letter-spacing: 1px;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+/* 动物 + tagline 副标题 */
+.result-animal {
+  font-size: var(--fs-body);
+  color: var(--mute);
+  font-weight: 500;
+}
+
+/* ===== 四维百分比条（P2-023 / T3 第 4 条）===== */
+/* 包裹 4 条维度对比条（E/I、S/N、T/F、J/P）的容器 */
+.result-bars {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: var(--paper);
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-rest);
+}
+
+/* 单条维度行：左字母 + 中进度条 + 右字母 + 数字 */
+.result-bar-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 28px;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 字母 label：第一极用族色加粗，第二极用静音色 */
+.result-bar-pole {
+  font-family: var(--font-pixel-en), var(--font-body);
+  font-size: 16px;
+  font-weight: 400;
+  text-align: center;
+  letter-spacing: 1px;
+}
+.result-bar-pole.is-first {
+  color: var(--family-color);
+}
+.result-bar-pole.is-second {
+  color: var(--mute);
+}
+
+/* 进度条：12px 高 + 3px 墨边框 + 0 圆角 */
+.result-bar-track {
+  position: relative;
+  height: 12px;
+  background: var(--cream);
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+/* 进度填充：族色硬块模拟（width 由 inline style 控制：占百分比） */
+.result-bar-fill {
+  height: 100%;
+  background: var(--family-color);
+  /* 像素硬块模拟：4px 族色 / 4px 半透明白 的硬边循环，配合 width 推进入度 */
+  background-image: linear-gradient(
+    to right,
+    var(--family-color) 0,
+    var(--family-color) 4px,
+    rgba(255, 255, 255, 0.25) 4px,
+    rgba(255, 255, 255, 0.25) 8px
+  );
+  background-size: 8px 100%;
+  background-repeat: repeat-x;
+  /* 像素风：从左侧起，向右推进 */
+  transition: width 220ms ease-out;
+}
+
+/* 文字百分比：在轨道右上方浮一个小标注（像素字体） */
+.result-bar-pct {
+  font-family: var(--font-pixel-en), var(--font-body);
+  font-size: 11px;
+  color: var(--mute);
+  margin-top: 2px;
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  letter-spacing: 0.5px;
+}
+
+/* 维度行容器：竖排每行的整体单元 */
+.result-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* 维度名小标题（左侧 / 顶部） */
+.result-bar-name {
+  font-size: 11px;
+  color: var(--mute);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* 45%-55% 弱倾向提示条 */
+.result-bar-hint {
+  margin-top: 4px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: #8a6a1e;
+  background: var(--family-explorer-bg);
+  border: 1px dashed #8a6a1e;
+  border-radius: 0;
+}
+
+/* 反馈按钮行 */
 .feedback-row {
   display: flex;
   gap: 12px;
+  justify-content: center;
 }
 
+/* 反馈按钮：复用 .btn 基类，新增硬阴影位移反馈 */
 .feedback-row .btn-feedback {
-  padding: 10px 22px;
-  border-radius: 999px;
-  background: #ffffff;
-  border: 1px solid #d6d2c8;
+  font-family: inherit;
+  padding: 8px 18px;
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--fs-body);
+  box-shadow: 2px 2px 0 var(--ink);
+  transition: var(--transition);
+  color: var(--ink);
+}
+
+.feedback-row .btn-feedback:hover:not(:disabled) {
+  background: var(--family-color-bg);
+  box-shadow: 1px 1px 0 var(--ink);
+  transform: translate(1px, 1px);
 }
 
 .feedback-row .btn-feedback.is-active {
-  background: #2a2a28;
-  color: #fafaf7;
-  border-color: #2a2a28;
+  background: var(--family-color);
+  color: #fff;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 var(--ink);
+  transform: translate(2px, 2px);
+}
+
+.feedback-row .btn-feedback:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .feedback-confirm {
-  margin-top: 4px;
-  font-size: 13px;
-  color: #2e6e4f;
-}
-
-/* 错误提示条 */
-.error-banner {
-  background: #fbe9e9;
-  border: 1px solid #e8b5b5;
-  color: #8a2a2a;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 13px;
-  margin-bottom: 12px;
+  font-size: var(--fs-small);
+  color: var(--family-diplomat);
+  font-weight: 500;
+  padding: 4px 8px;
+  border: 1px solid var(--family-diplomat);
+  background: var(--family-diplomat-bg);
+  display: inline-block;
 }

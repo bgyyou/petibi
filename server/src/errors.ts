@@ -45,6 +45,8 @@ export const ErrorCodes = {
   ContentPending: "CONTENT_PENDING",
   /** 留言内容超长（POST /api/posters/:id/comments 限 ≤200 字） */
   CommentTooLong: "COMMENT_TOO_LONG",
+  /** 测评反馈参数非法（accepted 非布尔 / mbti 不在 16 型内 / subtype 非两档之一 / comment 超长） */
+  InvalidFeedback: "INVALID_FEEDBACK",
 } as const
 
 /** 错误码字面量类型 */

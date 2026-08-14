@@ -65,10 +65,12 @@ export function formatTypeLabel(type: string, subtype: 'stable' | 'sensitive'): 
   return `${type}·${SUBTYPE_LABELS[subtype]}`
 }
 
-// 4 族 → CSS 色系（用于 16 选 1 卡片背景，结果页配色）
+// 4 族 → CSS 色系（DESIGN.md §2 / T3 工单 v1 族色统一）。
+// 用法：16 选 1 卡片背景（bg）、结果页大字与按钮（fg）、卡片边框（border）。
+// fg / bg 取自设计规范的四族色；border 仍用族色描边的中间明度，靠近族色但不抢眼。
 export const FAMILY_COLORS: Record<Family, { bg: string; fg: string; border: string }> = {
-  analyst:  { bg: '#f1ebf6', fg: '#5a3d8a', border: '#b39ddb' },
-  diplomat: { bg: '#e8f3ec', fg: '#2e6e4f', border: '#88c4a4' },
-  sentinel: { bg: '#e6eef7', fg: '#2c4f7d', border: '#8fb0d6' },
-  explorer: { bg: '#fbf2dc', fg: '#8a6a1e', border: '#d6bc74' },
+  analyst:  { bg: '#f1ebf6', fg: '#785D87', border: '#785D87' },
+  diplomat: { bg: '#e8f3ec', fg: '#3E8F6E', border: '#3E8F6E' },
+  sentinel: { bg: '#e6eef7', fg: '#399FB9', border: '#399FB9' },
+  explorer: { bg: '#fbf2dc', fg: '#E4C728', border: '#E4C728' },
 }

@@ -7,6 +7,13 @@
 //   - 冷却未到 → 展示剩余秒数（error.extra.remainSec），按钮置灰
 //   - 成功后把 user 状态合并进父组件
 //
+// M4 扩展：常驻能力「重新测试人格」
+//   - 顶部"用户信息"卡片右侧加「重新测试」按钮（位置显眼）；
+//   - 点击 → 弹出像素风确认弹窗 → 用户确认 → 调 petApi.openSetupRetest()；
+//   - 不需要 token / 鉴权（preload 直接走 IPC）；panel 不需要再处理 server 错误；
+//   - 重测完成后主进程会广播 panel:profile-changed，父组件 App.tsx 已订阅 onProfileChanged
+//     自动 refetch getMe，本组件的 user prop 自然更新。
+//
 // 复用 ChatTab 的设计风格：浅色纸感底 + 圆角卡片 + 暖色高亮，与 src/panel/styles.css 共享色板。
 
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
@@ -72,6 +79,8 @@ export function ProfileTab({ user, token, onUserChange }: ProfileTabProps): Reac
   const [nowTick, setNowTick] = useState<number>(Math.floor(Date.now() / 1000))
   // 全局错误条
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  // M4 重测人格：确认弹窗开关
+  const [retestConfirmOpen, setRetestConfirmOpen] = useState(false)
 
   // 1Hz tick：用于刷新倒计时显示
   useEffect(() => {
@@ -87,6 +96,74 @@ export function ProfileTab({ user, token, onUserChange }: ProfileTabProps): Reac
     [user.next_change_at, nowTick],
   )
   const isCooling = user.pet_nickname_changed_at > 0 && remainSec > 0
+
+  /**
+   * M4 重测人格：点击「重新测试人格」按钮 → 打开确认弹窗。
+   * 弹窗用像素风 + 墨色半透明遮罩（DESIGN.md §3），不复用浏览器原生 confirm。
+   */
+  const openRetestConfirm = useCallback((): void => {
+    setErrorMsg(null)
+    setRetestConfirmOpen(true)
+  }, [])
+
+  const closeRetestConfirm = useCallback((): void => {
+    setRetestConfirmOpen(false)
+  }, [])
+
+  /**
+   * M4 P2-025 登录门禁：退出登录。
+   * - 通知主进程走 panel:logout：清 token + 隐藏桌宠 + 打开 setup 登录页；
+   * - profile 字段由主进程保留（email/nickname/mbti/subtype/createdAt 不动），
+   *   重新登录成功后由 LoginPage 老用户直通路径合并写回（避免 /api/me/profile 409）；
+   * - 与 panel/App.tsx 的 setAuthInvalidHandler（401 触发）效果对齐，但这里由用户主动触发。
+   */
+  const onLogout = useCallback((): void => {
+    setErrorMsg(null)
+    const api = (window as unknown as { panelApi?: { logout?: () => void } }).panelApi
+    if (!api || typeof api.logout !== 'function') {
+      setErrorMsg('退出登录入口不可用，请重启应用')
+      return
+    }
+    api.logout()
+  }, [])
+
+  /**
+   * 退出登录确认弹窗开关：避免误触点「退出登录」导致 token 清掉需重输验证码。
+   * 与 retest 复用同一套像素风遮罩样式（profile-retest-modal 系列）。
+   */
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false)
+
+  const openLogoutConfirm = useCallback((): void => {
+    setErrorMsg(null)
+    setLogoutConfirmOpen(true)
+  }, [])
+
+  const closeLogoutConfirm = useCallback((): void => {
+    setLogoutConfirmOpen(false)
+  }, [])
+
+  const confirmLogout = useCallback((): void => {
+    setLogoutConfirmOpen(false)
+    onLogout()
+  }, [onLogout])
+
+  /**
+   * 用户在确认弹窗点「确认更换」→ 调主进程拉起 retest 模式 setup 窗。
+   * 后续流程主进程负责：
+   *   - 关 panel 窗 / 创建 setup 窗（?mode=retest&initialStep=pick）；
+   *   - 用户走完选人格 / 测试后，notifyRetestComplete 写回 profile.json；
+   *   - 主进程广播 panel:profile-changed，父组件 App.tsx 自动 refetch getMe。
+   * 错误兜底：极端情况下 preload API 不可用（理论上不会发生），用 errorMsg 提示。
+   */
+  const confirmRetest = useCallback((): void => {
+    setRetestConfirmOpen(false)
+    const api = window.petApi
+    if (!api || typeof api.openSetupRetest !== 'function') {
+      setErrorMsg('重测入口不可用，请重启应用')
+      return
+    }
+    api.openSetupRetest()
+  }, [])
 
   /** 进入编辑态：以当前昵称（自定义或本名）为初值 */
   const startEdit = useCallback((): void => {
@@ -228,6 +305,16 @@ export function ProfileTab({ user, token, onUserChange }: ProfileTabProps): Reac
             <div className="profile-name">{user.nickname ?? '未设置昵称'}</div>
             <div className="profile-sub">{subtitleFor(user)}</div>
           </div>
+          {/* M4 重测人格：常驻入口，放头像右侧、显眼位置。
+              风格与 .profile-btn-ghost 一致：纸白底 + 3px 墨边框 + 硬阴影。 */}
+          <button
+            type="button"
+            className="profile-btn profile-btn-ghost profile-retest-btn"
+            onClick={openRetestConfirm}
+            title="重新测试人格"
+          >
+            重新测试人格
+          </button>
         </div>
         <dl className="profile-meta">
           <div className="profile-meta-row">
@@ -281,6 +368,147 @@ export function ProfileTab({ user, token, onUserChange }: ProfileTabProps): Reac
           <li>历史对话回顾</li>
         </ul>
       </section>
+
+      {/*
+        M4 P2-025 登录门禁：「我的」Tab 加「退出登录」按钮。
+        位置选择：放在未来功能卡片下方，独立成段（不污染既有卡片结构）；
+        样式与 .profile-btn-ghost 一致（纸白底 + 3px 墨边框 + 硬阴影），点击 → 弹确认弹窗
+        （避免误触），用户确认后再走 panel:logout 主进程链路。
+        仅登录态显示——访客态没 token 也就没有"退出"的概念（panel App.tsx 已用 GuestLock 锁定此 Tab）。
+      */}
+      <section className="profile-card profile-card-logout" aria-label="退出登录">
+        <div className="profile-card-section-title">账号</div>
+        <div className="profile-card-section-desc">
+          退出登录会清空本地登录态。桌宠将隐藏，宠物档案保留；下次打开可重新登录或继续以访客身份浏览。
+        </div>
+        <button
+          type="button"
+          className="profile-btn profile-btn-ghost profile-logout-btn"
+          onClick={openLogoutConfirm}
+          title="退出登录"
+        >
+          退出登录
+        </button>
+      </section>
+
+      {/* M4 重测人格：像素风确认弹窗（DESIGN.md §3：纸白底 + 3px 墨边框 + 4px 硬阴影 + 墨色半透明遮罩）。
+          用 React 状态控制而不是 window.confirm —— 后者样式与游戏化设计脱节。 */}
+      {retestConfirmOpen && (
+        <div
+          className="poster-modal-backdrop"
+          role="presentation"
+          onClick={closeRetestConfirm}
+        >
+          <div
+            className="profile-retest-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="确认重新测试人格"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="profile-retest-modal-header">
+              <div className="poster-modal-title">重新测试人格</div>
+              <button
+                type="button"
+                className="poster-modal-close"
+                aria-label="关闭"
+                onClick={closeRetestConfirm}
+              >
+                ×
+              </button>
+            </div>
+            <div className="profile-retest-modal-body">
+              <p className="profile-retest-modal-desc">
+                重新测试会覆盖当前人格结果，桌宠形象会更换。
+                <br />
+                当前：<strong>{user.mbti ?? '未测'}</strong>
+                {user.subtype === 'stable'
+                  ? '（稳定型）'
+                  : user.subtype === 'sensitive'
+                    ? '（敏感型）'
+                    : ''}
+              </p>
+              <p className="profile-retest-modal-hint">
+                完成后无需重启，桌宠会立刻换上新形象。
+              </p>
+            </div>
+            <div className="profile-retest-modal-footer">
+              <button
+                type="button"
+                className="profile-btn profile-btn-ghost"
+                onClick={closeRetestConfirm}
+              >
+                再想想
+              </button>
+              <button
+                type="button"
+                className="profile-btn profile-btn-primary"
+                onClick={confirmRetest}
+              >
+                确认更换
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/*
+        M4 P2-025 登录门禁：退出登录确认弹窗（复用 retest 弹窗的像素风样式）。
+        文案强调「桌宠将隐藏」以避免用户预期落差（ISSUES P2-025 owner 原话）。
+      */}
+      {logoutConfirmOpen && (
+        <div
+          className="poster-modal-backdrop"
+          role="presentation"
+          onClick={closeLogoutConfirm}
+        >
+          <div
+            className="profile-retest-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="确认退出登录"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="profile-retest-modal-header">
+              <div className="poster-modal-title">退出登录</div>
+              <button
+                type="button"
+                className="poster-modal-close"
+                aria-label="关闭"
+                onClick={closeLogoutConfirm}
+              >
+                ×
+              </button>
+            </div>
+            <div className="profile-retest-modal-body">
+              <p className="profile-retest-modal-desc">
+                退出登录后，桌宠将隐藏；本地宠物档案（昵称 / 人格）会保留。
+                <br />
+                当前账号：<strong>{user.email}</strong>
+              </p>
+              <p className="profile-retest-modal-hint">
+                重新打开应用时需要重新验证邮箱登录。
+              </p>
+            </div>
+            <div className="profile-retest-modal-footer">
+              <button
+                type="button"
+                className="profile-btn profile-btn-ghost"
+                onClick={closeLogoutConfirm}
+              >
+                再想想
+              </button>
+              <button
+                type="button"
+                className="profile-btn profile-btn-primary"
+                onClick={confirmLogout}
+              >
+                确认退出
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

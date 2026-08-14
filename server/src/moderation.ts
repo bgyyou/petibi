@@ -52,14 +52,39 @@ interface SensitiveWordsFile {
   categories: SensitiveCategory[]
 }
 
-/** 解析敏感词库 JSON；可注入自定义路径便于单测 */
+/** 解析敏感词库 JSON；可注入自定义路径便于单测。
+ *
+ * M4 内嵌兼容：
+ *   - dev / tsx 跑 CLI 时：import.meta.url 指向 src/moderation.ts，能用相对路径解析到 data/；
+ *   - CJS bundle（esbuild 产物）：import.meta.url 为空字符串，dirname 解析失败。
+ *     内嵌场景必须显式传 jsonPath（由主进程在 startServer 时注入）。
+ *   - 优先级：显式参数 > PETIBI_SENSITIVE_WORDS_PATH 环境变量 > import.meta.url 相对路径。
+ *   - 全部失败时返回空敏感词库（审核始终 pass），并打 warning；embed prod 不应该走到这条分支，
+ *     主进程必须传路径。
+ */
 export function loadSensitiveWords(jsonPath?: string): SensitiveWordsFile {
-  const here = dirname(fileURLToPath(import.meta.url))
-  const serverRoot = join(here, "..")
-  const projectRoot = join(serverRoot, "..")
-  const finalPath = jsonPath ?? join(projectRoot, "data", "sensitive-words.json")
-  const raw = readFileSync(finalPath, "utf-8")
-  return JSON.parse(raw) as SensitiveWordsFile
+  let finalPath = jsonPath ?? process.env["PETIBI_SENSITIVE_WORDS_PATH"]
+  if (!finalPath) {
+    try {
+      const here = dirname(fileURLToPath(import.meta.url))
+      const serverRoot = join(here, "..")
+      const projectRoot = join(serverRoot, "..")
+      finalPath = join(projectRoot, "data", "sensitive-words.json")
+    } catch {
+      finalPath = ""
+    }
+  }
+  if (!finalPath) {
+    console.warn("[moderation] 找不到敏感词库路径（jsonPath 未传 + import.meta.url 不可用 + 环境变量未设），将跳过敏感词审核")
+    return { categories: [] }
+  }
+  try {
+    const raw = readFileSync(finalPath, "utf-8")
+    return JSON.parse(raw) as SensitiveWordsFile
+  } catch (err) {
+    console.warn(`[moderation] 读取敏感词库失败：${finalPath}（${err instanceof Error ? err.message : String(err)}）`)
+    return { categories: [] }
+  }
 }
 
 /**

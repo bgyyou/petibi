@@ -8,12 +8,27 @@ import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import type { Personality, RefusalsFile } from "./types.js"
 
-/** 加载拒绝模板库；可注入路径便于单测 */
+/** 加载拒绝模板库；可注入路径便于单测。
+ *
+ * M4 内嵌兼容：与 loadIntentFilter 同策略——参数 > 环境变量 > import.meta.url 推算。
+ */
 export function loadRefusals(jsonPath?: string): RefusalsFile {
-  const here = dirname(fileURLToPath(import.meta.url))
-  const serverRoot = join(here, "..")
-  const projectRoot = join(serverRoot, "..")
-  const finalPath = jsonPath ?? join(projectRoot, "data", "refusals.json")
+  let finalPath = jsonPath ?? process.env["PETIBI_REFUSALS_PATH"]
+  if (!finalPath) {
+    try {
+      const here = dirname(fileURLToPath(import.meta.url))
+      const serverRoot = join(here, "..")
+      const projectRoot = join(serverRoot, "..")
+      finalPath = join(projectRoot, "data", "refusals.json")
+    } catch {
+      finalPath = ""
+    }
+  }
+  if (!finalPath) {
+    throw new Error(
+      "loadRefusals: 找不到 refusals.json（请显式传 jsonPath，或设 PETIBI_REFUSALS_PATH）",
+    )
+  }
   const raw = readFileSync(finalPath, "utf-8")
   return JSON.parse(raw) as RefusalsFile
 }

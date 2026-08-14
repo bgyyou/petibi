@@ -177,6 +177,27 @@ export interface PetNicknameInput {
 }
 
 /**
+ * POST /api/me/feedback 请求体（PRD §3.3 题库迭代核心数据）：
+ *   - mbti / subtype：本次测评结果（前端结果页当前展示的人格），不从 users 表反查，
+ *     因为用户可能反馈完不点「完成」，users 表里还是旧人格；
+ *   - accepted：true = 「很符合」，false = 「测的不准」；
+ *   - comment：可选自由文本（≤200 字），当前 UI 未采集，留给后续「说说哪里不准」。
+ */
+export interface FeedbackInput {
+  mbti: Personality
+  subtype: Subtype
+  accepted: boolean
+  comment?: string
+}
+
+/** POST /api/me/feedback 响应：服务端记录成功即可，前端只关心 recorded_at */
+export interface FeedbackResponse {
+  ok: true
+  /** 落库时间（SQLite datetime('now') 的 UTC 字符串） */
+  recorded_at: string
+}
+
+/**
  * GET /api/me 与 POST /api/me/pet-nickname 通用响应：
  *  - pet_nickname：当前生效昵称（自定义或 null=未设置 → 显示动物本名）
  *  - pet_nickname_changed_at：上次修改 Unix 秒（0 = 未改过）

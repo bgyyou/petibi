@@ -1,20 +1,63 @@
-# 【文件说明】electron-builder 打包配置：产出 Windows NSIS 安装包到 release/（红线 R1）
+# 【文件说明】electron-builder 打包配置：产出 Windows NSIS 一键安装包到 release/（红线 R1 / T3 工单第 6 条）
+# T3 升级点：
+#   - oneClick: true：去掉了"为哪位用户安装 / 安装路径"页，符合 setup 五页"全屏沉浸"的设计目标；
+#   - perMachine: false：保持单用户安装，避免管理员权限弹窗破坏桌面像素风；
+#   - installerIcon / uninstallerIcon：自定义图标（待 AI 出稿替换，本期先用像素占位）；
+#   - 左侧 164×314 品牌插画：用 scripts/make_installer_illustration.py 生成的 16 人格 sprite 网格占位图，
+#     安装器侧栏 164×314 像素风插画，AI 正式插画后续替换；
+#   - license / welcome 页面隐藏（oneClick 模式默认隐藏），仅展示"安装中"进度条。
 appId: com.petibi.app
 productName: Petibi
 directories:
   output: release
-# 只打包 electron-vite 的构建产物（out/main、out/preload、out/renderer）
 files:
   - out/**
-# 跳过 electron-rebuild 步骤：
-#   better-sqlite3 / express / jsonwebtoken 是 server/ 用的依赖，被并行工单装进了根 node_modules；
-#   但 Electron 主进程不引用它们，硬塞给 electron-rebuild 反而会因网络拉不到头文件而失败。
-#   跳过 rebuild 让 electron-builder 直接用现成 ABI（Electron 不加载这些模块 → 无副作用）。
+  - package.json
+  # M4 工单：把 esbuild 产出的 server bundle 打进 Electron 安装包。
+  # 不打进 app.asar，避免 asar 内部的 node:sqlite 无法定位原生依赖（这里没有原生依赖，
+  # 但 asar 会让运行时路径解析出现意外，所以一并放到 resources/）。
+  - dist/server/server.cjs
+  - dist/server/server.cjs.map
 npmRebuild: false
+extraResources:
+  - from: resources
+    to: resources
+    filter: ['**/*']
+  - from: assets
+    to: assets
+    filter: ['**/*']
+  - from: data
+    to: data
+    filter: ['**/*']
+  - from: build/installer
+    to: installer
+    filter: ['**/*']
+  # M4 工单：server bundle 走 extraResources 而不是 asar（保持 file:// 路径稳定，便于
+  # 服务端运行时按 process.resourcesPath 解析；node:sqlite 也不受 asar 影响）。
+  - from: dist/server
+    to: server
+    filter: ['server.cjs', 'server.cjs.map']
+  # M4 工单：server bundle 启动时要从 resources/server/public/ 读 privacy.html / terms.html；
+  # 因此把 server/public/ 单独拷一份过去。
+  - from: server/public
+    to: server/public
+    filter: ['**/*']
 win:
   target: nsis
 nsis:
-  oneClick: false
-  allowToChangeInstallationDirectory: true
+  # T3：oneClick 一键安装（DESIGN.md §6：去掉"为哪位用户安装"页）
+  oneClick: true
+  # 关闭"允许修改安装目录"——oneClick 下不需要
+  allowToChangeInstallationDirectory: false
+  # 单用户安装，避免管理员 UAC 弹窗
   perMachine: false
   shortcutName: Petibi
+  # 自定义图标：installerIcon / uninstallerIcon（像素风 256×256 占位图，build/installer/icon.ico）
+  # 后续 AI 出稿替换为正式像素风品牌 icon
+  installerIcon: build/installer/icon.ico
+  uninstallerIcon: build/installer/icon.ico
+  # 安装器左侧 164×314 像素插画（DESIGN.md §6；NSIS 侧栏的正确键名是 installerSidebar）
+  installerSidebar: build/installer/installer-header.bmp
+  # 自定义产品名 + 安装完成引导启动（M4-P0 之后沿用）
+  createDesktopShortcut: true
+  createStartMenuShortcut: true

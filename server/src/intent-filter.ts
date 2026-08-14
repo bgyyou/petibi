@@ -15,12 +15,28 @@ import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import type { IntentFilterFile, IntentFilterHit } from "./types.js"
 
-/** 解析 data/intent-filter.json：可被注入自定义路径，便于单测与未来多环境切换 */
+/** 解析 data/intent-filter.json：可被注入自定义路径，便于单测与未来多环境切换。
+ *
+ * M4 内嵌兼容：与 moderation.ts 同策略——优先用显式参数 / 环境变量，
+ * CJS bundle 下 import.meta.url 为空时回退抛错（避免误判全部命中）。
+ */
 export function loadIntentFilter(jsonPath?: string): IntentFilterFile {
-  const here = dirname(fileURLToPath(import.meta.url))
-  const serverRoot = join(here, "..")
-  const projectRoot = join(serverRoot, "..")
-  const finalPath = jsonPath ?? join(projectRoot, "data", "intent-filter.json")
+  let finalPath = jsonPath ?? process.env["PETIBI_INTENT_FILTER_PATH"]
+  if (!finalPath) {
+    try {
+      const here = dirname(fileURLToPath(import.meta.url))
+      const serverRoot = join(here, "..")
+      const projectRoot = join(serverRoot, "..")
+      finalPath = join(projectRoot, "data", "intent-filter.json")
+    } catch {
+      finalPath = ""
+    }
+  }
+  if (!finalPath) {
+    throw new Error(
+      "loadIntentFilter: 找不到 intent-filter.json（请显式传 jsonPath，或设 PETIBI_INTENT_FILTER_PATH）",
+    )
+  }
   const raw = readFileSync(finalPath, "utf-8")
   return JSON.parse(raw) as IntentFilterFile
 }

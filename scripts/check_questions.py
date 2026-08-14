@@ -2,10 +2,12 @@
 """
 check_questions.py — M2 题库结构、方向分布、溯源、16 型可达与敏感措辞检查。
 
-本脚本只读取 data/questions/questions.json，不修改题库。命令：
-python scripts/check_questions.py
+本脚本只读题库文件，不做任何修改。命令：
+python scripts/check_questions.py                          # 默认校验 data/questions/questions.json
+python scripts/check_questions.py --file data/questions/questions-v2.json  # 校验指定题库文件（如改版待审稿）
 全部检查通过时退出码为 0；否则输出失败原因并返回 1。
 """
+import argparse
 import itertools
 import json
 import re
@@ -50,10 +52,14 @@ SENSITIVE_MARKERS = (
 SOCIAL_DESIRABILITY_MARKERS = ("懒", "笨", "愚蠢")
 
 
-def load_question_bank():
-    """读取题库 JSON，并返回完整题库对象。"""
+def load_question_bank(path=None):
+    """读取题库 JSON，并返回完整题库对象。path 为 None 时回落到默认题库路径。"""
+    target = Path(path) if path else QUESTION_PATH
+    if not target.is_absolute():
+        # 相对路径按仓库根目录解析，保证从任意工作目录运行结果一致。
+        target = REPO_ROOT / target
     try:
-        with QUESTION_PATH.open("r", encoding="utf-8") as file:
+        with target.open("r", encoding="utf-8") as file:
             return json.load(file)
     except (OSError, json.JSONDecodeError) as error:
         raise RuntimeError(f"题库读取失败：{error}") from error
@@ -192,9 +198,21 @@ def print_summary(direction_counts, reachable):
     print("[通过] 官方/16Personalities 候选标志性措辞命中 = 0")
 
 
-def main():
+def parse_args(argv=None):
+    """解析命令行参数，--file 用于校验非默认路径的题库文件。"""
+    parser = argparse.ArgumentParser(description="题库结构与措辞自检")
+    parser.add_argument(
+        "--file",
+        default=None,
+        help="题库 JSON 路径（相对路径按仓库根目录解析），默认 data/questions/questions.json",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
     """执行题库全部检查，并在任一检查失败时返回非零退出码。"""
-    bank = load_question_bank()
+    args = parse_args(argv)
+    bank = load_question_bank(args.file)
     questions = collect_questions(bank)
     validate_basic_schema(bank, questions)
     direction_counts = validate_distribution(questions)

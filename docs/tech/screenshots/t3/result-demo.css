@@ -1,0 +1,91 @@
+
+@font-face {
+  font-family: 'PetibiPixel';
+  font-style: normal;
+  font-weight: 400;
+  src: url('http://127.0.0.1:8765/fonts/fusion-pixel-12px-proportional-latin.woff2') format('woff2'),
+       url('http://127.0.0.1:8765/fonts/fusion-pixel-12px-proportional-latin.otf') format('opentype');
+  unicode-range: U+0020-007F, U+00A0-00FF;
+}
+@font-face {
+  font-family: 'PetibiPixel';
+  font-style: normal;
+  font-weight: 400;
+  src: url('http://127.0.0.1:8765/fonts/fusion-pixel-12px-proportional-zh_hans.woff2') format('woff2'),
+       url('http://127.0.0.1:8765/fonts/fusion-pixel-12px-proportional-zh_hans.otf') format('opentype');
+  unicode-range: U+3000-303F, U+4E00-9FFF, U+FF00-FFEF;
+}
+:root {
+  --font-pixel-en: 'PetibiPixel', 'Courier New', monospace;
+  --font-pixel-cn: 'PetibiPixel', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --ink: #2B2320; --cream: #FEF9EF; --paper: #FFFFFF; --mute: #8B8680;
+  --family-color: #785D87; --family-color-bg: #f1ebf6;
+  --border-px: 3px;
+  --shadow-rest: 4px 4px 0 #2B2320;
+  --fs-h1: 24px; --fs-h2: 18px; --fs-body: 14px; --fs-small: 12px; --fs-pixel-xl: 40px;
+}
+html, body {
+  margin: 0; padding: 0; background: #FEF9EF; color: #2B2320;
+  font-family: var(--font-body); font-size: 14px;
+}
+.setup-shell {
+  display: flex; flex-direction: column; padding: 24px 36px; box-sizing: border-box;
+}
+.setup-header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.setup-title {
+  margin: 0; font-family: var(--font-pixel-en), var(--font-pixel-cn), var(--font-body);
+  font-size: 24px; font-weight: 400; letter-spacing: 0.5px;
+  image-rendering: pixelated;
+}
+.setup-subtitle { margin: 0; font-size: 12px; color: #8B8680; }
+.setup-body { flex: 1; display: flex; flex-direction: column; }
+.result-shell { display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 8px 0; }
+.result-card {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  padding: 28px 36px 22px; background: #FFFFFF; border: 3px solid #2B2320;
+  min-width: 340px; box-shadow: 4px 4px 0 #2B2320;
+}
+.result-portrait {
+  width: 128px; height: 128px; image-rendering: pixelated;
+  border: 3px solid #2B2320; background: #f1ebf6;
+}
+.result-type {
+  font-family: var(--font-pixel-en), var(--font-pixel-cn), var(--font-body);
+  font-size: 40px; font-weight: 400; letter-spacing: 4px; line-height: 1;
+  image-rendering: pixelated;
+}
+.result-subtype {
+  font-size: 12px; padding: 4px 14px; border: 3px solid #2B2320;
+  background: #785D87; color: #fff; letter-spacing: 1px;
+  box-shadow: 2px 2px 0 #2B2320;
+}
+.result-animal { font-size: 14px; color: #8B8680; font-weight: 500; }
+.result-bars {
+  width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 10px;
+  padding: 16px; background: #FFFFFF; border: 3px solid #2B2320;
+  box-shadow: 4px 4px 0 #2B2320;
+}
+.result-bar { display: flex; flex-direction: column; gap: 2px; }
+.result-bar-name { font-size: 11px; color: #8B8680; font-weight: 500; letter-spacing: 0.5px; }
+.result-bar-row { display: grid; grid-template-columns: 28px 1fr 28px; align-items: center; gap: 8px; }
+.result-bar-pole { font-family: var(--font-pixel-en); font-size: 16px; text-align: center; letter-spacing: 1px; }
+.result-bar-pole.is-first { color: #785D87; }
+.result-bar-pole.is-second { color: #8B8680; }
+.result-bar-track {
+  position: relative; height: 12px; background: #FEF9EF;
+  border: 3px solid #2B2320; overflow: hidden;
+}
+.result-bar-fill {
+  height: 100%; background: #785D87;
+  background-image: linear-gradient(to right, #785D87 0, #785D87 4px, rgba(255,255,255,0.25) 4px, rgba(255,255,255,0.25) 8px);
+  background-size: 8px 100%; background-repeat: repeat-x;
+}
+.result-bar-pct {
+  font-family: var(--font-pixel-en); font-size: 11px; color: #8B8680;
+  display: flex; justify-content: space-between; letter-spacing: 0.5px;
+}
+.result-bar-hint {
+  margin-top: 4px; padding: 6px 10px; font-size: 11px; color: #8a6a1e;
+  background: #fbf2dc; border: 1px dashed #8a6a1e;
+}

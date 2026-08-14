@@ -20,37 +20,46 @@
       .pet-root {
         position: relative;
       }
-      /* 快捷菜单气泡：贴在桌宠右侧，约 120×160 透明小窗（PRD §2 / 工单 A4） */
+      /* 快捷菜单气泡：贴在桌宠右侧，约 140×160 像素风小窗（DESIGN.md §3 / 工单 A4 / T3 工单第 3 条） */
       .pet-quick-menu {
         position: absolute;
         top: 0;
-        left: 128px;
-        width: 140px;
-        background: rgba(255, 255, 255, 0.96);
-        border: 1px solid #ece7da;
-        border-radius: 10px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+        left: 132px;
+        width: 144px;
+        background: #fef9ef;
+        border: 3px solid #2b2320;
+        border-radius: 0;
+        box-shadow: 4px 4px 0 #2b2320;
         padding: 6px;
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        gap: 4px;
         z-index: 10;
-        backdrop-filter: blur(6px);
+        font-family: 'PetibiPixel', -apple-system, BlinkMacSystemFont, 'PingFang SC',
+          'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
       }
       .pet-quick-item {
         font-family: inherit;
         font-size: 12px;
-        padding: 8px 10px;
-        border: none;
+        padding: 6px 8px;
+        border: 2px solid transparent;
         background: transparent;
-        border-radius: 6px;
-        color: #2a2a28;
+        border-radius: 0;
+        color: #2b2320;
         text-align: left;
         cursor: pointer;
-        transition: background 100ms ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 80ms ease-out, border-color 80ms ease-out;
+        letter-spacing: 0.5px;
       }
       .pet-quick-item:hover {
-        background: #f4efe2;
+        background: #f1ebf6;
+        border-color: #2b2320;
+      }
+      .pet-quick-item svg {
+        flex: 0 0 auto;
       }
     </style>
   </head>

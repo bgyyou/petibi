@@ -361,12 +361,12 @@ export function drawPoster(ctx: PosterCanvasContext, input: PosterInput): void {
   ctx.fillText(personaType, textX, cardY + 80, textRight - textX)
   // 动物
   if (animal) {
-    ctx.fillStyle = '#2A2A28'
+    ctx.fillStyle = '#2B2320'
     ctx.font = '500 36px "PingFang SC", "Microsoft YaHei", sans-serif'
     ctx.fillText(animal, textX, cardY + 200, textRight - textX)
   }
   // 昵称
-  ctx.fillStyle = '#5e5e58'
+  ctx.fillStyle = '#8B8680'
   ctx.font = '400 24px "PingFang SC", "Microsoft YaHei", sans-serif'
   const nickLine = `· ${nickname} ·`
   ctx.fillText(nickLine, textX, cardY + 270, textRight - textX)
@@ -374,13 +374,13 @@ export function drawPoster(ctx: PosterCanvasContext, input: PosterInput): void {
   ctx.fillStyle = familyMain
   ctx.fillRect(textX, cardY + 320, 60, 4)
   // 装饰文："像你这样的人……"（小字，呼应副 Slogan）
-  ctx.fillStyle = '#8a8a86'
+  ctx.fillStyle = '#8B8680'
   ctx.font = '400 18px "PingFang SC", "Microsoft YaHei", sans-serif'
   ctx.fillText('「你的专属人格」', textX, cardY + 340, textRight - textX)
 
   // ===== 对话精选区（y: 680 - 1180）=====
   // 区块标题
-  ctx.fillStyle = '#2A2A28'
+  ctx.fillStyle = '#2B2320'
   ctx.textAlign = 'left'
   ctx.textBaseline = 'top'
   ctx.font = '600 28px "PingFang SC", "Microsoft YaHei", sans-serif'
@@ -394,7 +394,7 @@ export function drawPoster(ctx: PosterCanvasContext, input: PosterInput): void {
   const qLineH = 44
   const qPadding = 28
   const qBubbleH = qPadding * 2 + qLines.length * qLineH
-  ctx.fillStyle = '#2A2A28'
+  ctx.fillStyle = '#2B2320'
   drawRoundedRect(ctx, qBubbleX, qBubbleY, qBubbleW, qBubbleH, 20)
   // "Q" 标签
   ctx.fillStyle = familyMain
@@ -434,7 +434,7 @@ export function drawPoster(ctx: PosterCanvasContext, input: PosterInput): void {
   ctx.font = '700 22px "PingFang SC", "Microsoft YaHei", sans-serif'
   ctx.fillText('A', aBubbleX + 24, aBubbleY + 18)
   // 回答正文
-  ctx.fillStyle = '#2A2A28'
+  ctx.fillStyle = '#2B2320'
   ctx.font = '400 26px "PingFang SC", "Microsoft YaHei", sans-serif'
   aLines.forEach((line, i) => {
     ctx.fillText(line, aBubbleX + 60, aBubbleY + aPadding + i * aLineH)
@@ -450,7 +450,7 @@ export function drawPoster(ctx: PosterCanvasContext, input: PosterInput): void {
   ctx.font = '600 30px "PingFang SC", "Microsoft YaHei", sans-serif'
   ctx.fillText(SUB_SLOGAN, W / 2, 1230)
   // 日期 + 品牌行
-  ctx.fillStyle = '#8a8a86'
+  ctx.fillStyle = '#8B8680'
   ctx.font = '400 20px "PingFang SC", "Microsoft YaHei", sans-serif'
   ctx.fillText(`${BRAND} · ${date}`, W / 2, 1280)
 

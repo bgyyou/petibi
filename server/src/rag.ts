@@ -20,12 +20,29 @@ import type {
   Personality,
 } from "./types.js"
 
-/** 读取 data/encyclopedia/index.json，返回 16 个人格 → 文件路径的映射 */
+/** 读取 data/encyclopedia/index.json，返回 16 个人格 → 文件路径的映射。
+ *
+ * M4 内嵌兼容：参数 > 环境变量 PETIBI_ENCYCLOPEDIA_DIR > import.meta.url 推算。
+ * 显式传 indexPath 时按调用方意图；未传时尝试从环境变量得到 encyclopedia 目录，
+ * 否则从 import.meta.url 推算（CJS bundle 下不可用则抛错）。
+ */
 export function loadEncyclopediaIndex(jsonPath?: string): { file: string; personality: Personality }[] {
-  const here = dirname(fileURLToPath(import.meta.url))
-  const serverRoot = join(here, "..")
-  const projectRoot = join(serverRoot, "..")
-  const indexPath = jsonPath ?? join(projectRoot, "data", "encyclopedia", "index.json")
+  let indexPath = jsonPath ?? process.env["PETIBI_ENCYCLOPEDIA_INDEX_PATH"]
+  if (!indexPath) {
+    try {
+      const here = dirname(fileURLToPath(import.meta.url))
+      const serverRoot = join(here, "..")
+      const projectRoot = join(serverRoot, "..")
+      indexPath = join(projectRoot, "data", "encyclopedia", "index.json")
+    } catch {
+      indexPath = ""
+    }
+  }
+  if (!indexPath) {
+    throw new Error(
+      "loadEncyclopediaIndex: 找不到 encyclopedia index.json（请显式传 jsonPath，或设 PETIBI_ENCYCLOPEDIA_INDEX_PATH）",
+    )
+  }
   const raw = readFileSync(indexPath, "utf-8")
   const parsed = JSON.parse(raw) as {
     personalities: { personality: Personality; file: string }[]
@@ -33,13 +50,29 @@ export function loadEncyclopediaIndex(jsonPath?: string): { file: string; person
   return parsed.personalities
 }
 
-/** 加载 16 个人格文件全量（启动期调用一次缓存即可）；解析失败抛错由上层决定降级 */
+/** 加载 16 个人格文件全量（启动期调用一次缓存即可）；解析失败抛错由上层决定降级。
+ *
+ * M4 内嵌兼容：参数 > 环境变量 PETIBI_ENCYCLOPEDIA_DIR > import.meta.url 推算。
+ * 解析到的 directory 与 indexPath 必须同源，因此二者通过环境变量一起注入。
+ */
 export function loadAllEncyclopediaFiles(): EncyclopediaFile[] {
-  const here = dirname(fileURLToPath(import.meta.url))
-  const projectRoot = join(here, "..", "..")
-  const encDir = join(projectRoot, "data", "encyclopedia")
+  let encDir = process.env["PETIBI_ENCYCLOPEDIA_DIR"]
+  if (!encDir) {
+    try {
+      const here = dirname(fileURLToPath(import.meta.url))
+      const projectRoot = join(here, "..", "..")
+      encDir = join(projectRoot, "data", "encyclopedia")
+    } catch {
+      encDir = ""
+    }
+  }
+  if (!encDir) {
+    throw new Error(
+      "loadAllEncyclopediaFiles: 找不到 encyclopedia 目录（请设 PETIBI_ENCYCLOPEDIA_DIR）",
+    )
+  }
   return loadEncyclopediaIndex().map((meta) => {
-    const path = join(encDir, meta.file)
+    const path = join(encDir!, meta.file)
     const raw = readFileSync(path, "utf-8")
     return JSON.parse(raw) as EncyclopediaFile
   })

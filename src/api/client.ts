@@ -1,11 +1,15 @@
-// 【文件说明】API 客户端：mock 优先，baseURL 可配，接口契约见 docs/tech/M3-对话链路契约.md §4。
+// 【文件说明】API 客户端：mock / real 双模式，baseURL 可配，接口契约见 docs/tech/M3-对话链路契约.md §4。
 //
 // 设计要点：
-//  - mock 模式默认开启（server 还没就绪，dev 必须能跑通），通过 VITE_USE_MOCK_API=false 切真接口；
+//  - mock 模式默认：dev / 测试环境默认开启（VITE_USE_MOCK_API 未设或显式 'true'），
+//    让 dev 不必启动后端就能跑通；生产构建（electron-vite build）默认关闭，
+//    安装版用户期望连真后端；可通过 VITE_USE_MOCK_API 显式覆盖。
 //  - 真接口模式：baseURL 走 VITE_API_BASE_URL（缺省 http://localhost:8787）；
 //  - 网络错误统一包装成 ApiError 抛出，调用方不必处理 fetch Response；
 //  - 写入操作（profile / feedback）服务端未实现时，mock 也照常落库（内存 + 控制台日志），便于联调；
 //  - 对话接口 (POST /api/chat) 是 SSE 流式，单独提供 streamChat() 而非抛 Promise。
+//  - P0-B 修复：USE_MOCK 三态解析（详见下方 resolveUseMock）；旧默认值在 prod 下
+//    也是 mock，会导致「我的」Tab 卡在加载中——已修。
 import type {
   ApiError,
   ChatRequestBody,
@@ -38,9 +42,64 @@ const env = (import.meta as any).env ?? {}
  * USE_MOCK 用 let 而非 const（其余模块顶层仍为 const），便于单元测试通过
  * __setMockMode(false) 强制走真接口分支测 fetch body / SSE 解析。
  * 切换仅对后续调用生效，不修改任何 mock 内存表。
+ *
+ * P0-B 修复（安装版「我的」Tab 卡在加载中）：
+ *   - 旧默认 `(env.VITE_USE_MOCK_API ?? 'true') !== 'false'` 永远为 true，
+ *     也就是说即便生产打包也不会自动切到真接口；安装版用户在主面板「我的」Tab
+ *     调 getMe(token) 会走 mockGetMe，而 token 来自真接口的 /api/auth/email/verify，
+ *     mockUsers 里查无此人 → 抛 UNAUTHENTICATED → setUser(null) → 页面永远
+ *     停在「加载中…」（panel App.tsx:184）。
+ *   - 新默认：三态显式 + 生产环境自动切真接口：
+ *       * VITE_USE_MOCK_API === 'true'  → mock
+ *       * VITE_USE_MOCK_API === 'false' → real
+ *       * 未设置时 → dev / 测试环境 mock（沿用 M2 以来习惯，dev 不必起后端），
+ *                    生产环境（electron-vite build）默认 real，
+ *                    安装版用户期望连真后端。
  */
-let USE_MOCK = (env.VITE_USE_MOCK_API ?? 'true') !== 'false'
-const BASE_URL = (env.VITE_API_BASE_URL ?? 'http://localhost:8787') as string
+function resolveUseMock(): boolean {
+  const v = env.VITE_USE_MOCK_API
+  if (v === 'true') return true
+  if (v === 'false') return false
+  // 未显式设置：dev / 测试环境（env.PROD !== true）→ mock；生产环境 → real
+  return env.PROD !== true
+}
+let USE_MOCK = resolveUseMock()
+
+/**
+ * 解析真接口 baseURL（M4 内嵌 server 工单）：
+ *  - 优先级：window.petApi.getServerBaseUrl()（主进程注入的真实 host:port）
+ *    > env.VITE_API_BASE_URL（构建期常量，便于 dev 阶段用 vite mock 后端）
+ *    > 'http://localhost:8787'（兜底，与 M2 默认对齐）
+ *  - 之所以走 window.petApi.getServerBaseUrl() 而不是 IPC 异步 invoke：
+ *    BASE_URL 是模块顶层 const，client.ts 顶层就用到了（realXxx 函数直接拼字符串），
+ *    改异步会让所有调用方都得 await，违反"src/ 只动 client.ts"的约束。
+ *    petApi.getServerBaseUrl() 是同步函数（preload 从 process.argv 读 --server-url），
+ *    满足"client.ts 顶层同步取值"的需求。
+ *  - dev 模式（Vite 跑在 http://localhost:5173）：petApi 同样存在（preload 仍由 Electron
+ *    主进程加载，additionalArguments 注入的 --server-url 也生效），所以 dev 模式无需手动
+ *    启 server:dev——主进程已自动起；唯一例外是 VITE_USE_MOCK_API=true 强制 mock。
+ */
+function resolveBaseUrl(): string {
+  // 1) 主进程注入（推荐路径）
+  if (typeof window !== 'undefined') {
+    const petApi = (window as unknown as { petApi?: { getServerBaseUrl?: () => string } }).petApi
+    if (petApi?.getServerBaseUrl) {
+      try {
+        const url = petApi.getServerBaseUrl()
+        if (typeof url === 'string' && url.length > 0) return url
+      } catch {
+        /* preload 未就绪，回退到 env */
+      }
+    }
+  }
+  // 2) 构建期常量（dev 阶段可手动指定；prod 通常不设）
+  if (typeof env.VITE_API_BASE_URL === 'string' && env.VITE_API_BASE_URL.length > 0) {
+    return env.VITE_API_BASE_URL
+  }
+  // 3) 兜底：与 M2 默认对齐（Node 测试环境无 window.petApi）
+  return 'http://localhost:8787'
+}
+const BASE_URL = resolveBaseUrl()
 
 // 网络模拟延迟（mock 模式）：让 UI 表现接近真实接口
 const MOCK_LATENCY_MS = 220
@@ -60,6 +119,68 @@ export class ApiCallError extends Error {
     this.extra = err.extra
     this.name = 'ApiCallError'
   }
+}
+
+/**
+ * 网络层错误：fetch 失败 / DNS 失败 / server 未启动 / 超时（CORS / ERR_CONNECTION_REFUSED 等）。
+ * 与 ApiCallError 的区别：服务端没有响应，是客户端 ↔ server 链路就断了；
+ * UI 应当提示「请确认服务已启动」而不是引导用户重新登录。
+ *
+ * 设计动机（M4 工单：token 失效恢复）：
+ *   - 401 → token 无效 → 清 token + 引导登录；
+ *   - NetworkError → server 没起来 → 提示用户检查端口 / 重启应用；
+ *   - 二者必须严格区分，避免 server 还没启就把本地 token 清掉（用户还得重输）。
+ */
+export class NetworkError extends Error {
+  constructor(message: string, public readonly cause?: unknown) {
+    super(message)
+    this.name = 'NetworkError'
+  }
+}
+
+/** 模块级回调：401 / UNAUTHENTICATED 触发，由渲染进程 App.tsx 注册。
+ *  - handler 返回 Promise<void> | void；
+ *  - 触发后由调用方决定后续（清本地 token / 跳登录 / 弹提示）；
+ *  - 测试用 setAuthInvalidHandler(fn) 注入 spy；不传则 no-op。
+ */
+type AuthInvalidHandler = (info: { code: string; message: string }) => void
+let authInvalidHandler: AuthInvalidHandler | null = null
+/** 标记 handler 是否已在本次错误处理中触发，避免同一个 401 触发多次清理。 */
+let lastAuthInvalidAt = 0
+
+/**
+ * 设置全局「鉴权失效」回调。
+ * - 仅接受最新一次注册（覆盖前一个）；
+ * - 典型用法：App.tsx 在 mount 时注册（清本地 token + 跳登录），unmount 时无需注销。
+ */
+export function setAuthInvalidHandler(handler: AuthInvalidHandler | null): void {
+  authInvalidHandler = handler
+  lastAuthInvalidAt = 0
+}
+
+/** 内部：触发 401 handler；同一个 tick 内多次触发只算一次 */
+function fireAuthInvalid(err: ApiCallError): void {
+  if (!authInvalidHandler) return
+  // 简易节流：1s 内的多次触发只算一次，避免 mock / 测试场景下轮询时反复清 token
+  const now = Date.now()
+  if (now - lastAuthInvalidAt < 1000) return
+  lastAuthInvalidAt = now
+  try {
+    authInvalidHandler({ code: err.code, message: err.message })
+  } catch (e) {
+    // handler 自身出错不能让请求链路崩溃
+    console.warn('[api] authInvalidHandler 自身抛错：', e)
+  }
+}
+
+/** 判定 ApiCallError 是否为「鉴权失效」类（401 + UNAUTHORIZED；mock 模式用 UNAUTHENTICATED） */
+export function isAuthError(err: unknown): err is ApiCallError {
+  if (!(err instanceof ApiCallError)) return false
+  return (
+    err.code === 'UNAUTHORIZED' ||
+    err.code === 'UNAUTHENTICATED' ||
+    err.code === 'HTTP_401'
+  )
 }
 
 // ============================================================================
@@ -105,7 +226,9 @@ function mockSendCode(email: string): SendCodeResponse {
   })
   // 模拟 dev 模式：直接把验证码回在响应里 + 打日志
   console.info(`[mock] 邮箱 ${email} 验证码 = ${code}（dev 模式 5 分钟内有效）`)
-  return { dev_code: code, expires_in: 300 }
+  // 字段名统一为 devCode / expiresInSec（与 server 一致的 camelCase 命名，
+  // 旧 dev_code / expires_in 字段名在 M4 工单已停用）。
+  return { devCode: code, expiresInSec: 300 }
 }
 
 function mockVerifyCode(email: string, code: string): VerifyCodeResponse {
@@ -145,7 +268,11 @@ function mockGetMe(token: string): User {
   for (const { user, token: t } of mockUsers.values()) {
     if (t === token) return user
   }
-  throw new ApiCallError({ code: 'UNAUTHENTICATED', message: '请先登录' })
+  // M4 工单：mock-token-* 是 mock 时代的假 token；老用户升级后
+  // 这条分支会触发，UI 应走 401 恢复（清 token + 引导登录）。
+  const err = new ApiCallError({ code: 'UNAUTHENTICATED', message: 'token 无效或已过期' })
+  fireAuthInvalid(err)
+  throw err
 }
 
 function mockSaveProfile(token: string, req: SaveProfileRequest): SaveProfileResponse {
@@ -200,7 +327,10 @@ function mockSubmitFeedback(token: string, req: FeedbackRequest): FeedbackApiRes
   const recordedAt = new Date().toISOString()
   list.push({ ...req, recordedAt })
   mockFeedback.set(user.id, list)
-  console.info(`[mock] 用户 ${user.email} 反馈：match=${req.match}`, req.comment ?? '')
+  console.info(
+    `[mock] 用户 ${user.email} 反馈：${req.mbti}/${req.subtype} accepted=${req.accepted}`,
+    req.comment ?? '',
+  )
   return { recorded_at: recordedAt }
 }
 
@@ -463,7 +593,7 @@ async function* mockStreamChat(
 // ============================================================================
 
 async function realSendCode(email: string): Promise<SendCodeResponse> {
-  const res = await fetch(`${BASE_URL}/api/auth/email/code`, {
+  const res = await safeFetch(`${BASE_URL}/api/auth/email/code`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email }),
@@ -472,7 +602,7 @@ async function realSendCode(email: string): Promise<SendCodeResponse> {
 }
 
 async function realVerifyCode(email: string, code: string): Promise<VerifyCodeResponse> {
-  const res = await fetch(`${BASE_URL}/api/auth/email/verify`, {
+  const res = await safeFetch(`${BASE_URL}/api/auth/email/verify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, code }),
@@ -481,7 +611,7 @@ async function realVerifyCode(email: string, code: string): Promise<VerifyCodeRe
 }
 
 async function realGetMe(token: string): Promise<User> {
-  const res = await fetch(`${BASE_URL}/api/me`, {
+  const res = await safeFetch(`${BASE_URL}/api/me`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return parseJson<User>(res)
@@ -491,7 +621,7 @@ async function realSaveProfile(
   token: string,
   req: SaveProfileRequest,
 ): Promise<SaveProfileResponse> {
-  const res = await fetch(`${BASE_URL}/api/me/profile`, {
+  const res = await safeFetch(`${BASE_URL}/api/me/profile`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(req),
@@ -503,7 +633,7 @@ async function realSetPetNickname(
   token: string,
   req: SetPetNicknameRequest,
 ): Promise<SetPetNicknameResponse> {
-  const res = await fetch(`${BASE_URL}/api/me/pet-nickname`, {
+  const res = await safeFetch(`${BASE_URL}/api/me/pet-nickname`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(req),
@@ -515,7 +645,7 @@ async function realSubmitFeedback(
   token: string,
   req: FeedbackRequest,
 ): Promise<FeedbackApiResponse> {
-  const res = await fetch(`${BASE_URL}/api/me/feedback`, {
+  const res = await safeFetch(`${BASE_URL}/api/me/feedback`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(req),
@@ -524,7 +654,7 @@ async function realSubmitFeedback(
 }
 
 async function realGetQuota(token: string): Promise<QuotaInfo> {
-  const res = await fetch(`${BASE_URL}/api/quota`, {
+  const res = await safeFetch(`${BASE_URL}/api/quota`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   return parseJson<QuotaInfo>(res)
@@ -539,7 +669,7 @@ async function realSubmitPoster(
   token: string,
   req: PosterRequest,
 ): Promise<PosterResponse> {
-  const res = await fetch(`${BASE_URL}/api/posters`, {
+  const res = await safeFetch(`${BASE_URL}/api/posters`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(req),
@@ -552,7 +682,7 @@ async function realSubmitPoster(
  * 并行工单契约：POST /api/me/share-count → {count, next_unlock_at}。
  */
 async function realBumpShareCount(token: string): Promise<ShareCountResponse> {
-  const res = await fetch(`${BASE_URL}/api/me/share-count`, {
+  const res = await safeFetch(`${BASE_URL}/api/me/share-count`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
   })
@@ -566,7 +696,7 @@ async function realBumpShareCount(token: string): Promise<ShareCountResponse> {
  */
 async function realListPosters(limit: number, offset: number): Promise<PostersListResponse> {
   const params = new URLSearchParams({ limit: String(limit), offset: String(offset) })
-  const res = await fetch(`${BASE_URL}/api/posters?${params.toString()}`)
+  const res = await safeFetch(`${BASE_URL}/api/posters?${params.toString()}`)
   return parseJson<PostersListResponse>(res)
 }
 
@@ -575,7 +705,7 @@ async function realListPosters(limit: number, offset: number): Promise<PostersLi
  * 返回 { liked, likes }；未登录由 server 返 401，UI 走引导登录分支。
  */
 async function realLikePoster(token: string, posterId: number): Promise<PosterLikeResponse> {
-  const res = await fetch(`${BASE_URL}/api/posters/${posterId}/like`, {
+  const res = await safeFetch(`${BASE_URL}/api/posters/${posterId}/like`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
   })
@@ -584,7 +714,7 @@ async function realLikePoster(token: string, posterId: number): Promise<PosterLi
 
 /** 真接口：留言列表（公开 GET /api/posters/:id/comments，只返 approved）。 */
 async function realListComments(posterId: number): Promise<CommentsListResponse> {
-  const res = await fetch(`${BASE_URL}/api/posters/${posterId}/comments`)
+  const res = await safeFetch(`${BASE_URL}/api/posters/${posterId}/comments`)
   return parseJson<CommentsListResponse>(res)
 }
 
@@ -597,7 +727,7 @@ async function realSubmitComment(
   posterId: number,
   req: CommentSubmitRequest,
 ): Promise<CommentSubmitResponse> {
-  const res = await fetch(`${BASE_URL}/api/posters/${posterId}/comments`, {
+  const res = await safeFetch(`${BASE_URL}/api/posters/${posterId}/comments`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(req),
@@ -643,7 +773,9 @@ async function* realStreamChat(
 ): AsyncGenerator<ChatSseEvent> {
   const body: ChatRequestBody = { question }
   if (sessionId && sessionId.trim().length > 0) body.session_id = sessionId.trim()
-  const resp = await fetch(`${BASE_URL}/api/chat`, {
+  // M4 工单：401 触发全局恢复；NetworkError 让调用方知道是 server 没起来
+  // ——不在这里 try/catch，让 AsyncGenerator throw 出去给 ChatTab catch。
+  const resp = await safeFetch(`${BASE_URL}/api/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -667,6 +799,11 @@ async function* realStreamChat(
       if (parsed.error?.message) message = parsed.error.message
     } catch {
       /* ignore non-JSON */
+    }
+    // M4 工单：401 / UNAUTHORIZED 走与 parseJson 一致的恢复钩子，让上层 UI
+    // 同步清本地 token + 跳登录，避免对话流卡在「错误提示」上
+    if (resp.status === 401 || code === 'UNAUTHORIZED') {
+      fireAuthInvalid(new ApiCallError({ code, message }))
     }
     yield { type: 'error', message }
     return
@@ -705,13 +842,34 @@ async function parseJson<T>(res: Response): Promise<T> {
     // extra 在冷却场景携带 remainSec/nextChangeAt，UI 用它算倒计时。
     const errBody = body?.error ?? body
     const extra = errBody?.extra && typeof errBody.extra === 'object' ? errBody.extra : undefined
-    throw new ApiCallError({
-      code: String(errBody?.code ?? `HTTP_${res.status}`),
-      message: String(errBody?.message ?? res.statusText ?? '请求失败'),
-      extra,
-    })
+    const code = String(errBody?.code ?? `HTTP_${res.status}`)
+    const message = String(errBody?.message ?? res.statusText ?? '请求失败')
+    const err = new ApiCallError({ code, message, extra })
+    // M4 工单：401 触发全局恢复回调，让 UI 清本地 token + 跳登录
+    if (res.status === 401 || code === 'UNAUTHORIZED') {
+      fireAuthInvalid(err)
+    }
+    throw err
   }
   return res.json() as Promise<T>
+}
+
+/**
+ * 真接口 fetch 包装：把网络层错误（ECONNREFUSED / DNS / 超时）转成 NetworkError，
+ * 让上层能稳定区分「server 没起来」与「token 无效」两种语义。
+ * 用法：所有 realXxx 函数调 `await safeFetch(url, init)` 替代直接 fetch。
+ */
+export async function safeFetch(url: string, init?: RequestInit): Promise<Response> {
+  try {
+    return await fetch(url, init)
+  } catch (e) {
+    // fetch 抛出通常是 TypeError（网络层失败）；保留 cause 便于调试
+    const msg =
+      e instanceof TypeError
+        ? `连接本地服务失败（${url}）：请确认应用已正常启动`
+        : `请求失败：${e instanceof Error ? e.message : String(e)}`
+    throw new NetworkError(msg, e)
+  }
 }
 
 // ============================================================================

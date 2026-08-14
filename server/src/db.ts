@@ -14,10 +14,20 @@ import { mkdirSync } from "node:fs"
 
 // 用 createRequire 拿 node:sqlite，避免 vite/vitest 在打包期把它当作普通依赖去解析。
 // 类型仍从 node:sqlite 取（TS 仅用类型，运行时不参与模块解析）。
+//
+// M4 内嵌变更：esbuild 把 server 打成 CJS bundle 时 import.meta.url 为 undefined，
+// createRequire(undefined) 会立即抛错（即使后续没人调 openDb()）。
+// 兼容策略：createRequire 的文件名优先用 __filename（CJS bundle 一定有），回退到 import.meta.url
+// （tsx / vitest 等 ESM 上下文）。这样：
+//   - CJS bundle：__filename 存在 → createRequire(__filename) 正常；
+//   - ESM/TSX：__filename 不存在，import.meta.url 存在 → createRequire(import.meta.url) 正常。
 import type { DatabaseSync as DatabaseSyncType, StatementSync } from "node:sqlite"
 
-const require = createRequire(import.meta.url)
-const { DatabaseSync } = require("node:sqlite") as {
+const requireFromCurrentFile = createRequire(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (typeof __filename !== "undefined" ? __filename : (import.meta as any).url) as string,
+)
+const { DatabaseSync } = requireFromCurrentFile("node:sqlite") as {
   DatabaseSync: new (path: string) => DatabaseSyncType
 }
 
@@ -228,6 +238,31 @@ export function ensureSchema(db: Db): void {
     );
   `)
   db.exec(`CREATE INDEX IF NOT EXISTS idx_moderation_logs_content ON moderation_logs(content_type, content_id);`)
+
+  // ====================== 测评反馈表（PRD §3.3 题库迭代数据源） ======================
+  // 背景：结果页「很符合 / 测的不准」是题库迭代的唯一真实反馈来源，
+  // 之前前端一直在调 POST /api/me/feedback，但 server 没这个路由（owner 实测 404）。
+  //
+  // 设计要点：
+  //   1. mbti / subtype 存本次测评结果（前端传，不从 users 反查）——用户反馈完可能不点「完成」，
+  //      users 表里还是旧人格，反查会把数据对错人；
+  //   2. accepted 用 INTEGER 0/1（SQLite 无 BOOLEAN），读出来时转 boolean；
+  //   3. 不做 UNIQUE 约束：同一用户可以多轮测评、多次反馈，全部留痕按时间序分析；
+  //   4. 索引 (mbti, accepted) 支撑"某人格的不准率"聚合，这是题库迭代最常查的口径。
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS test_feedback (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      mbti TEXT NOT NULL,
+      subtype TEXT NOT NULL,
+      accepted INTEGER NOT NULL,
+      comment TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+  `)
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_test_feedback_user ON test_feedback(user_id, created_at);`)
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_test_feedback_mbti ON test_feedback(mbti, accepted);`)
 }
 
 /** 关闭数据库（用于测试结束清理） */

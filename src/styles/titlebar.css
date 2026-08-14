@@ -1,0 +1,114 @@
+/* 【文件说明】自绘标题栏样式（DESIGN.md §6 / T3 工单第 2 条）：
+   - 高度 28px、奶油底（#FEF9EF）
+   - 左：8x8 像素 logo + 标题文字（像素字体）
+   - 右：自绘 16×16 像素最小化 / 关闭按钮（SVG icon）
+   - 标题栏可拖拽（-webkit-app-region: drag），按钮 no-drag
+   - 桌面端右上角显示，宽度填满窗宽；按钮 hover/active 用硬阴影位移反馈 */
+
+/* 标题栏容器 */
+.petibi-titlebar {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  height: 28px;
+  background: var(--cream);
+  border-bottom: var(--border-px) solid var(--ink);
+  user-select: none;
+  /* 整条标题栏可拖拽；按钮单独 no-drag 覆盖 */
+  -webkit-app-region: drag;
+  app-region: drag;
+  flex: 0 0 auto;
+}
+
+/* 左侧拖拽区 */
+.petibi-titlebar-drag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* 8×8 像素 logo */
+.petibi-titlebar-logo {
+  display: grid;
+  grid-template-columns: repeat(8, 1px);
+  grid-template-rows: repeat(8, 1px);
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+}
+.petibi-logo-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1px);
+  grid-template-rows: repeat(8, 1px);
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  image-rendering: pixelated;
+}
+
+/* 标题文字（像素字体小号） */
+.petibi-titlebar-title {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 右侧按钮区（不可拖拽） */
+.petibi-titlebar-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 0 0 auto;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+/* 按钮基类：16×16 icon，hover 时族色高亮，关闭按钮 hover 用红族 */
+.petibi-titlebar-btn {
+  width: 28px;
+  height: 100%;
+  border: none;
+  border-left: 1px solid var(--ink);
+  background: var(--cream);
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 80ms ease-out, color 80ms ease-out;
+  /* 收尾修复：owner 实测"自绘标题栏的最小化按钮点击无反应"——根因是
+     父级 .petibi-titlebar 的 -webkit-app-region: drag 在某些 Electron 版本下
+     会拦截子按钮的 mousedown（事件被 drag 区域吞掉，按钮看似卡死）。
+     这里给按钮自身也加 no-drag，叠加父级 .petibi-titlebar-actions 的 no-drag
+     双重保险；同时显式 pointer-events: auto + position: relative 让事件
+     通路回到按钮本身。 */
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+  pointer-events: auto;
+  position: relative;
+  z-index: 2;
+}
+.petibi-titlebar-btn:hover {
+  background: var(--family-color);
+  color: #fff;
+}
+.petibi-titlebar-close:hover {
+  background: #b53a3a;
+  color: #fff;
+}
+.petibi-titlebar-btn:active {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* 按钮图标：SVG 已用 shape-rendering: crispEdges，强制像素对齐 */
+.petibi-titlebar-btn svg {
+  display: block;
+}

@@ -1,11 +1,18 @@
 // 【文件说明】测试页（PRD §3.3）：一题一屏 + 顶部进度条 + 可返回上一题。
 // 选型理由：一题一屏更易集中注意力，且 40 题量在每题独立思考下完成时长仍可控（中位 ≤ 5 分钟）。
 // 计分：所有题答完后调 score() 出结果，dispatch GO_RESULT 跳到结果页。
+//
+// M4 setup 返回导航：左上角加「← 返回」按钮，回选人格页。
+//   - 派发 BACK_TO_PICK_KEEP_ANSWERS：只切 step，**保留 state.answers**，
+//     用户再次进入 TestPage 时 currentIdx 仍是上次的进度（owner 要求"已答题进度保留"）；
+//   - 步骤内的"上一题"按钮（handleBack，撤销上一题的答案）保持原语义——这是题目级导航，
+//     区别于左上角"返回选人格"的步骤级返回。两者并存不冲突。
 import { useMemo } from 'react'
 import { useSetup } from '../state/setupStore'
 import { questionBank } from '../../scoring/questions'
 import { score } from '../../scoring/score'
 import type { AnswerValue } from '../../scoring/types'
+import { BackButton } from './BackButton'
 
 // 5 级量表的中文标签（5=非常同意，1=非常不同意）——与数据契约 §1 一致
 const SCALE_LABELS = ['非常不同意', '不同意', '中立', '同意', '非常同意']
@@ -56,6 +63,11 @@ export function TestPage(): JSX.Element {
     }
   }
 
+  // M4 返回导航：返回选人格页，保留已答题进度（reducer 不清 answers）
+  function handleBackToPick(): void {
+    dispatch({ type: 'BACK_TO_PICK_KEEP_ANSWERS' })
+  }
+
   if (!current) {
     // 理论上 currentIdx >= total 时不会有 current；兜底直接跳到结果
     const result = score(state.answers, questionBank)
@@ -67,6 +79,7 @@ export function TestPage(): JSX.Element {
 
   return (
     <div className="setup-shell">
+      <BackButton onClick={handleBackToPick} label="返回选人格" step="test" />
       <header className="setup-header">
         <h1 className="setup-title">人格测试</h1>
         <p className="setup-subtitle">根据直觉选 1-5 分，没有对错</p>

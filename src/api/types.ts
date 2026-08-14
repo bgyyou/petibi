@@ -32,11 +32,19 @@ export interface ApiError {
 
 // ----- 登录流程（POST /api/auth/email/code、POST /api/auth/email/verify）-----
 
-/** 发送邮箱验证码响应：dev 模式会把 code 直接返回在响应里 */
+/**
+ * 发送邮箱验证码响应：dev 模式会把 code 直接返回在响应里。
+ * - devCode：仅 dev / mock 模式返回（M4 内嵌 server 工单：dev 模式回显便于联调）；
+ * - expiresInSec：验证码过期秒数（前端用于倒计时）。
+ *
+ * 字段命名从 M4 工单起统一为 camelCase（与 server /api/auth/email/code 响应一致）；
+ * 旧字段名 dev_code / expires_in 已停用。
+ */
 export interface SendCodeResponse {
-  // 仅 dev / mock 返回；生产环境为 null
-  dev_code?: string | null
-  expires_in: number
+  /** 仅 dev / mock 模式返回；生产环境为 undefined（前端守卫 typeof === 'string'） */
+  devCode?: string
+  /** 过期秒数 */
+  expiresInSec: number
 }
 
 /** 校验邮箱 + 验证码响应：成功后返回 token（前端写入本地）+ 用户信息 */
@@ -78,9 +86,16 @@ export interface SetPetNicknameResponse {
 
 // ----- 反馈（POST /api/me/feedback）-----
 
-/** 反馈请求：是否与本次人格结果一致 + 自由评论（可选） */
+/** 反馈请求：本次测评结果（mbti + subtype）+ 是否认可 + 自由评论（可选）
+ *
+ * 字段与 server POST /api/me/feedback 契约一一对应（存 test_feedback 表）：
+ * mbti/subtype 必须传结果页当前展示的人格——用户反馈完可能不点「完成」，
+ * server 端 users 表里还是旧人格，反查会把反馈算到错的人格头上。
+ */
 export interface FeedbackRequest {
-  match: boolean
+  mbti: string
+  subtype: 'stable' | 'sensitive'
+  accepted: boolean
   comment?: string
 }
 

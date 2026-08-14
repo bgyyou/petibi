@@ -1,0 +1,237 @@
+/* 【文件说明】Petibi 设计 tokens（DESIGN.md v1 唯一视觉标准 / T3 工单）：
+   集中声明设计令牌——像素字体 @font-face、四族色变量、硬阴影 / 边框 / 字号等。
+   任何 setup / panel / 桌宠 弹窗样式都从这里 import，避免 token 在多个 css 里硬编码。
+   像素字体：TakWolf/fusion-pixel-font（SIL OFL 1.1，源自 assets/fonts/，通过 resources/fonts/ 走 vite publicDir）。
+   中英文字体分层：英文/数字标题用 latin 等宽字体；中文标题降级到 zh_hans。
+   正文沿用系统黑体栈，不强行套像素字体（pixel-font 没有细字重、读长文疲劳）。 */
+
+/* ===== @font-face：英文/数字用 latin 等宽，中文用 zh_hans 等宽 ===== */
+/* 12px 像素等宽字体：英文/数字（INTJ、ok、123 等）首选，等宽保证字符对齐 */
+@font-face {
+  font-family: 'PetibiPixel';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url('/fonts/fusion-pixel-12px-proportional-latin.woff2') format('woff2'),
+    url('/fonts/fusion-pixel-12px-proportional-latin.otf') format('opentype');
+  unicode-range:
+    /* 拉丁字母、数字、常用符号 */
+    U+0020-007F, U+00A0-00FF, U+2000-206F, U+2070-209F, U+20A0-20CF,
+    U+2100-214F, U+2190-21FF, U+2200-22FF, U+2300-23FF, U+2500-257F,
+    U+2580-259F, U+25A0-25FF, U+2600-26FF, U+2700-27BF, U+E000-F8FF;
+}
+
+/* 12px 像素字体：中文（CJK 统一表意 + 全角符号） */
+@font-face {
+  font-family: 'PetibiPixel';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url('/fonts/fusion-pixel-12px-proportional-zh_hans.woff2') format('woff2'),
+    url('/fonts/fusion-pixel-12px-proportional-zh_hans.otf') format('opentype');
+  unicode-range:
+    /* CJK 统一表意 + 全角符号 + 中文标点 */
+    U+3000-303F, U+4E00-9FFF, U+FF00-FFEF, U+3000-303F;
+}
+
+/* ===== 像素字体 stack：英文优先、中文降级 ===== */
+/* 标题专用栈：英文 → 中文 → 兜底无衬线 */
+:root {
+  --font-pixel-en: 'PetibiPixel', 'FusionPixelLatin', 'Press Start 2P', 'Courier New', monospace;
+  --font-pixel-cn: 'PetibiPixel', 'FusionPixelHans', 'PixelMPlus', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+
+  /* 正文：系统黑体栈（DESIGN.md §4 正文黑体），不强行像素化（pixel-font 没有细字重） */
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+/* 标题用像素字体的辅助 class —— T3 工单约定所有 h1/h2/标题元素都套 .pixel-title */
+.pixel-title {
+  font-family: var(--font-pixel-en), var(--font-pixel-cn), var(--font-body);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  /* 像素字体本身已是位图，渲染时强制像素缩放，防止浏览器模糊 */
+  image-rendering: pixelated;
+}
+
+/* 中英混排标题：英文字符优先走 latin 像素，中文走 zh_hans */
+.pixel-title-cn {
+  font-family: var(--font-pixel-cn), var(--font-pixel-en), var(--font-body);
+  font-weight: 400;
+  letter-spacing: 0;
+  image-rendering: pixelated;
+}
+
+/* ===== 色板（DESIGN.md §2）：四族色 + 墨/奶油/纸白 ===== */
+:root {
+  /* 基础色 */
+  --ink: #2B2320;        /* 描边/正文 */
+  --cream: #FEF9EF;      /* 背景主色（孟菲斯底） */
+  --paper: #FFFFFF;      /* 卡片底 */
+  --mute: #8B8680;       /* 辅助文字 */
+
+  /* 四族强调色（DESIGN.md §2 严格枚举，禁止引入色板外颜色） */
+  --family-analyst: #785D87;     /* 紫 — 分析家 */
+  --family-analyst-bg: #f1ebf6;  /* 紫系底纹 */
+  --family-diplomat: #3E8F6E;    /* 绿 — 外交家 */
+  --family-diplomat-bg: #e8f3ec;
+  --family-sentinel: #399FB9;    /* 蓝 — 守护者 */
+  --family-sentinel-bg: #e6eef7;
+  --family-explorer: #E4C728;    /* 黄 — 探险家 */
+  --family-explorer-bg: #fbf2dc;
+
+  /* 主题色由当前人格族色注入：结果页/我的面板/Tab 强调位用 --family-color */
+  --family-color: var(--family-analyst);
+  --family-color-bg: var(--family-analyst-bg);
+}
+
+/* ===== 组件 token（DESIGN.md §5）===== */
+:root {
+  /* 边框：统一 3px 墨色（DESIGN.md §3：border-4 在桌面小窗太粗） */
+  --border-px: 3px;
+  --border-color: var(--ink);
+
+  /* 硬阴影：4px 偏移 + 0 模糊（DESIGN.md §3：禁止柔和阴影） */
+  --shadow-rest: 4px 4px 0 var(--ink);
+  --shadow-hover: 2px 2px 0 var(--ink);
+  --shadow-active: 0 0 0 var(--ink); /* active 时阴影消失 + 位移 4px */
+
+  /* 过渡：DESIGN.md §3 规定 transition-all duration-100 */
+  --transition: all 100ms ease-out;
+
+  /* 字号节奏（DESIGN.md §4：H1 24 / H2 18 / 正文 14 / 小字 12） */
+  --fs-h1: 24px;
+  --fs-h2: 18px;
+  --fs-body: 14px;
+  --fs-small: 12px;
+  --fs-pixel-lg: 28px;     /* 大像素字符（人格类型 INTJ 等） */
+  --fs-pixel-xl: 40px;     /* 结果页 4 字母 MBTI 大字 */
+
+  /* 标题栏（DESIGN.md §6：自绘 28px 奶油底） */
+  --titlebar-h: 28px;
+
+  /* 圆角：DESIGN.md §3 禁止圆角（统一 0），例外：头像/形象图容器 2px */
+  --radius-none: 0;
+  --radius-avatar: 2px;
+}
+
+/* ===== 全局盒模型与基础排版 ===== */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+/* 像素风统一硬阴影 utility */
+.pixel-shadow {
+  box-shadow: var(--shadow-rest);
+  transition: var(--transition);
+}
+.pixel-shadow:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translate(2px, 2px);
+}
+.pixel-shadow:active {
+  box-shadow: var(--shadow-active);
+  transform: translate(4px, 4px);
+}
+
+/* 按钮 token：纸白或族色底 + 3px 墨边框 + 硬阴影 + hover/active 位移 */
+.pixel-btn {
+  font-family: inherit;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  padding: 10px 18px;
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: var(--shadow-rest);
+  transition: var(--transition);
+  user-select: none;
+}
+.pixel-btn:hover:not(:disabled) {
+  box-shadow: var(--shadow-hover);
+  transform: translate(2px, 2px);
+}
+.pixel-btn:active:not(:disabled) {
+  box-shadow: var(--shadow-active);
+  transform: translate(4px, 4px);
+}
+.pixel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 主按钮族色版（族色填充 + 白字 + 硬阴影） */
+.pixel-btn-primary {
+  background: var(--family-color);
+  color: #fff;
+}
+
+/* ghost 按钮：纸白底 + 墨边框 */
+.pixel-btn-ghost {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ===== 输入框 token（DESIGN.md §5）===== */
+.pixel-input {
+  font-family: inherit;
+  font-size: var(--fs-body);
+  padding: 10px 12px;
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  outline: none;
+  transition: var(--transition);
+}
+.pixel-input:focus {
+  /* focus 时内描边 2px 族色（用 box-shadow inset 模拟内描边） */
+  border-color: var(--family-color);
+  box-shadow: inset 0 0 0 2px var(--family-color);
+}
+
+/* ===== 卡片 token（DESIGN.md §5）===== */
+.pixel-card {
+  background: var(--paper);
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-rest);
+  padding: 16px;
+}
+
+/* ===== 像素装饰元素（DESIGN.md §3 装饰：星星 / 虚线 / 点阵）===== */
+/* 虚线分隔线：孟菲斯调味，给 section 之间用 */
+/* 像素风虚线分隔线：用 linear-gradient 模拟 8px 间隔的硬块（DESIGN.md §3 装饰：虚线分隔线可用） */
+.pixel-divider {
+  border: none;
+  height: 3px;
+  /* 像素硬块模拟：8px 黑 / 8px 透 的硬边循环，不用真正的虚线（避免 box-dash 模糊） */
+  background-image: linear-gradient(to right, var(--ink) 50%, transparent 50%);
+  background-size: 8px 3px;
+  background-repeat: repeat-x;
+  margin: 12px 0;
+}
+
+/* 像素星星：用纯 CSS 拼一个 4 角星 + 中心点；装饰用，不当功能图标 */
+.pixel-star::before {
+  content: '★';
+  color: var(--family-color);
+  font-size: 14px;
+  line-height: 1;
+}

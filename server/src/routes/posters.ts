@@ -15,8 +15,7 @@
 
 import { Router, type Request, type Response, type NextFunction, type Router as RouterType, type RequestHandler } from "express"
 import { writeFileSync, mkdirSync } from "node:fs"
-import { dirname, join } from "node:path"
-import { fileURLToPath } from "node:url"
+import { join } from "node:path"
 import { AppError, ErrorCodes, type ApiResponse } from "../errors.js"
 import type { Db } from "../db.js"
 import type { ServerConfig } from "../config.js"
@@ -37,6 +36,9 @@ export interface PostersRouterDeps {
   moderation: ModerationProvider
   /** 鉴权中间件：POST 类端点按需挂载（GET 类端点公开） */
   auth: RequestHandler
+  /** 海报图片根目录（绝对路径）。CLI 场景下走 import.meta.url 推算 server/data/posters；
+   *  内嵌场景由主进程注入 userData/posters。优先 postersDirOverride。 */
+  postersDir?: string
 }
 
 /** posters 表行类型（对外 DTO 字段命名沿用下划线与 DB 列对齐） */
@@ -75,13 +77,16 @@ interface CreateCommentInput {
   content: string
 }
 
-/** 工具：从 base64 data URL 解码出 mime + 二进制，写到 server/data/posters/<uid>/<ts>.png
- *  返回写盘后的相对路径（相对于 server 根）。
+/** 工具：从 base64 data URL 解码出 mime + 二进制，写到 postersDir/<uid>/<ts>.<ext>
+ *  返回写盘后的相对路径（始终是 data/posters/<uid>/<filename>，便于静态路由统一读取）。
+ *
+ *  M4 内嵌兼容：postersDir 由主进程在 startServer 时注入绝对路径；
+ *  CLI 场景下若未传，则依赖调用方在路由外部解析（createApp 注入）。
  */
 function savePosterImage(
   imageBase64: string,
   userId: number,
-  serverRoot: string,
+  postersRoot: string,
 ): { relativePath: string; bytes: number } {
   const m = IMAGE_DATA_PREFIX.exec(imageBase64)
   if (!m) {
@@ -97,7 +102,7 @@ function savePosterImage(
   if (buf.length > 2 * 1024 * 1024) {
     throw AppError.badRequest(ErrorCodes.InvalidPoster, "图片不能超过 2MB")
   }
-  const userDir = join(serverRoot, "data", "posters", String(userId))
+  const userDir = join(postersRoot, String(userId))
   mkdirSync(userDir, { recursive: true })
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
   const fullPath = join(userDir, filename)
@@ -139,9 +144,11 @@ export function createPostersRouter(deps: PostersRouterDeps): RouterType {
   const router = Router()
   const { db, config, moderation, auth } = deps
 
-  // server 根 = server/src/routes/posters.ts → ../../../  → server/
-  // 用 __dirname 等价物（import.meta.url → fileURLToPath → dirname），兼容 Windows
-  const serverRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..")
+  // 海报图片根目录：postersDir（绝对路径）由 createApp 注入；不传则抛错（避免静默写到错位置）
+  if (!deps.postersDir) {
+    throw new Error("createPostersRouter: postersDir 未注入（startServer 必须传 postersDir 选项）")
+  }
+  const postersRoot = deps.postersDir
 
   // ------------------------------------------------------------------
   // POST / —— 上传海报
@@ -172,7 +179,7 @@ export function createPostersRouter(deps: PostersRouterDeps): RouterType {
       }
 
       // 2. 图片存盘（base64 解码 + 落盘 + 写路径）
-      const { relativePath } = savePosterImage(body.image_base64, userId, serverRoot)
+      const { relativePath } = savePosterImage(body.image_base64, userId, postersRoot)
 
       // 3. 入 pending 行（先不审，先占位让审核管道决定 status）
       const insert = db.prepare(
