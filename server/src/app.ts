@@ -91,7 +91,12 @@ export function createApp(deps: AppDeps): Express {
   app.use(
     "/api/chat",
     auth,
-    createChatRouter({ db, llm: config.llm, dailyQuota: config.dailyQuota }),
+    createChatRouter({
+      db,
+      llm: config.llm,
+      dailyQuota: config.dailyQuota,
+      disableQuota: config.disableQuota,
+    }),
   )
   // M4：社区广场路由。GET /api/posters（广场列表）与 GET /api/posters/:id/comments（留言列表）公开；
   // 其他端点（POST 上传/点赞/留言）在路由内部按需挂载 auth 中间件。

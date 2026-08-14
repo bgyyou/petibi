@@ -1,29 +1,35 @@
 # -*- coding: utf-8 -*-
 """
-make_installer_illustration.py — 生成 NSIS 安装器品牌插画占位图（T3 工单第 6 条）
+make_installer_illustration.py — NSIS 安装器 164×314 品牌插画（M5 工单升级版）。
 
-工单约定：
-  - electron-builder 的 NSIS 安装器有"左侧 164×314 像素插画位"，DESIGN.md §6 要求
-    像素风 16 人格全家福 sprite 排列图；
-  - 正式 AI 插画后续单独出稿替换，本脚本先用 PIL 把 16 人格 portrait 拼成 164×314 sprite
-    网格作为占位图，避免 UI 返工阻塞在等美术上；
-  - 同时输出 256×256 的 .ico（installerIcon / uninstallerIcon）。
+设计依据：docs/DESIGN.md §6 — NSIS 安装器左侧 164×314 像素品牌插画位，
+主题："16 只像素动物排队欢迎你"。本版用 resources/sprites/<type>/base.png
+64×64 base sprite 作素材，落地为：
 
-输入：
-  - assets/art/portraits/<type>.png （M1 已生成的 16 人格 512×512 形象图）
-  - assets/style/palette.json （DESIGN.md §2 色板，含四族色）
+  ┌──────────────────────────┐  ← 164
+  │ [logo] PETIBI            │   28  标题栏（DESIGN.md §6：自绘窗口标题栏调性）
+  ├──────────────────────────┤
+  │ [16 sprite grid 4×4]     │  258  4 族 × 4 人格
+  │  [每格族色顶条 + 类型]   │       每族一行，共 4 行
+  │                          │
+  ├──────────────────────────┤
+  │ PETIBI 16人格全家福     │   28  品牌条
+  └──────────────────────────┘  ← 314
+
+风格契约（DESIGN.md §3 硬性规则）：
+  - 无圆角 / 无渐变 / 无柔阴影；
+  - 边框统一 3px #2B2320；
+  - 强调色只用四族色；
+  - 像素 sprite 用 NEAREST 缩放，硬边保留；
+  - 装饰：像素星星 + 像素分隔线 + 像素文字。
 
 输出：
-  - build/installer/installer-header.bmp  （164×314 BMP，安装器侧栏插画）
-  - build/installer/icon.ico             （256×256 ICO，安装器 / 卸载器图标）
-  - build/installer/installer-header.png （调试用 PNG，开发者参考）
+  - build/installer/installer-header.bmp   （electron-builder NSIS 侧栏标准格式）
+  - build/installer/installer-header.png   （同源 PNG，便于人工核对）
 
-依赖：
-  - Pillow（pip install Pillow），纯 Python。
-  - 仓库 root 仓库已有 scripts/ 目录，本脚本放在 scripts/ 下。
+依赖：仅 Pillow。
 
-用法：
-  python scripts/make_installer_illustration.py
+用法：python scripts/make_installer_illustration.py
 """
 
 from __future__ import annotations
@@ -32,248 +38,278 @@ import json
 import sys
 from pathlib import Path
 
-# Pillow 导入；缺依赖时给出友好提示
-try:
-    from PIL import Image, ImageDraw, ImageFont
-except ImportError:
-    print("缺少依赖 Pillow，请先 pip install Pillow", file=sys.stderr)
-    raise
+from PIL import Image, ImageDraw, ImageFont
 
-# 仓库根 = scripts/ 的上一级（沿用 check_comments.py 的约定）
+# 仓库根 = scripts/ 的上一级
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# 输入：16 人格 portrait
-PORTRAITS_DIR = REPO_ROOT / "assets" / "art" / "portraits"
-
-# 调色板：DESIGN.md §2
-PALETTE_FILE = REPO_ROOT / "assets" / "style" / "palette.json"
+# 输入：64×64 base sprite（resources/sprites/<type>/base.png）
+SPRITES_DIR = REPO_ROOT / "resources" / "sprites"
 
 # 输出：installer 资源
 OUT_DIR = REPO_ROOT / "build" / "installer"
-OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# 16 人格顺序：与 src/setup/persona-meta.ts PERSONAS 完全一致（4 族 × 4 字母）
-PERSONAS = [
-    # analyst（紫系）
-    ("INTJ", "analyst"), ("INTP", "analyst"),
-    ("ENTJ", "analyst"), ("ENTP", "analyst"),
-    # diplomat（绿系）
-    ("INFJ", "diplomat"), ("INFP", "diplomat"),
-    ("ENFJ", "diplomat"), ("ENFP", "diplomat"),
-    # sentinel（蓝系）
-    ("ISTJ", "sentinel"), ("ISFJ", "sentinel"),
-    ("ESTJ", "sentinel"), ("ESFJ", "sentinel"),
-    # explorer（黄系）
-    ("ISTP", "explorer"), ("ISFP", "explorer"),
-    ("ESTP", "explorer"), ("ESFP", "explorer"),
-]
-
-# 安装器插画尺寸（DESIGN.md §6：164×314 NSIS 侧栏）
+# 安装器插画尺寸（DESIGN.md §6 / electron-builder NSIS 侧栏）
 HEADER_W, HEADER_H = 164, 314
 
+# 设计令牌（DESIGN.md §2 / §3）
+INK = (43, 35, 32)            # #2B2320 描边/正文
+CREAM = (254, 249, 239)       # #FEF9EF 奶油底
+PAPER = (255, 255, 255)       # #FFFFFF 纸白
+MUTE = (139, 134, 128)        # #8B8680 辅助文字
 
-def load_palette() -> dict:
-    """读取调色板，缺字段则 fallback 到 DESIGN.md §2 硬编码值。"""
-    try:
-        with PALETTE_FILE.open(encoding="utf-8") as fh:
-            data = json.load(fh)
-        return data
-    except (OSError, json.JSONDecodeError):
-        # fallback：硬编码 DESIGN.md 色板
-        return {
-            "ink": "#2B2320",
-            "cream": "#FEF9EF",
-            "paper": "#FFFFFF",
-            "mute": "#8B8680",
-            "families": {
-                "analyst":  {"fg": "#785D87", "bg": "#f1ebf6"},
-                "diplomat": {"fg": "#3E8F6E", "bg": "#e8f3ec"},
-                "sentinel": {"fg": "#399FB9", "bg": "#e6eef7"},
-                "explorer": {"fg": "#E4C728", "bg": "#fbf2dc"},
-            },
-        }
+# 四族强调色（DESIGN.md §2）
+FAMILY_FG = {
+    "analyst":  (120, 93, 135),   # #785D87 紫
+    "diplomat": (62, 143, 110),   # #3E8F6E 绿
+    "sentinel": (57, 159, 185),   # #399FB9 蓝
+    "explorer": (228, 199, 40),   # #E4C728 黄
+}
+# 四族底纹（DESIGN.md §2 强调色族色之外的浅底）
+FAMILY_BG = {
+    "analyst":  (241, 235, 246),  # #f1ebf6
+    "diplomat": (232, 243, 236),  # #e8f3ec
+    "sentinel": (230, 238, 247),  # #e6eef7
+    "explorer": (251, 242, 220),  # #fbf2dc
+}
+
+# 16 人格顺序：4 族 × 4 字母，与 src/setup/persona-meta.ts PERSONAS 完全一致
+PERSONAS = [
+    # analyst 紫
+    ("intj", "INTJ", "analyst"),
+    ("intp", "INTP", "analyst"),
+    ("entj", "ENTJ", "analyst"),
+    ("entp", "ENTP", "analyst"),
+    # diplomat 绿
+    ("infj", "INFJ", "diplomat"),
+    ("infp", "INFP", "diplomat"),
+    ("enfj", "ENFJ", "diplomat"),
+    ("enfp", "ENFP", "diplomat"),
+    # sentinel 蓝
+    ("istj", "ISTJ", "sentinel"),
+    ("isfj", "ISFJ", "sentinel"),
+    ("estj", "ESTJ", "sentinel"),
+    ("esfj", "ESFJ", "sentinel"),
+    # explorer 黄
+    ("istp", "ISTP", "explorer"),
+    ("isfp", "ISFP", "explorer"),
+    ("estp", "ESTP", "explorer"),
+    ("esfp", "ESFP", "explorer"),
+]
 
 
-def hex_to_rgb(hex_str: str) -> tuple:
-    """把 #RRGGBB 转 (R, G, B)；缺 # 前缀自动补。"""
-    s = hex_str.strip()
-    if s.startswith("#"):
-        s = s[1:]
-    if len(s) != 6:
-        return (43, 35, 32)
-    return (int(s[0:2], 16), int(s[2:4], 16), int(s[4:6], 16))
-
-
-def make_pixel_canvas(w: int, h: int, bg: tuple) -> Image.Image:
-    """新建 RGB 画布，填充奶油底色。"""
-    return Image.new("RGB", (w, h), bg)
-
-
-def paste_portrait(canvas: Image.Image, portrait: Image.Image, x: int, y: int, size: int) -> None:
-    """把 portrait 等比缩放到 size×size，粘贴到 canvas (x, y)；保留像素感（NEAREST）。"""
-    thumb = portrait.convert("RGB").resize((size, size), Image.NEAREST)
-    canvas.paste(thumb, (x, y))
-
-
-def render_header(palette: dict) -> Image.Image:
-    """
-    渲染安装器左侧插画（164×314）：
-      - 顶部 4×32px 标题栏（奶油底 + 墨色 3px 边框 + Petibi 字样）
-      - 中部 4×4 sprite 网格（每个 sprite 32×32，间距 4）
-      - 底部留白 + "Petibi" 字样（用系统默认字体，无像素字体 fallback 即可）
-    """
-    ink = hex_to_rgb(palette.get("ink", "#2B2320"))
-    cream = hex_to_rgb(palette.get("cream", "#FEF9EF"))
-    paper = hex_to_rgb(palette.get("paper", "#FFFFFF"))
-    families = palette.get("families", {})
-
-    canvas = make_pixel_canvas(HEADER_W, HEADER_H, cream)
-    draw = ImageDraw.Draw(canvas)
-
-    # 顶部标题栏：高度 28
-    draw.rectangle([0, 0, HEADER_W - 1, 27], fill=cream, outline=ink, width=2)
-    # 像素 logo：8x8 grid + 4 种族色块（mini version）
-    logo_x, logo_y = 8, 10
-    color_set = [
-        hex_to_rgb(families.get("analyst", {}).get("fg", "#785D87")),
-        hex_to_rgb(families.get("diplomat", {}).get("fg", "#3E8F6E")),
-        hex_to_rgb(families.get("sentinel", {}).get("fg", "#399FB9")),
-        hex_to_rgb(families.get("explorer", {}).get("fg", "#E4C728")),
+def load_font(size: int) -> ImageFont.ImageFont:
+    """挑一个能渲染像素风的系统字体；找不到就退到默认。"""
+    candidates = [
+        "C:/Windows/Fonts/consola.ttf",
+        "C:/Windows/Fonts/cour.ttf",
+        "C:/Windows/Fonts/arial.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf",
+        "/System/Library/Fonts/Menlo.ttc",
     ]
-    for i in range(4):
-        draw.rectangle([logo_x + i * 3, logo_y, logo_x + i * 3 + 2, logo_y + 2],
-                       fill=color_set[i])
-    # 标题文字：用 PIL 默认字体，PETIBI 字号 12
-    try:
-        font_title = ImageFont.truetype("arial.ttf", 11)
-    except OSError:
-        font_title = ImageFont.load_default()
-    draw.text((24, 8), "PETIBI", fill=ink, font=font_title)
-
-    # 4×4 sprite 网格：每格 32×32，间距 4，行间距 6
-    grid_top = 36
-    cell_w = 32
-    cell_h = 36  # 32 sprite + 4 间隔
-    grid_x_start = (HEADER_W - cell_w * 4 - 4 * 3) // 2  # 居中
-
-    for idx, (type_, family) in enumerate(PERSONAS):
-        col = idx % 4
-        row = idx // 4
-        x = grid_x_start + col * (cell_w + 4)
-        y = grid_top + row * cell_h
-
-        # 卡片底色：族色 bg（DESIGN.md §2）
-        family_bg_hex = families.get(family, {}).get("bg", "#f1ebf6")
-        family_bg = hex_to_rgb(family_bg_hex)
-        draw.rectangle([x, y, x + cell_w - 1, y + cell_w - 1],
-                       fill=family_bg, outline=ink, width=1)
-
-        # 贴 sprite：缩放到 28×28 居中在 32×32 卡片里
-        portrait_path = PORTRAITS_DIR / f"{type_.lower()}.png"
-        if portrait_path.exists():
+    for path in candidates:
+        if Path(path).exists():
             try:
-                paste_portrait(canvas, Image.open(portrait_path),
-                               x + 2, y + 2, cell_w - 4)
-            except Exception as err:
-                # 个别文件读不动就跳到 fallback
-                print(f"warn: portrait {type_} 读取失败：{err}", file=sys.stderr)
-                draw.text((x + 8, y + 10), type_, fill=ink, font=font_title)
-        else:
-            # fallback：用文字占位
-            draw.text((x + 6, y + 10), type_, fill=ink, font=font_title)
-
-    # 底部品牌字样
-    try:
-        font_brand = ImageFont.truetype("arial.ttf", 13)
-    except OSError:
-        font_brand = ImageFont.load_default()
-    draw.text((24, HEADER_H - 22), "16 人格全家福", fill=ink, font=font_brand)
-
-    # 整体加一圈 3px 墨色边框（DESIGN.md §5）
-    draw.rectangle([1, 1, HEADER_W - 2, HEADER_H - 2], outline=ink, width=2)
-    return canvas
+                return ImageFont.truetype(path, size)
+            except OSError:
+                continue
+    return ImageFont.load_default()
 
 
-def render_icon(palette: dict) -> Image.Image:
+def render_pixel_title_bar(draw: ImageDraw.ImageDraw, height: int) -> None:
+    """顶部 28px 自绘标题栏（DESIGN.md §6 调性：奶油底 + Petibi 像素 logo + 标题）。"""
+    # 底色
+    draw.rectangle([0, 0, HEADER_W - 1, height - 1], fill=CREAM)
+    # 3px 墨色底边
+    draw.rectangle([0, height - 3, HEADER_W - 1, height - 1], fill=INK)
+
+    # Petibi 像素 logo：8×8 像素方块
+    # 左侧 4×4 紫 + 右侧 4×4 绿 的双层像素块
+    logo_x, logo_y = 8, (height - 8) // 2 - 2
+    # 描边方块
+    draw.rectangle([logo_x - 1, logo_y - 1, logo_x + 17, logo_y + 9], outline=INK, width=1)
+    # 内部 4×4 像素矩阵：2 行紫，2 行绿
+    for ry in range(2):
+        for rx in range(2):
+            draw.rectangle(
+                [logo_x + rx * 4, logo_y + ry * 4,
+                 logo_x + rx * 4 + 3, logo_y + ry * 4 + 3],
+                fill=FAMILY_FG["analyst"],
+            )
+    for ry in range(2, 4):
+        for rx in range(2):
+            draw.rectangle(
+                [logo_x + rx * 4, logo_y + ry * 4,
+                 logo_x + rx * 4 + 3, logo_y + ry * 4 + 3],
+                fill=FAMILY_FG["diplomat"],
+            )
+
+    # "PETIBI" 文字（像素风等宽字体）
+    font_title = load_font(11)
+    draw.text((32, (height - 11) // 2 - 1), "PETIBI", fill=INK, font=font_title)
+
+
+def render_pixel_sprite_cell(
+    canvas: Image.Image,
+    draw: ImageDraw.ImageDraw,
+    type_lower: str,
+    type_upper: str,
+    family: str,
+    x: int,
+    y: int,
+    cell_w: int,
+    cell_h: int,
+    label_h: int,
+    sprite_size: int,
+) -> None:
+    """在指定 (x, y) 画一个 4×4 网格里的单格。
+
+    格子结构（自上而下）：
+      - 族色顶条 3px
+      - sprite 32×32 居中
+      - 类型标签区 12px 高（黑底白字）
+      - 整格描边 1px #2B2320
     """
-    渲染 256×256 应用图标（ICO 多分辨率源）：
-      - 奶油底 + 4 色 4×4 像素方块 + "P" 字母
-      - 用 PIL 缩放到 16/32/48/64/128/256 写进 ICO
-    """
-    ink = hex_to_rgb(palette.get("ink", "#2B2320"))
-    cream = hex_to_rgb(palette.get("cream", "#FEF9EF"))
-    families = palette.get("families", {})
+    fg = FAMILY_FG[family]
+    bg = FAMILY_BG[family]
 
-    canvas = make_pixel_canvas(256, 256, cream)
+    # 整格底色（族色底纹，浅底）
+    draw.rectangle([x, y, x + cell_w - 1, y + cell_h - 1], fill=bg)
+    # 整格描边（细线，避免占满 3px 在小格子里比例失衡）
+    draw.rectangle([x, y, x + cell_w - 1, y + cell_h - 1], outline=INK, width=1)
+
+    # 族色顶条：3px
+    draw.rectangle([x + 1, y + 1, x + cell_w - 2, y + 3], fill=fg)
+
+    # sprite 居中粘贴（用 base.png）
+    sprite_x = x + (cell_w - sprite_size) // 2
+    sprite_y = y + 5  # 顶条下方留 2px
+    sprite_path = SPRITES_DIR / type_lower / "base.png"
+    if sprite_path.exists():
+        try:
+            sprite = Image.open(sprite_path).convert("RGBA")
+            # NEAREST 缩放到 sprite_size
+            scaled = sprite.resize((sprite_size, sprite_size), Image.NEAREST)
+            canvas.paste(scaled, (sprite_x, sprite_y), scaled)
+        except Exception as err:
+            # sprite 缺失时画一个简单 placeholder
+            print(f"warn: sprite {type_lower} 读取失败：{err}", file=sys.stderr)
+            draw.rectangle(
+                [sprite_x, sprite_y, sprite_x + sprite_size - 1, sprite_y + sprite_size - 1],
+                fill=MUTE,
+            )
+    else:
+        # sprite 缺失占位
+        draw.rectangle(
+            [sprite_x, sprite_y, sprite_x + sprite_size - 1, sprite_y + sprite_size - 1],
+            fill=MUTE,
+        )
+
+    # 类型标签区：底部 12px 高（黑底白字 MBTI 缩写）
+    label_y = y + cell_h - label_h
+    draw.rectangle([x + 1, label_y, x + cell_w - 2, y + cell_h - 2], fill=INK)
+    font_label = load_font(8)
+    # 居中文本：用 textbbox 取宽高做 offset
+    bbox = draw.textbbox((0, 0), type_upper, font=font_label)
+    tw = bbox[2] - bbox[0]
+    th = bbox[3] - bbox[1]
+    tx = x + (cell_w - tw) // 2
+    ty = label_y + (label_h - th) // 2 - 1
+    draw.text((tx, ty), type_upper, fill=CREAM, font=font_label)
+
+
+def render_pixel_footer(draw: ImageDraw.ImageDraw, y_top: int, height: int) -> None:
+    """底部品牌条：黑底 + "PETIBI · 16人格全家福" 白字 + 像素装饰点阵。"""
+    # 黑底
+    draw.rectangle([0, y_top, HEADER_W - 1, y_top + height - 1], fill=INK)
+    # 顶边线 1px 紫（DESIGN.md §3 装饰可用四族色）
+    draw.rectangle([0, y_top, HEADER_W - 1, y_top], fill=FAMILY_FG["analyst"])
+
+    font_brand = load_font(10)
+    text = "PETIBI . 16 personality family"
+    bbox = draw.textbbox((0, 0), text, font=font_brand)
+    tw = bbox[2] - bbox[0]
+    th = bbox[3] - bbox[1]
+    tx = (HEADER_W - tw) // 2
+    ty = y_top + (height - th) // 2 - 1
+    draw.text((tx, ty), text, fill=CREAM, font=font_brand)
+
+    # 装饰：左右两侧 4×4 像素点（紫绿蓝黄四族色）
+    for i, color in enumerate(FAMILY_FG.values()):
+        # 左 4 列
+        lx = 4 + i * 2
+        ly = y_top + 4
+        draw.rectangle([lx, ly, lx + 1, ly + 1], fill=color)
+        # 右 4 列
+        rx = HEADER_W - 4 - 4 * 2 + i * 2
+        ry = y_top + 4
+        draw.rectangle([rx, ry, rx + 1, ry + 1], fill=color)
+
+
+def render_header() -> Image.Image:
+    """渲染安装器 164×314 品牌插画。"""
+    canvas = Image.new("RGB", (HEADER_W, HEADER_H), CREAM)
     draw = ImageDraw.Draw(canvas)
 
-    # 整体 3px 墨色边框
-    draw.rectangle([2, 2, 253, 253], outline=ink, width=4)
+    # 顶部自绘标题栏（DESIGN.md §6 调性）
+    title_h = 28
+    render_pixel_title_bar(draw, title_h)
 
-    # 8×8 像素 logo（中心对齐）：4 族色块
-    grid_top = 64
-    cell_size = 16
-    grid_x_start = (256 - cell_size * 8) // 2
-    color_set = [
-        hex_to_rgb(families.get("analyst", {}).get("fg", "#785D87")),
-        hex_to_rgb(families.get("diplomat", {}).get("fg", "#3E8F6E")),
-        hex_to_rgb(families.get("sentinel", {}).get("fg", "#399FB9")),
-        hex_to_rgb(families.get("explorer", {}).get("fg", "#E4C728")),
-    ]
-    # 第 1/3 行：紫绿，第 2/4 行：蓝黄
-    pattern = [0, 1, 0, 1, 0, 1, 0, 1,
-               2, 3, 2, 3, 2, 3, 2, 3,
-               0, 1, 0, 1, 0, 1, 0, 1,
-               2, 3, 2, 3, 2, 3, 2, 3]
-    for idx, color_idx in enumerate(pattern):
-        col = idx % 8
-        row = idx // 8
-        x = grid_x_start + col * cell_size
-        y = grid_top + row * cell_size
-        # 用 border 隔开
-        draw.rectangle([x + 1, y + 1, x + cell_size - 2, y + cell_size - 2],
-                       fill=color_set[color_idx])
+    # 4×4 网格区
+    grid_top = title_h
+    grid_bottom = HEADER_H - 28  # 留 28 给底部品牌条
+    grid_h = grid_bottom - grid_top
 
-    # 底部 P 字样
-    try:
-        font_p = ImageFont.truetype("arialbd.ttf", 28)
-    except OSError:
-        try:
-            font_p = ImageFont.truetype("arial.ttf", 28)
-        except OSError:
-            font_p = ImageFont.load_default()
-    draw.text((110, 208), "PETIBI", fill=ink, font=font_p)
+    # 4 行 × 4 列；列间距 4px、行间距 4px；每格 36×h
+    cols = 4
+    rows = 4
+    cell_w = 36
+    col_gap = 4
+    row_gap = 4
+    # 水平居中：grid_w = 4*36 + 3*4 = 156 → 左右各 4px
+    grid_w = cols * cell_w + (cols - 1) * col_gap
+    grid_x_start = (HEADER_W - grid_w) // 2
+    # 行高 = (grid_h - 3 * row_gap) / 4
+    cell_h = (grid_h - (rows - 1) * row_gap) // rows
+    label_h = 12
+    sprite_size = min(cell_w - 4, cell_h - label_h - 5)
+
+    for idx, (type_lower, type_upper, family) in enumerate(PERSONAS):
+        col = idx % cols
+        row = idx // cols
+        x = grid_x_start + col * (cell_w + col_gap)
+        y = grid_top + row * (cell_h + row_gap)
+        render_pixel_sprite_cell(
+            canvas, draw, type_lower, type_upper, family,
+            x, y, cell_w, cell_h, label_h, sprite_size,
+        )
+
+    # 底部品牌条
+    render_pixel_footer(draw, grid_bottom, 28)
+
+    # 整体外框 1px（DESIGN.md §3 边框统一 3px 但 164 宽装 1px 外框更协调）
+    draw.rectangle([0, 0, HEADER_W - 1, HEADER_H - 1], outline=INK, width=1)
+
     return canvas
-
-
-def write_ico(base: Image.Image, ico_path: Path) -> None:
-    """把 256×256 源图标写到多分辨率 .ico（Pillow 自动写入 16/32/48/64/128/256）。"""
-    sizes = [(16, 16), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
-    base.save(ico_path, format="ICO", sizes=sizes)
 
 
 def main() -> int:
-    palette = load_palette()
-    print(f"调色板已读取（ink={palette.get('ink', '?')}）")
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # 1) 安装器插画
-    header_img = render_header(palette)
-    header_png = OUT_DIR / "installer-header.png"
-    header_bmp = OUT_DIR / "installer-header.bmp"
-    header_img.save(header_png)
-    header_img.save(header_bmp, format="BMP")
-    print(f"安装器插画已生成：{header_png} ({header_img.size}) + .bmp")
+    canvas = render_header()
 
-    # 2) 应用图标（多分辨率 ICO）
-    icon_img = render_icon(palette)
-    icon_ico = OUT_DIR / "icon.ico"
-    write_ico(icon_img, icon_ico)
-    print(f"应用图标已生成：{icon_ico} ({icon_img.size})")
+    # BMP：electron-builder NSIS 侧栏标准格式（24-bit RGB，无 alpha）
+    out_bmp = OUT_DIR / "installer-header.bmp"
+    canvas_rgb = canvas.convert("RGB")
+    canvas_rgb.save(out_bmp, format="BMP")
 
-    # 3) 同时输出一份小尺寸 PNG 作为兜底（如果 electron-builder 取不到 .ico）
-    icon_png = OUT_DIR / "icon.png"
-    icon_img.save(icon_png)
-    print(f"应用图标 PNG 兜底：{icon_png}")
+    # PNG：同源调试图，便于人工核对
+    out_png = OUT_DIR / "installer-header.png"
+    canvas_rgb.save(out_png)
+
+    print(f"安装器插画（M5 工单 164×314 像素版）已生成：")
+    print(f"  BMP: {out_bmp}")
+    print(f"  PNG: {out_png}")
     return 0
 
 

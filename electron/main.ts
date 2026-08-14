@@ -35,7 +35,7 @@
 //     同步取得；
 //   - 应用退出前 await server.close() 优雅关停（先停 HTTP 再关 DB）。
 import { join } from 'path'
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import * as fsp from 'fs/promises'
 import {
   BrowserWindow,
@@ -46,6 +46,107 @@ import {
   nativeImage,
 } from 'electron'
 import { readProfile, writeProfile, type StoredProfile } from './storage'
+
+// 【M5 真 API 接入工单】主进程启动时加载项目根 .env，让 DEEPSEEK_API_KEY 等
+// 在 startServerInMain() 调用 require('./server.cjs') 之前就注入到 process.env。
+// 这样 embed bundle 内部 loadConfig() 读到的 apiKey 不是空，路由会走真实流式。
+// 路径解析：dev = __dirname/../..，prod = process.resourcesPath（与 server bundle 的
+// resources/data 寻址保持一致；不在 prod 包根目录写 .env）。
+//
+// M5 P1-D 升级：env 加载顺序必须满足「系统环境变量 > userData/.env > 项目 .env（dev）」：
+//   1. 系统环境变量：process.env 启动时已继承父进程（Windows 用户级 env 变量通过 setx 设置后
+//      启动 Petibi.exe 会自动出现在 process.env）；优先级最高，dotenv 默认不覆盖（保持显式
+//      setx 的设置永远胜出 .env 里的 fallback）；
+//   2. userData/.env（安装版 per-user 覆盖）：用户可在自己的用户目录下放一个 .env，
+//      比项目 .env 优先级高——典型场景是 owner 在生产机器上换 key 不想改安装包；
+//   3. 项目 .env（dev）：仓库根 .env，仅 dev 路径下生效；prod 走 process.resourcesPath/.env
+//      （electron-builder extraResources 把 .env 拷过去）作为兜底。
+// 不再 require('dotenv')：直接用 server/src/env.ts 同款的手写 fallback parser（10 行内），
+// 避免 electron-builder 漏 bundle dotenv 导致安装版 require 抛错、env 加载完全失败。
+function loadProjectEnvInMain(): void {
+  const candidates: Array<{ path: string; source: string }> = []
+  // 1) userData/.env：app.isPackaged 才考虑（dev 模式没必要写到 userData）
+  if (app.isPackaged) {
+    candidates.push({
+      path: join(app.getPath('userData'), '.env'),
+      source: 'userData',
+    })
+  }
+  // 2) 项目 .env：dev 走仓库根，prod 走 process.resourcesPath
+  candidates.push({
+    path: app.isPackaged
+      ? join(process.resourcesPath, '.env')
+      : join(__dirname, '..', '..', '.env'),
+    source: app.isPackaged ? 'resources' : 'dev',
+  })
+  // 3) cwd 兜底：用户 cd 到任意目录启动 Petibi.exe 的场景
+  candidates.push({
+    path: join(process.cwd(), '.env'),
+    source: 'cwd',
+  })
+
+  for (const c of candidates) {
+    if (!existsSync(c.path)) continue
+    const parsed = parseDotenvManually(c.path)
+    if (!parsed) continue
+    let applied = 0
+    for (const [k, v] of Object.entries(parsed)) {
+      // 不覆盖已有 env（系统环境变量优先级最高，setx 设的 key 永远胜出 .env）
+      if (process.env[k] === undefined) {
+        process.env[k] = v
+        applied++
+      }
+    }
+    if (applied > 0) {
+      console.log(`[main] env loaded: ${applied} keys from ${c.path} (source=${c.source})`)
+    } else {
+      console.log(`[main] env file ${c.path} 已存在但所有键已被系统 env 覆盖（source=${c.source}）`)
+    }
+  }
+  if (process.env['DEEPSEEK_API_KEY']) {
+    // 不打印 key 值，只打印是否已配置 + key 长度（让 owner 确认是否真的拿到了 key）
+    console.log(`[main] DEEPSEEK_API_KEY present (length=${process.env['DEEPSEEK_API_KEY'].length})`)
+  } else {
+    console.log('[main] DEEPSEEK_API_KEY 未配置（走 mock LLM）')
+  }
+}
+
+/**
+ * 手写 .env 解析：dotenv 不可用时的兜底（10 行内），与 server/src/env.ts 同款实现。
+ *   - 支持 KEY=VALUE 单行
+ *   - 支持 # 注释与空行
+ *   - 支持双/单引号包裹（去掉外层引号）
+ * 不支持转义、多行 value——这些场景用 dotenv 即可，不影响 Petibi 现有 .env.example 形态。
+ *
+ * 导出便于 vitest 在 node 环境钉死行为（不依赖 electron mock 也能跑）。
+ */
+export function parseDotenvManually(path: string): Record<string, string> | null {
+  let raw: string
+  try {
+    raw = readFileSync(path, 'utf-8')
+  } catch {
+    return null
+  }
+  const out: Record<string, string> = {}
+  for (const line of raw.split(/\r?\n/)) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const eq = trimmed.indexOf('=')
+    if (eq <= 0) continue
+    const key = trimmed.slice(0, eq).trim()
+    let value = trimmed.slice(eq + 1).trim()
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1)
+    }
+    out[key] = value
+  }
+  return out
+}
+// 在 app.whenReady 之前调一次最稳：让后续 startServerInMain() 拿到的 process.env 已经含 key
+loadProjectEnvInMain()
 
 // electron-vite 在 dev 模式下注入的渲染进程 dev-server 地址；打包后该变量为空
 const devUrl = process.env['ELECTRON_RENDERER_URL']
@@ -152,8 +253,9 @@ async function startServerInMain(): Promise<void> {
     personasDir: join(dataRoot, 'personas'),
     // dev 默认 secret 即可（只在 127.0.0.1 暴露，无外部攻击面）
     jwtSecret: process.env['PETIBI_JWT_SECRET'] || 'petibi-desktop-secret',
-    // mock LLM：prod 安装版用户没配 DEEPSEEK_API_KEY 时走 mock 流式
-    forceMock: !process.env['DEEPSEEK_API_KEY'],
+    // 【M5】当用户已在 .env 配 DEEPSEEK_API_KEY 时不再强制 mock；
+    // 没配或显式 FORCE_MOCK=1 时走 mock 流式；START_FORCE_MOCK 可在测试场景显式覆盖。
+    forceMock: process.env['FORCE_MOCK'] === '1' || !process.env['DEEPSEEK_API_KEY'],
   })
   console.log(
     `[main] 内嵌 server 启动完成：${runningServer.host}:${runningServer.port}`,

@@ -141,6 +141,10 @@ function bestInFile(file: EncyclopediaFile, tokens: string[]): { entry: Encyclop
 /**
  * 跨全库检索 Top 1：返回最佳条目及所属人格。
  * 当用户问题与任何条目都无交集时返回 null（调用方应降级为不注入 RAG 上下文）。
+ *
+ * 警告：此函数会在所有 16 个人格文件里找 Top 1，**不会**按用户当前人格过滤。
+ * 主对话链路请用 {@link retrieveTop1ForPersonality}，否则可能把别的人格条目
+ * 注入到当前用户的 prompt 里——典型症状：ENTP 用户答了 ENFP 的百科（M5 P0-B）。
  */
 export function retrieveTop1(
   question: string,
@@ -157,6 +161,40 @@ export function retrieveTop1(
     }
   }
   return top
+}
+
+/**
+ * 按用户当前人格检索 Top 1：严格限制在 personality 文件内检索，**绝不跨人格引用**。
+ *
+ * M5 P0-B 根因：之前路由 /api/chat 直接调全库 {@link retrieveTop1}，导致用户切回 ENTP
+ * 后对话被注入 ENFP 条目（ENTP / ENFP 都含 public-speaking 条目，分数接近时全库检索
+ * 不保证胜出的是用户当前人格）。修复方案：
+ *   1. 路由 /api/chat 改调本函数，personality 参数来自 users.mbti（userIdFromRequest
+ *      拿到的当前登录用户，绝不允许从客户端 body 传——防止误传/伪造人格绕过门禁）；
+ *   2. 返回结果带 personality 字段，路由写入 chat_logs 时与 user.mbti 一致，便于审计；
+ *   3. 测试断言「同一问题在 ENTP / ENFP 下分别调用，personality 字段必须等于传入人格」，
+ *      防回归。
+ *
+ * 实现要点：
+ *   - 白名单校验（PERSONALITIES.includes）：防止 personality 传错时回退到不存在的文件，
+ *     反而调回全库检索；
+ *   - 找不到 personality 文件时直接返回 null（不静默降级），由路由走"无 RAG"分支；
+ *   - 缓存友好：files 已是启动期一次性加载的 EncyclopediaFile[]，本函数是纯遍历，
+ *     ms 级无压力。
+ */
+export function retrieveTop1ForPersonality(
+  question: string,
+  files: EncyclopediaFile[],
+  personality: Personality
+): { entry: EncyclopediaEntry; personality: Personality; score: number } | null {
+  const tokens = tokenize(question)
+  if (tokens.length === 0) return null
+  // 找到目标人格文件（O(n) 遍历，n=16 可忽略）
+  const file = files.find((f) => f.personality === personality)
+  if (!file) return null
+  const best = bestInFile(file, tokens)
+  if (!best) return null
+  return { entry: best.entry, personality: file.personality, score: best.score }
 }
 
 /** 把检索到的条目渲染成 LLM 上下文片段（带人格/标题/正文/标签） */

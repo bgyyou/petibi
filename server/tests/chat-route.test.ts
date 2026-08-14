@@ -167,6 +167,53 @@ describe("POST /api/chat", () => {
     expect(deltas.length).toBeGreaterThan(0)
   })
 
+  it("M5 P0-B：rag_entry_id 必须以当前用户人格前缀开头（永不跨人格引用）", async () => {
+    // 用 ENTP 用户问"当众演讲"——历史上旧实现可能被注入 ENFP 条目。
+    // 修复后必须返回 ENTP- 开头的条目。
+    const resp = await fetch(`${baseUrl}/api/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ question: "明天要当众演讲好紧张" }),
+    })
+    const raw = await resp.text()
+    const events = parseSse(raw)
+    const meta = events.find((e) => e.type === "meta") as { rag_entry_id: string | null } | undefined
+    expect(meta?.rag_entry_id).not.toBeNull()
+    // 路由用 beforeEach 起的是 ENTP 用户；rag_entry_id 必须以 "ENTP-" 开头
+    expect(meta?.rag_entry_id).toMatch(/^ENTP-/)
+  })
+
+  it("M5 P0-B：切换用户人格后，rag 检索范围跟着变（永不跨人格引用）", async () => {
+    // 起第二个 server，用 INFP 用户问同样的"当众演讲"——
+    // 必须返回 INFP- 开头的条目，而不是之前 ENTP server 缓存的 ENTP 条目。
+    const tmp2 = mkdtempSync(join(tmpdir(), "petibi-chat-infp-"))
+    const r2 = startTestServer(tmp2, "bob@example.com", "INFP")
+    try {
+      const resp = await fetch(`${r2.baseUrl}/api/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${r2.token}`,
+        },
+        body: JSON.stringify({ question: "明天要当众演讲好紧张" }),
+      })
+      const raw = await resp.text()
+      const events = parseSse(raw)
+      const meta = events.find((e) => e.type === "meta") as { rag_entry_id: string | null } | undefined
+      expect(meta?.rag_entry_id).not.toBeNull()
+      // INFP 用户 → rag_entry_id 必须以 "INFP-" 开头
+      expect(meta?.rag_entry_id).toMatch(/^INFP-/)
+      // 防御：明确不等于上一个 ENTP server 的答案
+      expect(meta?.rag_entry_id).not.toMatch(/^ENTP-/)
+    } finally {
+      r2.server.close()
+      rmSync(tmp2, { recursive: true, force: true })
+    }
+  })
+
   it("回答 ≤150 字约束生效（mock 模式）", async () => {
     const resp = await fetch(`${baseUrl}/api/chat`, {
       method: "POST",

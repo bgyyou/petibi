@@ -12,10 +12,15 @@
 
 import type { Server } from "node:http"
 import { fileURLToPath } from "node:url"
+import { loadProjectEnv } from "./env.js"
 import { loadConfig } from "./config.js"
 import { openDb, ensureSchema } from "./db.js"
 import { createMailer } from "./mailer.js"
 import { createApp } from "./app.js"
+
+// 【M5】CLI 入口第一件事：加载仓库根 .env，把 DEEPSEEK_* / PETIBI_DISABLE_QUOTA 等
+// 注入 process.env，让下方 loadConfig() 能读到真实 key（详见 env.ts 头部说明）。
+loadProjectEnv()
 
 function main(): void {
   const config = loadConfig()

@@ -41,7 +41,7 @@ import {
   DOUBLE_CLICK_THRESHOLD_MS,
   feedClick,
   type ClickState,
-} from './__tests__/decideClickSequence.test'
+} from './decideClickSequence'
 
 // 动画帧率：T5 修复 4fps（每帧 250ms），原 8fps/125ms 在 128px 下显得抽搐而非呼吸
 const FRAME_INTERVAL_MS = 250

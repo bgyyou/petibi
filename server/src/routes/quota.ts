@@ -4,6 +4,8 @@
 // 实现：
 //   - 不写库；只读 chat_usage + 用 ServerConfig.dailyQuota
 //   - 前端对话开始前调用，先确认还有剩余次数再发起请求
+//   - M5 工单：新增 disabled 字段（PETIBI_DISABLE_QUOTA=1 时为 true），
+//     让前端可选地显示"测试期不计配额"。
 
 import { Router } from "express"
 import type { Router as RouterType, Request, Response, NextFunction } from "express"
@@ -38,6 +40,7 @@ export function createQuotaRouter(deps: QuotaRouterDeps): RouterType {
         used,
         remaining,
         limit,
+        disabled: config.disableQuota,
       }
       res.json(dto satisfies ApiResponse<QuotaResponse>)
     } catch (err) {

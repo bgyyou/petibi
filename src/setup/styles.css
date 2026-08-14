@@ -124,6 +124,123 @@
   box-shadow: 2px 2px 0 var(--ink);
   transform: none;
 }
+
+/* ===== M5 登录页设计升级（DESIGN.md §2 / §3 / §4） =====
+   - 视觉主体从"邮箱 + 验证码"升级为：Petibi logo + Slogan + 16 人格像素形象墙；
+   - 像素感：硬边 1px 描边 / 4px 偏移阴影 / 0 圆角（DESIGN.md §3）；
+   - 强调色仅四族色（DESIGN.md §2）；标题用像素字体（DESIGN.md §4）。
+*/
+
+/* brand 区域：logo + slogan 横排 */
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 6px;
+}
+
+/* 12×12 像素 logo 容器：每像素 2px，共 24×24 px */
+.login-brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  border: var(--border-px) solid var(--ink);
+  background: var(--paper);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+/* 12×12 网格，每格 2px（与 TitleBar 默认 logo 同源尺寸策略放大版） */
+.login-brand-logo-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 2px);
+  grid-template-rows: repeat(12, 2px);
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  image-rendering: pixelated;
+}
+
+/* slogan + 副标题 容器 */
+.login-brand-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* 主 Slogan（像素字体大标题，DESIGN.md §4 字号节奏 ≈ 28-32px） */
+.login-slogan {
+  margin: 0;
+  font-family: var(--font-pixel-cn), var(--font-pixel-en), var(--font-body);
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--ink);
+  line-height: 1.2;
+  image-rendering: pixelated;
+}
+
+/* ===== 16 人格像素形象墙（M5 登录页视觉主体）===== */
+.login-persona-wall {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 8px;
+  margin-bottom: 8px;
+  background: var(--paper);
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  box-shadow: var(--shadow-rest);
+}
+
+/* 单人格 tile：族色底 + 3px 墨边框 + 硬阴影 */
+.login-persona-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 4px 8px;
+  border: var(--border-px) solid var(--ink);
+  border-radius: 0;
+  box-shadow: 2px 2px 0 var(--ink);
+  min-height: 88px;
+}
+
+/* 族色顶条：3px 高族色实心条 */
+.login-persona-tile-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+/* sprite 48×48 容器：像素渲染 + 不变形 */
+.login-persona-tile-sprite {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  margin-top: 4px;
+}
+
+/* sprite 加载占位（与 EncyclopediaTab 同源风格） */
+.login-persona-tile-sprite-placeholder {
+  background: var(--cream);
+  border: 1px dashed var(--mute);
+}
+
+/* 类型标签（像素字体小号 + 族色） */
+.login-persona-tile-label {
+  margin-top: 4px;
+  font-family: var(--font-pixel-en), var(--font-pixel-cn), var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 400;
+  letter-spacing: 1px;
+  image-rendering: pixelated;
+}
 /* 左箭头 icon 容器（SVG 像素画） */
 .setup-back-icon {
   display: inline-flex;

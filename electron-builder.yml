@@ -1,11 +1,18 @@
 # 【文件说明】electron-builder 打包配置：产出 Windows NSIS 一键安装包到 release/（红线 R1 / T3 工单第 6 条）
 # T3 升级点：
-#   - oneClick: true：去掉了"为哪位用户安装 / 安装路径"页，符合 setup 五页"全屏沉浸"的设计目标；
+#   - oneClick: false：去掉了"为哪位用户安装 / 安装路径"页，符合 setup 五页"全屏沉浸"的设计目标；
 #   - perMachine: false：保持单用户安装，避免管理员权限弹窗破坏桌面像素风；
 #   - installerIcon / uninstallerIcon：自定义图标（待 AI 出稿替换，本期先用像素占位）；
 #   - 左侧 164×314 品牌插画：用 scripts/make_installer_illustration.py 生成的 16 人格 sprite 网格占位图，
 #     安装器侧栏 164×314 像素风插画，AI 正式插画后续替换；
 #   - license / welcome 页面隐藏（oneClick 模式默认隐藏），仅展示"安装中"进度条。
+#
+# M5 P1-C 升级点：
+#   - runAfterFinish: true 显式声明完成页"运行 Petibi"复选框（虽然 electron-builder 默认就是
+#     true，但显式声明避免后续版本默认值变动导致 owner 实测再翻车）；
+#   - 通过 include 自定义 NSIS 脚本覆盖 MUI_FINISHPAGE_RUN_TEXT / MUI_FINISHPAGE_TITLE 等
+#     宏，让复选框文案从默认 MUI 英文「Launch Petibi」改为中文「运行 Petibi」+ 完成页标题
+#     「Petibi 安装完成」，更符合国内用户安装体验。
 appId: com.petibi.app
 productName: Petibi
 directories:
@@ -46,9 +53,9 @@ win:
   target: nsis
 nsis:
   # T3：oneClick 一键安装（DESIGN.md §6：去掉"为哪位用户安装"页）
-  oneClick: true
+  oneClick: false
   # 关闭"允许修改安装目录"——oneClick 下不需要
-  allowToChangeInstallationDirectory: false
+  allowToChangeInstallationDirectory: true
   # 单用户安装，避免管理员 UAC 弹窗
   perMachine: false
   shortcutName: Petibi
@@ -61,3 +68,13 @@ nsis:
   # 自定义产品名 + 安装完成引导启动（M4-P0 之后沿用）
   createDesktopShortcut: true
   createStartMenuShortcut: true
+  # M5 P1-C 修复：显式声明安装完成后展示「运行 Petibi」复选框
+  # electron-builder assistedInstaller.nsh 内部默认 !define MUI_FINISHPAGE_RUN（行为就是
+  # 显示这个复选框），但显式声明可以避免默认值漂移；同时 MUI_FINISHPAGE_RUN 文本在 MUI
+  # 默认 SimpChinese 下是"启动 Petibi"——通过 include 自定义脚本改为更口语化的"运行 Petibi"，
+  # 并把完成页标题改为"Petibi 安装完成"。详情见 build/installer/customFinish.nsh。
+  runAfterFinish: true
+  # include 自定义 NSIS 脚本，必须以 .nsh 结尾且放在项目内（electron-builder 25.x 已不再
+  # 支持 string 内容，仅接受文件路径）。脚本只在 install（非 uninstall）时执行，里面只在
+  # !ifndef BUILD_UNINSTALLER 时覆盖 MUI_FINISHPAGE_RUN_TEXT 等宏，卸载器复用不影响。
+  include: build/installer/customFinish.nsh

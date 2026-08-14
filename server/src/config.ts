@@ -5,7 +5,8 @@
 //   - 单元测试可通过传入 overrides 覆盖关键项（如 JWT_SECRET、DB_PATH），保证用例确定性
 //
 // 字段命名沿用 PETIBI_* 前缀，与仓库根 .env.example 保持一致；
-// M3 RAG 链路新增 DEEPSEEK_API_KEY / DEEPSEEK_BASE_URL / DEEPSEEK_MODEL / FORCE_MOCK 同样读取。
+// M3 RAG 链路新增 DEEPSEEK_API_KEY / DEEPSEEK_BASE_URL / DEEPSEEK_MODEL / FORCE_MOCK 同样读取；
+// M5 真 API 接入工单新增 PETIBI_DISABLE_QUOTA 开关（=1 时 /api/chat 跳过每日 10 次拦截）。
 
 /** LLM 调用相关配置（M3 对话链路契约 §5） */
 export interface LlmConfig {
@@ -37,6 +38,12 @@ export interface ServerConfig {
   codeExpiresInSec: number
   /** 每日对话配额，默认 10（PRD §3.4 / REVIEW R4 红线） */
   dailyQuota: number
+  /**
+   * M5 真 API 接入工单：PETIBI_DISABLE_QUOTA=1 时 /api/chat 跳过每日 N 次拦截，
+   * 但 chat_usage 计数照记（方便功能跑稳后切回正常配额时历史数据齐全）。
+   * 默认 false（保持 R4 红线）；agent 自动化测试可在 .env 里置 1 临时放开。
+   */
+  disableQuota: boolean
   /** LLM 调用配置（M3 工单新增） */
   llm: LlmConfig
   /** 当前运行环境：dev / prod / test */
@@ -83,6 +90,8 @@ export function loadConfig(overrides: Partial<ServerConfig> = {}): ServerConfig 
     jwtExpiresInSec: intFromEnv(process.env["PETIBI_JWT_EXPIRES"], 60 * 60 * 24 * 30),
     codeExpiresInSec: intFromEnv(process.env["PETIBI_CODE_EXPIRES"], 600),
     dailyQuota: intFromEnv(process.env["PETIBI_DAILY_QUOTA"], 10),
+    // M5：=1 跳过 /api/chat 每日 N 次拦截；任何非 "1" 都视为关闭（包括未设置、0、空串）
+    disableQuota: process.env["PETIBI_DISABLE_QUOTA"] === "1",
     llm,
     env,
   }

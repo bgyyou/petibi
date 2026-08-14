@@ -29,7 +29,11 @@ import type { Db } from "../db.js"
 import type { LlmConfig } from "../config.js"
 import { userIdFromRequest } from "../middleware.js"
 import { checkIntent, isChitchat, loadIntentFilter, refusalCategory } from "../intent-filter.js"
-import { formatEntryForPrompt, loadAllEncyclopediaFiles, retrieveTop1 } from "../rag.js"
+import {
+  formatEntryForPrompt,
+  loadAllEncyclopediaFiles,
+  retrieveTop1ForPersonality,
+} from "../rag.js"
 import { buildSystemPrompt, buildTierInstruction, loadPersonaCard } from "../personas.js"
 import { loadRefusals, pickRefusal } from "../refusals.js"
 import { streamLlm, isMockMode } from "../llm.js"
@@ -82,14 +86,20 @@ function sseDelta(res: Response, text: string): void {
   sseWrite(res, { type: "delta", text })
 }
 
-/** router 工厂：注入 LLM 配置（key/baseUrl/model/forceMock） + DB + dailyQuota */
+/** router 工厂：注入 LLM 配置（key/baseUrl/model/forceMock） + DB + dailyQuota + disableQuota */
 export function createChatRouter(options: {
   db: Db
   llm: LlmConfig
   dailyQuota: number
+  /**
+   * M5 真 API 接入工单：当 .env 配 PETIBI_DISABLE_QUOTA=1 时为 true，
+   * /api/chat 跳过每日 N 次拦截（依然调用 consumeOrThrowQuota 以确保计数照记，
+   * 但 QuotaExceeded 不再写 SSE error / 中断响应）。
+   */
+  disableQuota?: boolean
 }) {
   const router = Router()
-  const { db, llm, dailyQuota } = options
+  const { db, llm, dailyQuota, disableQuota = false } = options
 
   // 公共：查 user 行 + 检查 profile 完整性
   function loadUserOrFail(userId: number): UserRow {
@@ -152,16 +162,23 @@ export function createChatRouter(options: {
       if (hit) {
         // inject 类别复用 roleplay 模板（refusalCategory 内部映射）
         const refusal = pickRefusal(user.mbti as Personality, refusalCategory(hit.category), getRefusals())
-        // 计次（命中越界仍扣配额，契约 §4）
+        // 计次（命中越界仍扣配额，契约 §4）；
+        // M5：disableQuota=true 时仍调用 consumeOrThrowQuota 让计数照记，但忽略 QuotaExceeded。
         try {
           consumeOrThrowQuota(db, user.id, dailyQuota)
         } catch (e) {
           if (e instanceof QuotaExceeded) {
-            sseWrite(res, { type: "error", message: e.message })
-            res.end()
-            return
+            if (disableQuota) {
+              // 跳过拦截，仅打一条 warn 日志方便排查
+              console.warn(`[chat.quota] skipped quota-exceeded (disabled) user=${user.id}`)
+            } else {
+              sseWrite(res, { type: "error", message: e.message })
+              res.end()
+              return
+            }
+          } else {
+            throw e
           }
-          throw e
         }
         // meta + 流式输出（按字切片模拟流式，让前端能看到打字效果）
         sseWrite(res, { type: "meta", rag_entry_id: null, refused: true, guard_hit: false })
@@ -176,20 +193,32 @@ export function createChatRouter(options: {
       }
 
       // 2) 配额检查（计次）
+      // M5：disableQuota=true 时仍调用 consumeOrThrowQuota 让计数照记，但忽略 QuotaExceeded。
       try {
         consumeOrThrowQuota(db, user.id, dailyQuota)
       } catch (e) {
         if (e instanceof QuotaExceeded) {
-          sseWrite(res, { type: "error", message: e.message })
-          res.end()
-          return
+          if (disableQuota) {
+            console.warn(`[chat.quota] skipped quota-exceeded (disabled) user=${user.id}`)
+            // 继续走 LLM；不写 SSE error，不 return
+          } else {
+            sseWrite(res, { type: "error", message: e.message })
+            res.end()
+            return
+          }
+        } else {
+          throw e
         }
-        throw e
       }
 
-      // 3) RAG 检索：闲聊跳过
+      // 3) RAG 检索：闲聊跳过；检索范围**严格限定在 user.mbti**（users 表，不取自客户端 body）。
+      //    M5 P0-B 根因：之前用全库 retrieveTop1，ENTP / ENFP 等共享公共场景（演讲/分手）的
+      //    条目会让另一人格的 Top 1 胜出，污染 prompt。修复：用 retrieveTop1ForPersonality，
+      //    严格按 users.mbti 锁在单一文件内检索，绝不跨人格引用。
       const chitchat = isChitchat(question, filter)
-      const ragResult = chitchat ? null : retrieveTop1(question, getEncyclopedia())
+      const ragResult = chitchat
+        ? null
+        : retrieveTop1ForPersonality(question, getEncyclopedia(), user.mbti as Personality)
       const ragEntryId = ragResult?.entry.id ?? null
 
       // 4) 档位判定（P2-022）：闲聊档 / 标准档 / 深度档
@@ -347,12 +376,15 @@ export function createChatRouter(options: {
     try {
       const userId = userIdFromRequest(req)
       const used = getTodayUsage(db, userId)
+      // M5：disableQuota=true 时不显示 "今日 N 次" 这种误导性限制文案，
+      // used / limit / remaining 仍照实返回，但额外给 disabled 字段让前端可选渲染。
       res.json({
         ok: true,
         date: new Date().toISOString().slice(0, 10),
         used,
         limit: dailyQuota,
         remaining: Math.max(0, dailyQuota - used),
+        disabled: disableQuota,
       })
     } catch (err) {
       if (err instanceof AppError) {

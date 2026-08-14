@@ -59,3 +59,6 @@
 | P2-025 | 登录态门禁：未登录不显示桌宠（归属权问题，owner 原话"没登录显示那是谁的桌宠"）；登录后 token 长效持久化实现启动自动登录 → 桌宠自动显示；访客模式保留（可逛百科/社区，无桌宠） | owner 2026-08-14 | 已拍板，待施工 |
 | P2-026 | 题库 v2（场景化 40 题）已替换正式题库（2026-08-14，v1 备份在 scripts/_archive/） | plan T2 | 已完成 |
 | P2-027 | M4 收尾修复（基于 18:51 安装包 owner 实测）：选人格页返回键视觉强化（flex:0 0 auto / 字号 13px / z-index 20）+ TitleBar 显式 onMinimize/onClose props + 按钮 mousedown stopPropagation 防御父级 drag 区域 + 桌宠 250ms 单双击状态机（feedClick 纯函数）+ 托盘 double-click handler showPet+showPanel；详见 docs/tech/M4-收尾修复-交付报告.md | owner 2026-08-14 | 已完成（agent-45，20:56 安装包） |
+| P2-028 | DeepSeek 已接入（owner 充值，key 在 .env 不进仓库）；测试期关闭每日配额（PETIBI_DISABLE_QUOTA=1），功能稳定后再启用 10 次/日 | owner 2026-08-14 | 施工中（agent-68） |
+| P2-029 | 测试统一账号规则：agent 测试一律用 test@petibi.local，禁止新建随机账号；写入 DEV-PROTOCOL | owner 2026-08-14 | 施工中（agent-68） |
+| P2-030 | 发布架构风险：DeepSeek key 不能打进安装包（用户可提取）。正式发布前必须解决：云端 server 托管 / 激活码机制 / 用户自带 key 三选一 | 2026-08-14 | 待决策（发布前阻塞项） |

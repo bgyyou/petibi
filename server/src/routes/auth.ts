@@ -8,6 +8,12 @@
 //   - 验证码一次性：消费后立刻 DELETE，避免重放
 //   - 校验通过后无感注册新用户（users 表 INSERT）
 //   - 返回 JWT（HS256）供 /api/me 等鉴权接口使用
+//
+// M5 真 API 接入工单：
+//   - 测试账号白名单：test@petibi.local + code "123456" 走"免验证码"快速通道，
+//     仅在 env != "prod" 时生效（prod 默认拒绝，避免被滥用）。
+//     这是 agent 自动化测试可重复登录的核心支撑（DEV-PROTOCOL.md 已追加规则）；
+//     普通邮箱 + 任何 code 仍走原有 email_codes 表查询路径。
 
 import { Router } from "express"
 import type { Router as RouterType, Request, Response, NextFunction } from "express"
@@ -26,6 +32,29 @@ import type {
   EmailVerifyResponse,
   UserRow,
 } from "../types.js"
+
+/**
+ * M5：agent 自动化测试专用快速登录邮箱 + 固定验证码。
+ *  - 邮箱常量见 DEV-PROTOCOL.md「统一测试账号」段；
+ *  - code 故意取 "123456"（最易记忆、最易粘到脚本里），不走随机码；
+ *  - 仅当 config.env !== "prod" 时启用，prod 环境下等同于普通邮箱走 DB 校验。
+ */
+export const TEST_ACCOUNT_EMAIL = "test@petibi.local"
+export const TEST_ACCOUNT_FIXED_CODE = "123456"
+
+/**
+ * 判断当前请求是不是「测试账号快速登录」：邮箱白名单 + code 等于固定码 + 非 prod 环境。
+ * 拆分独立函数便于单测覆盖边界（邮箱大小写 / 空格 / 错误码）。
+ */
+export function isTestAccountFastPath(
+  email: string | undefined,
+  code: string | undefined,
+  env: ServerConfig["env"],
+): boolean {
+  if (env === "prod") return false
+  if (typeof email !== "string" || typeof code !== "string") return false
+  return email.trim().toLowerCase() === TEST_ACCOUNT_EMAIL && code === TEST_ACCOUNT_FIXED_CODE
+}
 
 /** 路由工厂依赖：由 app.ts 在构造时注入，便于测试覆盖 */
 export interface AuthRouterDeps {
@@ -124,6 +153,11 @@ export function createAuthRouter(deps: AuthRouterDeps): RouterType {
         throw AppError.badRequest(ErrorCodes.CodeFormatInvalid, "验证码必须是 6 位数字")
       }
 
+      // M5：测试账号快速登录（test@petibi.local + 固定码 123456）走免 DB 查询通道；
+      // 找到/创建 users 行后直接签 JWT 返回。prod 环境下不会进这条分支（isTestAccountFastPath 返回 false）。
+      // 此处仅跳过 email_codes 表的 SELECT/DELETE，普通邮箱 + 任何 code 仍走原链路。
+      const testFastPath = isTestAccountFastPath(email, code, config.env)
+
       // 取验证码记录；按 (email, code) 查
       const rowRaw = db
         .prepare(
@@ -132,18 +166,21 @@ export function createAuthRouter(deps: AuthRouterDeps): RouterType {
         .get(email, code)
       const row = (rowRaw ?? undefined) as { expires_at: number } | undefined
 
-      if (!row) {
+      if (!row && !testFastPath) {
         // 没找到记录：要么输错，要么已消费；统一报"无效"
         throw AppError.badRequest(ErrorCodes.InvalidCode, "验证码错误或已过期")
       }
-      if (row.expires_at < Date.now()) {
+      if (row && row.expires_at < Date.now()) {
         // 顺手清掉过期记录
         db.prepare("DELETE FROM email_codes WHERE email = ? AND code = ?").run(email, code)
         throw AppError.badRequest(ErrorCodes.InvalidCode, "验证码已过期")
       }
 
-      // 一次性消费：立即删除（即使后续 token 签发失败，用户也能用同一码重试）
-      db.prepare("DELETE FROM email_codes WHERE email = ?").run(email)
+      // 一次性消费：立即删除（即使后续 token 签发失败，用户也能用同一码重试）。
+      // 测试账号快速通道不写 email_codes 表，无需 DELETE。
+      if (row && !testFastPath) {
+        db.prepare("DELETE FROM email_codes WHERE email = ?").run(email)
+      }
 
       // 登录或注册：邮箱唯一，找不到就注册
       let user = findUserByEmail(db, email)

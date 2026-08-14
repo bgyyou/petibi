@@ -271,13 +271,15 @@ export interface MeResponse {
   animal: string | null
 }
 
-/** /api/quota 响应：今日已用 / 剩余 / 上限。 */
+/** /api/quota 响应：今日已用 / 剩余 / 上限。M5 新增 disabled 字段（true=测试期不计配额）。 */
 export interface QuotaResponse {
   ok: true
   date: string
   used: number
   remaining: number
   limit: number
+  /** M5：PETIBI_DISABLE_QUOTA=1 时为 true；前端据此渲染"测试期不计配额"文案。 */
+  disabled?: boolean
 }
 
 /** 统一响应壳（errors.ts 也有，重复一次避免循环依赖） */

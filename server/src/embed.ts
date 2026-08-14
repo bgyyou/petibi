@@ -18,10 +18,17 @@
 //   await handle.close()  // 应用退出时
 
 import type { Server } from "node:http"
+import { loadProjectEnv } from "./env.js"
 import { loadConfig, type ServerConfig } from "./config.js"
 import { openDb, ensureSchema, type Db } from "./db.js"
 import { createMailer } from "./mailer.js"
 import { createApp } from "./app.js"
+
+// 【M5】内嵌入口同样在第一件事加载 .env。注意：startServer() 也会被 Electron 主进程
+// 调用（main.ts），主进程那边有自己独立的 env 加载时机（见 electron/main.ts）。
+// 重复调用幂等：loadProjectEnv() 内部用 dotenv 默认行为（不覆盖已有 env），多次安全。
+// 这里调用主要是给"直接 require('./server.cjs') + startServer()"的场景兜底。
+loadProjectEnv()
 
 /** startServer 覆盖项：未传字段则从 env / 默认值推断 */
 export interface StartServerOptions {
